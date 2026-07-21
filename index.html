@@ -354,9 +354,6 @@
     <a href="#seccion-zonas" class="nav-item flex items-center gap-3 px-4 py-2 text-custom-text-muted hover:text-on-surface hover:bg-white/[0.04] rounded-lg cursor-pointer transition-colors">
       <span class="material-symbols-outlined text-[18px] opacity-70">location_on</span><span class="text-body-md">Zonas</span>
     </a>
-    <a href="#seccion-frecuencias" class="nav-item flex items-center gap-3 px-4 py-2 text-custom-text-muted hover:text-on-surface hover:bg-white/[0.04] rounded-lg cursor-pointer transition-colors">
-      <span class="material-symbols-outlined text-[18px] opacity-70">graphic_eq</span><span class="text-body-md">Frecuencias</span>
-    </a>
     <a href="#seccion-detalle" class="nav-item flex items-center gap-3 px-4 py-2 text-custom-text-muted hover:text-on-surface hover:bg-white/[0.04] rounded-lg cursor-pointer transition-colors">
       <span class="material-symbols-outlined text-[18px] opacity-70">list</span><span class="text-body-md">Detalle</span>
     </a>
@@ -533,26 +530,6 @@
       </div>
     </section>
 
-    <!-- Frecuencias -->
-    <section id="seccion-frecuencias" class="scroll-mt-[104px]">
-      <div class="text-body-md font-bold text-on-surface mb-3">Detecciones únicas por frecuencia</div>
-      <div class="bg-custom-card-bg border border-custom-divider rounded-xl inner-glow overflow-hidden">
-        <div class="overflow-x-auto max-h-[300px] overflow-y-auto scroll-slim">
-          <table class="data-table w-full">
-            <thead class="sticky top-0 bg-custom-card-bg"><tr><th>Frecuencia</th><th>Cantidad (única)</th></tr></thead>
-            <tbody id="freqTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="bg-custom-card-bg border border-custom-divider rounded-xl p-5 inner-glow mt-3">
-        <div class="card-eyebrow mb-3">Ranking de frecuencias</div>
-        <div class="chart-frame dot-pattern">
-          <div class="corner-b"></div>
-          <svg id="chartFrecuencias" viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:200px;display:block"></svg>
-        </div>
-      </div>
-    </section>
-
     <!-- Detalle -->
     <section id="seccion-detalle" class="scroll-mt-[104px] pb-16">
       <div class="text-body-md font-bold text-on-surface mb-3">Detalle de detecciones únicas (sin duplicados)</div>
@@ -643,10 +620,6 @@
       <div class="print-chart-card">
         <div class="print-chart-title">Detecciones por zona</div>
         <svg id="printChartZonas" viewBox="0 0 100 100"></svg>
-      </div>
-      <div class="print-chart-card">
-        <div class="print-chart-title">Detecciones por frecuencia</div>
-        <svg id="printChartFrecuencias" viewBox="0 0 100 100"></svg>
       </div>
     </div>
   </div>
@@ -810,7 +783,6 @@ const DATE_SYN = ["fecha","fechahora","timestamp","hora","date","datetime","hora
 const LOC_SYN = ["ubicacion","location","coordenadas","latlon","posicion","zona","zone","sector","franja"];
 const SENSOR_SYN = ["sensor","idsensor","codigosensor","sensoruas","nrosensor","sensorid","dispositivo","source","deviceid"];
 const DURATION_SYN = ["duration","duracion","durationseconds","timeflown","tiempovolado","flighttime"];
-const FREQ_SYN = ["frecuencia","frequency","freq","canal","channel","mhz","ghz","rf","frecuenciamhz","frecuencia_mhz","frecuenciaghz"];
 
 function parseFecha(raw) {
   if (!raw) return null;
@@ -832,19 +804,21 @@ function parseFecha(raw) {
   return isNaN(d.getTime()) ? null : d;
 }
 
-/* Extrae Fecha (YYYY-MM-DD) y Hora (HH:MM[:SS]) directamente del texto
-   original, sin pasar por Date (evita corrimientos de zona horaria en el
-   texto que se muestra). */
-function extractFechaHora(raw) {
-  const out = { fechaTxt: "", horaTxt: "" };
+/* Extrae Fecha (YYYY-MM-DD), Hora (HH:MM[:SS]) y Frecuencia detectada (los
+   milisegundos del timestamp, ej "2026-06-25T23:01:29.443Z" -> Frecuencia 443)
+   directamente del texto original, sin pasar por Date (evita corrimientos de
+   zona horaria en el texto que se muestra). */
+function extractFechaHoraFrecuencia(raw) {
+  const out = { fechaTxt: "", horaTxt: "", frecuencia: "" };
   if (!raw) return out;
   const s = String(raw).trim();
   if (!s) return out;
 
-  let m = s.match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(:\d{2})?)/);
+  let m = s.match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(:\d{2})?)(\.(\d+))?/);
   if (m) {
     out.fechaTxt = m[1];
     out.horaTxt = m[2];
+    out.frecuencia = m[5] || "";
     return out;
   }
   m = s.match(/^\d{4}-\d{2}-\d{2}$/);
@@ -911,7 +885,6 @@ function buildRecords(rows, headers) {
   let colSensor = findColumn(headers, SENSOR_SYN);
   let colModelo = findColumn(headers, MODEL_SYN);
   const colDuracion = findColumn(headers, DURATION_SYN);
-  let colFrecuencia = findColumn(headers, FREQ_SYN);
 
   // Sin encabezado con nombre (export crudo): se ubican por el formato real
   // de los valores, excluyendo columnas ya asignadas para no chocar entre sí.
@@ -929,20 +902,12 @@ function buildRecords(rows, headers) {
       return true;
     }) || null;
   }
-  // La frecuencia real (canal/MHz) no tiene una forma distintiva propia más
-  // allá de "es un número puro"; por eso se busca solo entre las columnas que
-  // ningún otro detector ya reclamó (evita chocar con fecha, duración, etc.).
-  if (!colFrecuencia) {
-    const claimed = new Set([colId, colFecha, colUbic, colSensor, colModelo, colDuracion].filter(Boolean));
-    colFrecuencia = detectColumnByFormat(rows, headers, looksLikePureNumber, claimed);
-  }
 
   const warnings = [];
   if (!colId) warnings.push("No se encontró columna de ID/IP del UAS. Sin ese identificador no se puede comparar contra la whitelist ni deduplicar con precisión: esas detecciones quedarán como amenaza real y se agruparán por modelo + zona + tiempo.");
   if (!colModelo) warnings.push("No se encontró columna de MODELO de UAS. Se usará 'Desconocido'.");
   if (!colFecha) warnings.push("No se encontró columna de FECHA/HORA. No se podrán calcular franjas horarias para esos registros ni ráfagas de tiempo.");
   if (!colSensor) warnings.push("No se encontró columna de SENSOR. Esa columna quedará vacía en el detalle.");
-  if (!colFrecuencia) warnings.push("No se encontró columna de FRECUENCIA. La gráfica de frecuencias quedará vacía.");
 
   const records = rows.map(row => {
     const rawModel = colModelo ? String(row[colModelo] ?? "").trim() : "";
@@ -950,7 +915,7 @@ function buildRecords(rows, headers) {
     const cleanedRawModel = rawModel.replace(/^\s*(home|remote|drone|sensor|alert|uav|uas)\s+/i, "").trim();
     const modeloRaw = modelsSeen[0] || cleanedRawModel;
     const ubicacionRaw = colUbic ? String(row[colUbic] ?? "").trim() : "";
-    const fhf = colFecha ? extractFechaHora(row[colFecha]) : { fechaTxt: "", horaTxt: "" };
+    const fhf = colFecha ? extractFechaHoraFrecuencia(row[colFecha]) : { fechaTxt: "", horaTxt: "", frecuencia: "" };
     return {
       id: colId ? String(row[colId] ?? "").trim() : "",
       modelo: modeloRaw || "Desconocido",
@@ -958,7 +923,7 @@ function buildRecords(rows, headers) {
       fecha: colFecha ? parseFecha(row[colFecha]) : null,
       fechaTxt: fhf.fechaTxt,
       horaTxt: fhf.horaTxt,
-      frecuencia: colFrecuencia ? String(row[colFrecuencia] ?? "").trim() : "",
+      frecuencia: fhf.frecuencia,
       sensor: colSensor ? String(row[colSensor] ?? "").trim() : "",
       duracion: colDuracion ? String(row[colDuracion] ?? "").trim() : ""
     };
@@ -1302,7 +1267,6 @@ function runAnalysis() {
     el("modelsTableBody").innerHTML = "";
     el("modelsAmigosTableBody").innerHTML = "";
     el("zonesTableBody").innerHTML = "";
-    el("freqTableBody").innerHTML = "";
     el("detailTableBody").innerHTML = "";
     renderBuckets({});
     renderPieChart("chartResumen", "chartResumenLegend", [], ["#ff8a80", "#4fd8ea"]);
@@ -1310,7 +1274,6 @@ function runAnalysis() {
     renderBarChart("chartModelos", [], "#ff8a80");
     renderBarChart("chartModelosAmigos", [], "#4fd8ea");
     renderBarChart("chartZonas", [], "#4fd8ea");
-    renderBarChart("chartFrecuencias", [], "#00dbe9");
     el("warningsBox").textContent = "Carga un archivo de detecciones para comenzar.";
     return;
   }
@@ -1345,13 +1308,6 @@ function runAnalysis() {
   });
   const zoneRows = [...zoneCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
-  const freqCounts = new Map();
-  unique.forEach(r => {
-    if (!r.frecuencia) return;
-    freqCounts.set(r.frecuencia, (freqCounts.get(r.frecuencia) || 0) + 1);
-  });
-  const freqRows = [...freqCounts.entries()].sort((a, b) => b[1] - a[1] || (parseFloat(a[0]) - parseFloat(b[0])));
-
   el("statTotalBruto").textContent = totalBruto;
   el("statTotalUnicoSub").textContent = totalUnico + " sin duplicados";
   el("statAmenazas").textContent = amenazas;
@@ -1370,10 +1326,6 @@ function runAnalysis() {
     `<tr><td class="text-on-surface font-medium">${escapeHtml(zona)}</td><td>${count}</td></tr>`
   ).join("") || `<tr><td colspan="2" class="text-custom-text-muted text-center py-6">Sin detecciones.</td></tr>`;
 
-  el("freqTableBody").innerHTML = freqRows.map(([freq, count]) =>
-    `<tr><td class="text-on-surface font-medium font-mono">${escapeHtml(freq)}</td><td>${count}</td></tr>`
-  ).join("") || `<tr><td colspan="2" class="text-custom-text-muted text-center py-6">Sin datos de frecuencia.</td></tr>`;
-
   const detailSorted = unique.slice().sort((a, b) => a.clasificacion.localeCompare(b.clasificacion) || a.modelo.localeCompare(b.modelo));
   el("detailTableBody").innerHTML = detailSorted.map(r => {
     const badgeClass = r.clasificacion === "Amenaza" ? "badge-amenaza" : "badge-amiga";
@@ -1384,7 +1336,7 @@ function runAnalysis() {
       <td><span class="px-2 py-0.5 rounded text-[11px] font-bold ${badgeClass}">${r.clasificacion === "Amenaza" ? "AMENAZA REAL" : "UAS AMIGO"}</span></td>
       <td class="text-custom-text-muted">${fechaTxt || "—"}</td>
       <td class="text-custom-text-muted">${r.horaTxt || "—"}</td>
-      <td class="text-custom-text-muted font-mono">${escapeHtml(r.frecuencia) || "—"}</td>
+      <td class="text-custom-text-muted">${r.frecuencia || "—"}</td>
       <td class="text-custom-text-muted">${escapeHtml(r.ubicacion || FUERA_DE_ZONAS)}</td>
       <td class="text-custom-text-muted">${escapeHtml(r.sensor || "—")}</td>
       <td class="text-custom-text-muted">${r.duracion ? escapeHtml(r.duracion) + " s" : "—"}</td>
@@ -1401,7 +1353,6 @@ function runAnalysis() {
   renderBarChart("chartModelos", modelRowsAmenaza.slice(0, 10).map(([label, value]) => ({ label, value })), "#ff8a80", { percentTotal: amenazas });
   renderBarChart("chartModelosAmigos", modelRowsAmiga.slice(0, 10).map(([label, value]) => ({ label, value })), "#4fd8ea", { percentTotal: amigas });
   renderBarChart("chartZonas", zoneRows.slice(0, 10).map(([label, value]) => ({ label, value })), "#4fd8ea", { percentTotal: totalUnico });
-  renderBarChart("chartFrecuencias", freqRows.slice(0, 10).map(([label, value]) => ({ label, value })), "#00dbe9", { percentTotal: totalUnico });
 
   const allWarnings = [...state.mainWarnings];
   if (state.whitelistFileName) {
@@ -1420,7 +1371,7 @@ function runAnalysis() {
   el("headerLiveDot").classList.remove("bg-white/20");
   el("headerLiveDot").classList.add("bg-secondary", "animate-pulse", "live-dot-glow", "text-secondary");
 
-  state.lastAnalysis = { totalBruto, totalUnico, amenazas, amigas, modelRowsAmenaza, modelRowsAmiga, zoneRows, freqRows, bucketCounts, warnings: allWarnings };
+  state.lastAnalysis = { totalBruto, totalUnico, amenazas, amigas, modelRowsAmenaza, modelRowsAmiga, zoneRows, bucketCounts, warnings: allWarnings };
 }
 
 /* ---------- Manejo de archivos ---------- */
@@ -1553,10 +1504,6 @@ function generateAnalysisHtml(a) {
   const fueraDeZonas = zoneRows.find(([z]) => z === FUERA_DE_ZONAS);
   parts.push(`<div class="print-analysis-block"><h3>5. Detecciones por zona</h3><p>${topZona ? `La zona con mayor actividad fue <strong>${escapeHtml(topZona[0])}</strong>, con ${topZona[1]} detección(es).` : "No se registraron zonas."} Se cubrieron <strong>${zoneRows.length}</strong> zona(s) en total.${fueraDeZonas ? ` <strong>${fueraDeZonas[1]}</strong> detección(es) no traían zona registrada en el archivo y se clasificaron como "${FUERA_DE_ZONAS}".` : ""}</p></div>`);
 
-  const freqRows = a.freqRows || [];
-  const topFreq = freqRows[0];
-  parts.push(`<div class="print-analysis-block"><h3>6. Detecciones por frecuencia</h3><p>${topFreq ? `La frecuencia con mayor actividad fue <strong>${escapeHtml(topFreq[0])}</strong>, con ${topFreq[1]} detección(es).` : "No se encontró una columna de frecuencia en el archivo analizado."} Se identificaron <strong>${freqRows.length}</strong> frecuencia(s) distinta(s) en total.</p></div>`);
-
   return parts.join("");
 }
 
@@ -1609,7 +1556,6 @@ function exportPdf() {
   renderBarChart("printChartModelos", a.modelRowsAmenaza.slice(0, 10).map(([label, value]) => ({ label, value })), "#e8574a", { ...printOpts, percentTotal: a.amenazas });
   renderBarChart("printChartModelosAmigos", a.modelRowsAmiga.slice(0, 10).map(([label, value]) => ({ label, value })), "#1f9fb0", { ...printOpts, percentTotal: a.amigas });
   renderBarChart("printChartZonas", (a.zoneRows || []).slice(0, 10).map(([label, value]) => ({ label, value })), "#1f9fb0", { ...printOpts, percentTotal: a.totalUnico });
-  renderBarChart("printChartFrecuencias", (a.freqRows || []).slice(0, 10).map(([label, value]) => ({ label, value })), "#5b63d6", { ...printOpts, percentTotal: a.totalUnico });
 
   el("printAnalysis").innerHTML = generateAnalysisHtml(a);
 
@@ -1693,7 +1639,6 @@ renderBarChart("chartFranjas", [], "#00dbe9");
 renderBarChart("chartModelos", [], "#ff8a80");
 renderBarChart("chartModelosAmigos", [], "#4fd8ea");
 renderBarChart("chartZonas", [], "#4fd8ea");
-renderBarChart("chartFrecuencias", [], "#00dbe9");
 </script>
 </body>
 </html>
