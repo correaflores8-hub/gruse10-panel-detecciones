@@ -1269,7 +1269,7 @@ function runAnalysis() {
     el("zonesTableBody").innerHTML = "";
     el("detailTableBody").innerHTML = "";
     renderBuckets({});
-    renderPieChart("chartResumen", "chartResumenLegend", [], ["#ff8a80", "#4fd8ea"]);
+    renderPieChart("chartResumen", "chartResumenLegend", [], ["#ff8a80", "#4fd8ea", "#fbbf24"]);
     renderBarChart("chartFranjas", [], "#00dbe9");
     renderBarChart("chartModelos", [], "#ff8a80");
     renderBarChart("chartModelosAmigos", [], "#4fd8ea");
@@ -1347,8 +1347,9 @@ function runAnalysis() {
 
   renderPieChart("chartResumen", "chartResumenLegend", [
     { label: "Amenaza real", value: amenazas },
-    { label: "UAS Amigo", value: amigas }
-  ], ["#ff8a80", "#4fd8ea"]);
+    { label: "UAS Amigo", value: amigas },
+    { label: "Modelos amenaza", value: modelRowsAmenaza.length }
+  ], ["#ff8a80", "#4fd8ea", "#fbbf24"]);
   renderBarChart("chartFranjas", BUCKET_ORDER.filter(k => bucketCounts[k]).map(k => ({ label: BUCKET_LABELS[k], value: bucketCounts[k] || 0 })), "#00dbe9", { percentTotal: totalUnico });
   renderBarChart("chartModelos", modelRowsAmenaza.slice(0, 10).map(([label, value]) => ({ label, value })), "#ff8a80", { percentTotal: amenazas });
   renderBarChart("chartModelosAmigos", modelRowsAmiga.slice(0, 10).map(([label, value]) => ({ label, value })), "#4fd8ea", { percentTotal: amigas });
@@ -1550,8 +1551,9 @@ function exportPdf() {
 
   renderPieChart("printChartResumen", "printChartResumenLegend", [
     { label: "Amenaza real", value: a.amenazas },
-    { label: "UAS Amigo", value: a.amigas }
-  ], ["#e8574a", "#1f9fb0"], { totalColor: "#101012", subColor: "#55565c", legendTextColor: "#33343a", legendValueColor: "#101012" });
+    { label: "UAS Amigo", value: a.amigas },
+    { label: "Modelos amenaza", value: a.modelRowsAmenaza.length }
+  ], ["#e8574a", "#1f9fb0", "#d69e2e"], { totalColor: "#101012", subColor: "#55565c", legendTextColor: "#33343a", legendValueColor: "#101012" });
   renderBarChart("printChartFranjas", BUCKET_ORDER.filter(k => a.bucketCounts[k]).map(k => ({ label: BUCKET_LABELS[k], value: a.bucketCounts[k] || 0 })), "#5b63d6", { ...printOpts, percentTotal: a.totalUnico });
   renderBarChart("printChartModelos", a.modelRowsAmenaza.slice(0, 10).map(([label, value]) => ({ label, value })), "#e8574a", { ...printOpts, percentTotal: a.amenazas });
   renderBarChart("printChartModelosAmigos", a.modelRowsAmiga.slice(0, 10).map(([label, value]) => ({ label, value })), "#1f9fb0", { ...printOpts, percentTotal: a.amigas });
@@ -1634,7 +1636,7 @@ document.querySelectorAll(".nav-item").forEach(item => {
 });
 
 renderBuckets({});
-renderPieChart("chartResumen", "chartResumenLegend", [], ["#ff8a80", "#4fd8ea"]);
+renderPieChart("chartResumen", "chartResumenLegend", [], ["#ff8a80", "#4fd8ea", "#fbbf24"]);
 renderBarChart("chartFranjas", [], "#00dbe9");
 renderBarChart("chartModelos", [], "#ff8a80");
 renderBarChart("chartModelosAmigos", [], "#4fd8ea");
