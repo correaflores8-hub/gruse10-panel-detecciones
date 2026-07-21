@@ -397,7 +397,7 @@
         </div>
         <div class="relative bg-custom-card-bg border border-white/[0.05] rounded-xl p-5 inner-glow overflow-hidden">
           <div class="stat-accent" style="background:#7f97ab"></div>
-          <div class="card-eyebrow mb-3">Modelos amenaza</div>
+          <div class="card-eyebrow mb-3">Modelos Desconocidos</div>
           <div id="statModelosAmenaza" class="font-mono font-h3 text-h3 text-on-surface font-bold tracking-tight">0</div>
           <div class="text-[11px] text-custom-text-muted font-medium mt-3 opacity-90">Modelos distintos detectados</div>
         </div>
@@ -1348,7 +1348,7 @@ function runAnalysis() {
   renderPieChart("chartResumen", "chartResumenLegend", [
     { label: "Amenaza real", value: amenazas },
     { label: "UAS Amigo", value: amigas },
-    { label: "Modelos amenaza", value: modelRowsAmenaza.length }
+    { label: "Modelos Desconocidos", value: modelRowsAmenaza.length }
   ], ["#ff8a80", "#4fd8ea", "#fbbf24"]);
   renderBarChart("chartFranjas", BUCKET_ORDER.filter(k => bucketCounts[k]).map(k => ({ label: BUCKET_LABELS[k], value: bucketCounts[k] || 0 })), "#00dbe9", { percentTotal: totalUnico });
   renderBarChart("chartModelos", modelRowsAmenaza.slice(0, 10).map(([label, value]) => ({ label, value })), "#ff8a80", { percentTotal: amenazas });
@@ -1552,7 +1552,7 @@ function exportPdf() {
   renderPieChart("printChartResumen", "printChartResumenLegend", [
     { label: "Amenaza real", value: a.amenazas },
     { label: "UAS Amigo", value: a.amigas },
-    { label: "Modelos amenaza", value: a.modelRowsAmenaza.length }
+    { label: "Modelos Desconocidos", value: a.modelRowsAmenaza.length }
   ], ["#e8574a", "#1f9fb0", "#d69e2e"], { totalColor: "#101012", subColor: "#55565c", legendTextColor: "#33343a", legendValueColor: "#101012" });
   renderBarChart("printChartFranjas", BUCKET_ORDER.filter(k => a.bucketCounts[k]).map(k => ({ label: BUCKET_LABELS[k], value: a.bucketCounts[k] || 0 })), "#5b63d6", { ...printOpts, percentTotal: a.totalUnico });
   renderBarChart("printChartModelos", a.modelRowsAmenaza.slice(0, 10).map(([label, value]) => ({ label, value })), "#e8574a", { ...printOpts, percentTotal: a.amenazas });
