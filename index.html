@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;520;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root {
     color-scheme: dark;
@@ -222,31 +223,10 @@
     .xl\:flex { display: flex; }
   }
 
-  /* ---------- Reporte de exportación (PDF vía impresión del navegador) ---------- */
-  /* Se mantiene fuera de pantalla (no display:none) para que las gráficas puedan
-     medir su tamaño real con getBoundingClientRect() antes de imprimir. */
-  #printReport { position: absolute; left: -9999px; top: 0; width: 190mm; background: #ffffff; color: #1a1a1a; font-family: Inter, Manrope, sans-serif; }
-  #printReport .print-page { padding: 4mm 2mm; }
-  #printReport .print-title { font-size: 21px; font-weight: 800; color: #101012; margin-bottom: 3px; }
-  #printReport .print-meta { font-size: 11.5px; color: #55565c; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #e2e2e6; }
-  #printReport .print-chart-card { border: 1px solid #dcdce2; border-radius: 8px; padding: 10px 12px 6px; margin-bottom: 12px; background: #fafafa; }
-  #printReport .print-chart-title { font-size: 11px; font-weight: 700; color: #33343a; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
-  #printReport .print-chart-card svg { width: 100%; height: 150px; display: block; }
-  #printReport .print-resumen-row { display: flex; align-items: center; gap: 24px; }
-  #printReport .print-resumen-row svg { width: 150px; height: 150px; flex-shrink: 0; }
-  #printReport .print-legend > div { font-size: 12px; padding: 2px 0; }
-  #printReport .print-charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  #printReport .print-analysis-block { margin-bottom: 15px; }
-  #printReport .print-analysis-block h3 { font-size: 13px; font-weight: 700; color: #101012; margin-bottom: 4px; }
-  #printReport .print-analysis-block p { font-size: 12.5px; line-height: 1.55; color: #33343a; margin: 0; }
-  @media screen { #printReport { visibility: hidden; } }
-  @media print {
-    body > header, body > main { display: none !important; }
-    #printReport { position: static; left: 0; visibility: visible; width: auto; }
-    #printReport .print-page { page-break-after: always; }
-    #printReport .print-page:last-child { page-break-after: auto; }
-    @page { size: A4; margin: 14mm; }
-  }
+  /* ---------- Reporte de exportación (PDF generado con jsPDF, ver exportPdf) ---------- */
+  /* El documento se construye 100% en canvas vectorial (sin depender del cuadro
+     de impresión del navegador), así que no necesita CSS de impresión ni un
+     nodo espejo fuera de pantalla como antes. */
 
   /* ---------- Pin de información: se abre con clic/toque (funciona igual en
      escritorio y en móvil, a diferencia de un tooltip por hover). ---------- */
@@ -593,42 +573,6 @@
   </div>
 </div>
 
-<div id="printReport">
-  <div class="print-page">
-    <div class="print-title">Panel de Detecciones GRUSE-10 — Reporte de detecciones</div>
-    <div class="print-meta" id="printMeta"></div>
-    <div class="print-chart-card">
-      <div class="print-chart-title">Amenaza real vs. UAS Amigo</div>
-      <div class="print-resumen-row">
-        <svg id="printChartResumen" viewBox="0 0 100 100"></svg>
-        <div id="printChartResumenLegend" class="print-legend"></div>
-      </div>
-    </div>
-    <div class="print-charts-grid">
-      <div class="print-chart-card">
-        <div class="print-chart-title">Detecciones por franja horaria</div>
-        <svg id="printChartFranjas" viewBox="0 0 100 100"></svg>
-      </div>
-      <div class="print-chart-card">
-        <div class="print-chart-title">Modelos de UAS — amenaza real</div>
-        <svg id="printChartModelos" viewBox="0 0 100 100"></svg>
-      </div>
-      <div class="print-chart-card">
-        <div class="print-chart-title">Modelos de UAS — amigos</div>
-        <svg id="printChartModelosAmigos" viewBox="0 0 100 100"></svg>
-      </div>
-      <div class="print-chart-card">
-        <div class="print-chart-title">Detecciones por zona</div>
-        <svg id="printChartZonas" viewBox="0 0 100 100"></svg>
-      </div>
-    </div>
-  </div>
-  <div class="print-page">
-    <div class="print-title">Análisis de resultados</div>
-    <div class="print-meta">Lectura de cada gráfica de la página 1, generada a partir de los datos analizados.</div>
-    <div id="printAnalysis"></div>
-  </div>
-</div>
 
 <script>
 /* ---------- Lógica central (parseo, clasificación, deduplicación) ---------- */
@@ -1483,108 +1427,745 @@ function clearWhitelistFile() {
 
 function pctOf(n, total) { return total ? Math.round((n / total) * 100) : 0; }
 
-/* Genera el texto de la página 2 del PDF: una lectura breve de cada gráfica
-   de la página 1, calculada a partir del mismo análisis ya mostrado en pantalla. */
-function generateAnalysisHtml(a) {
-  const parts = [];
-
-  parts.push(`<div class="print-analysis-block"><h3>1. Amenaza real vs. UAS Amigo</h3><p>Del total de <strong>${a.totalUnico}</strong> detecciones únicas analizadas (a partir de ${a.totalBruto} registros brutos en el archivo original), <strong>${a.amenazas}</strong> (${pctOf(a.amenazas, a.totalUnico)}%) se clasificaron como amenaza real y <strong>${a.amigas}</strong> (${pctOf(a.amigas, a.totalUnico)}%) como UAS amigo, tras comparar el ID/IP de cada UAS contra la whitelist cargada.</p></div>`);
-
+/* Cálculos de "lo más destacado" compartidos entre la fila de aspectos
+   destacados (pág. 2 del PDF) y el texto de análisis (última página) — se
+   computan una sola vez a partir del mismo análisis ya mostrado en pantalla. */
+function computeHighlights(a) {
   const bucketEntries = BUCKET_ORDER.filter(k => a.bucketCounts[k]).map(k => [BUCKET_LABELS[k], a.bucketCounts[k]]);
-  const topBucket = bucketEntries.slice().sort((x, y) => y[1] - x[1])[0];
-  parts.push(`<div class="print-analysis-block"><h3>2. Detecciones por franja horaria</h3><p>${topBucket ? `La franja con mayor actividad fue <strong>${escapeHtml(topBucket[0])}</strong>, con ${topBucket[1]} detección(es).` : "No se registraron detecciones con hora identificable."} En total se registró actividad en <strong>${bucketEntries.length}</strong> franja(s) horaria(s) distinta(s).</p></div>`);
-
-  const topAmenaza = a.modelRowsAmenaza[0];
-  parts.push(`<div class="print-analysis-block"><h3>3. Modelos de UAS — amenaza real</h3><p>${topAmenaza ? `El modelo detectado con más frecuencia como amenaza fue <strong>${escapeHtml(topAmenaza[0])}</strong>, con ${topAmenaza[1]} detección(es).` : "No se registraron amenazas reales en este análisis."} Se identificaron <strong>${a.modelRowsAmenaza.length}</strong> modelo(s) distinto(s) clasificado(s) como amenaza.</p></div>`);
-
-  const topAmiga = a.modelRowsAmiga[0];
-  parts.push(`<div class="print-analysis-block"><h3>4. Modelos de UAS — amigos</h3><p>${topAmiga ? `El UAS amigo detectado con más frecuencia fue <strong>${escapeHtml(topAmiga[0])}</strong>, con ${topAmiga[1]} detección(es).` : "No se registraron UAS amigos en este análisis (verifica que la whitelist esté cargada)."} Se identificaron <strong>${a.modelRowsAmiga.length}</strong> modelo(s) amigo(s) distinto(s).</p></div>`);
-
+  const topBucket = bucketEntries.slice().sort((x, y) => y[1] - x[1])[0] || null;
+  const topAmenaza = a.modelRowsAmenaza[0] || null;
+  const topAmiga = a.modelRowsAmiga[0] || null;
   const zoneRows = a.zoneRows || [];
-  const topZona = zoneRows[0];
-  const fueraDeZonas = zoneRows.find(([z]) => z === FUERA_DE_ZONAS);
-  parts.push(`<div class="print-analysis-block"><h3>5. Detecciones por zona</h3><p>${topZona ? `La zona con mayor actividad fue <strong>${escapeHtml(topZona[0])}</strong>, con ${topZona[1]} detección(es).` : "No se registraron zonas."} Se cubrieron <strong>${zoneRows.length}</strong> zona(s) en total.${fueraDeZonas ? ` <strong>${fueraDeZonas[1]}</strong> detección(es) no traían zona registrada en el archivo y se clasificaron como "${FUERA_DE_ZONAS}".` : ""}</p></div>`);
-
-  return parts.join("");
+  const topZona = zoneRows[0] || null;
+  const fueraDeZonas = zoneRows.find(([z]) => z === FUERA_DE_ZONAS) || null;
+  return { bucketEntries, topBucket, topAmenaza, topAmiga, zoneRows, topZona, fueraDeZonas };
 }
 
-/* Exporta un PDF de 2 páginas usando la función de impresión del navegador:
-   página 1 con todas las gráficas (redibujadas en tonos oscuros sobre fondo
-   blanco para que se lean bien en papel/PDF) y página 2 con el análisis de
-   cada una. No depende de ninguna librería externa. */
-/* CSS para el documento HTML independiente que se genera al exportar (ver
-   exportPdf). Es una copia liviana de los estilos de #printReport, sin los
-   trucos de posicionamiento fuera de pantalla (aquí el contenido sí es la
-   página completa). */
-function buildStandaloneReportCss() {
-  return "*{box-sizing:border-box;}" +
-    "body{margin:0;background:#fff;color:#1a1a1a;font-family:Inter,Arial,sans-serif;}" +
-    ".print-page{padding:14mm;}" +
-    ".print-page:first-child{page-break-after:always;}" +
-    ".print-title{font-size:21px;font-weight:800;color:#101012;margin-bottom:3px;}" +
-    ".print-meta{font-size:11.5px;color:#55565c;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e2e2e6;}" +
-    ".print-chart-card{border:1px solid #dcdce2;border-radius:8px;padding:10px 12px 6px;margin-bottom:12px;background:#fafafa;}" +
-    ".print-chart-title{font-size:11px;font-weight:700;color:#33343a;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}" +
-    ".print-chart-card svg{width:100%;height:150px;display:block;}" +
-    ".print-resumen-row{display:flex;align-items:center;gap:24px;}" +
-    ".print-resumen-row svg{width:150px;height:150px;flex-shrink:0;}" +
-    ".print-legend > div{font-size:12px;padding:2px 0;}" +
-    ".print-charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}" +
-    ".print-analysis-block{margin-bottom:15px;}" +
-    ".print-analysis-block h3{font-size:13px;font-weight:700;color:#101012;margin-bottom:4px;}" +
-    ".print-analysis-block p{font-size:12.5px;line-height:1.55;color:#33343a;margin:0;}" +
-    "@page{size:A4;margin:14mm;}" +
-    "@media print{.print-page{padding:0;}}";
+/* Texto del análisis final del PDF: una lectura breve de cada gráfica,
+   calculada a partir del mismo análisis ya mostrado en pantalla. */
+function buildAnalysisSections(a, hi) {
+  const sections = [];
+  sections.push({
+    title: "Amenaza real vs. UAS Amigo",
+    text: `Del total de ${a.totalUnico} detecciones únicas analizadas (a partir de ${a.totalBruto} registros brutos en el archivo original), ${a.amenazas} (${pctOf(a.amenazas, a.totalUnico)}%) se clasificaron como amenaza real y ${a.amigas} (${pctOf(a.amigas, a.totalUnico)}%) como UAS amigo, tras comparar el ID/IP de cada UAS contra la whitelist cargada.`
+  });
+  sections.push({
+    title: "Detecciones por franja horaria",
+    text: `${hi.topBucket ? `La franja con mayor actividad fue ${hi.topBucket[0]}, con ${hi.topBucket[1]} detección(es).` : "No se registraron detecciones con hora identificable."} En total se registró actividad en ${hi.bucketEntries.length} franja(s) horaria(s) distinta(s).`
+  });
+  sections.push({
+    title: "Modelos de UAS — amenaza real",
+    text: `${hi.topAmenaza ? `El modelo detectado con más frecuencia como amenaza fue ${hi.topAmenaza[0]}, con ${hi.topAmenaza[1]} detección(es).` : "No se registraron amenazas reales en este análisis."} Se identificaron ${a.modelRowsAmenaza.length} modelo(s) distinto(s) clasificado(s) como amenaza.`
+  });
+  sections.push({
+    title: "Modelos de UAS — amigos",
+    text: `${hi.topAmiga ? `El UAS amigo detectado con más frecuencia fue ${hi.topAmiga[0]}, con ${hi.topAmiga[1]} detección(es).` : "No se registraron UAS amigos en este análisis (verifica que la whitelist esté cargada)."} Se identificaron ${a.modelRowsAmiga.length} modelo(s) amigo(s) distinto(s).`
+  });
+  sections.push({
+    title: "Detecciones por zona",
+    text: `${hi.topZona ? `La zona con mayor actividad fue ${hi.topZona[0]}, con ${hi.topZona[1]} detección(es).` : "No se registraron zonas."} Se cubrieron ${hi.zoneRows.length} zona(s) en total.${hi.fueraDeZonas ? ` ${hi.fueraDeZonas[1]} detección(es) no traían zona registrada en el archivo y se clasificaron como "${FUERA_DE_ZONAS}".` : ""}`
+  });
+  return sections;
 }
 
-/* Genera el PDF exportando un documento HTML independiente y autoimprimible
-   (no depende de ninguna librería externa). Se hace así -en vez de llamar
-   directamente a window.print() sobre esta página- porque el link publicado
-   corre dentro de un iframe con sandbox donde el navegador puede bloquear la
-   impresión directa; un documento nuevo, propio, no tiene esa restricción. */
-function exportPdf() {
-  if (!state.lastAnalysis) { alert("No hay resultados para exportar todavía. Carga un archivo de detecciones primero."); return; }
-  const a = state.lastAnalysis;
-  const printOpts = { labelColor: "#55565c", valueColor: "#101012", axisColor: "#d4d4da" };
+/* ==================================================================================
+   Generación del PDF — 100% vectorial con jsPDF, sin pasar por el cuadro de
+   impresión del navegador. Se eligió este enfoque (en vez del anterior, que
+   armaba un HTML e invocaba window.print()) por tres razones:
+   1) El tema oscuro con resplandores solo se ve bien si controlamos cada píxel;
+      el diálogo de impresión del navegador puede omitir fondos/gradientes si el
+      usuario no tiene marcada la opción "Gráficos de fondo".
+   2) window.print() en una ventana/pestaña nueva es lo que producía el pie de
+      página del navegador con la URL "blob:..." que se pedía quitar — al generar
+      el PDF nosotros mismos ese pie de página del navegador nunca aparece.
+   3) doc.save() dispara la descarga directamente, sin ventana emergente, así
+      que tampoco depende de que el navegador permita pop-ups.
+   ================================================================================== */
 
-  el("printMeta").textContent = `Generado el ${new Date().toLocaleString("es-ES")} · ${a.totalUnico} detección(es) única(s) de ${a.totalBruto} registro(s) brutos analizados`;
+const PDF_COLORS = {
+  bg: [3, 16, 31],
+  card: [11, 26, 46],
+  cardSoft: [13, 30, 52],
+  cardBorder: [40, 62, 86],
+  hairline: [26, 46, 66],
+  primary: [0, 219, 233],
+  text: [214, 228, 251],
+  textHi: [255, 255, 255],
+  muted: [138, 160, 181],
+  mutedDim: [90, 110, 130],
+  amenaza: [255, 138, 128],
+  amenazaDeep: [232, 87, 74],
+  amiga: [79, 216, 234],
+  amigaDeep: [31, 159, 176],
+  violet: [144, 133, 233],
+  gridline: [30, 52, 74],
+  axis: [58, 84, 108]
+};
+const PDF_PAGE_W = 210, PDF_PAGE_H = 297;
+const PDF_MARGIN = 14;
+const PDF_CONTENT_W = PDF_PAGE_W - PDF_MARGIN * 2;
+const PDF_AUTHOR_NAME = "ST. FLOREZ RENGIFO ROBERT ESTEBAN";
 
-  renderPieChart("printChartResumen", "printChartResumenLegend", [
-    { label: "Amenaza real", value: a.amenazas },
-    { label: "UAS Amigo", value: a.amigas },
-    { label: "Modelos Desconocidos", value: a.modelRowsAmenaza.length }
-  ], ["#e8574a", "#1f9fb0", "#d69e2e"], { totalColor: "#101012", subColor: "#55565c", legendTextColor: "#33343a", legendValueColor: "#101012" });
-  renderBarChart("printChartFranjas", BUCKET_ORDER.filter(k => a.bucketCounts[k]).map(k => ({ label: BUCKET_LABELS[k], value: a.bucketCounts[k] || 0 })), "#5b63d6", { ...printOpts, percentTotal: a.totalUnico });
-  renderBarChart("printChartModelos", a.modelRowsAmenaza.slice(0, 10).map(([label, value]) => ({ label, value })), "#e8574a", { ...printOpts, percentTotal: a.amenazas });
-  renderBarChart("printChartModelosAmigos", a.modelRowsAmiga.slice(0, 10).map(([label, value]) => ({ label, value })), "#1f9fb0", { ...printOpts, percentTotal: a.amigas });
-  renderBarChart("printChartZonas", (a.zoneRows || []).slice(0, 10).map(([label, value]) => ({ label, value })), "#1f9fb0", { ...printOpts, percentTotal: a.totalUnico });
+function pdfWithAlpha(doc, alpha, fn) {
+  doc.saveGraphicsState();
+  doc.setGState(new doc.GState({ opacity: alpha }));
+  fn();
+  doc.restoreGraphicsState();
+}
+function pdfFill(doc, rgb) { doc.setFillColor(rgb[0], rgb[1], rgb[2]); }
+function pdfStroke(doc, rgb) { doc.setDrawColor(rgb[0], rgb[1], rgb[2]); }
+function pdfTextColor(doc, rgb) { doc.setTextColor(rgb[0], rgb[1], rgb[2]); }
 
-  el("printAnalysis").innerHTML = generateAnalysisHtml(a);
+/* Texto con tracking manual (letter-spacing): jsPDF no soporta letter-spacing
+   nativo, así que se posiciona cada carácter a mano para lograr el look
+   "HUD táctico" con mayúsculas espaciadas que ya usa el resto del panel. */
+function pdfTracked(doc, text, x, y, opts) {
+  opts = opts || {};
+  const tracking = opts.tracking != null ? opts.tracking : 0.42;
+  const chars = String(text).split("");
+  const widths = chars.map(c => doc.getTextWidth(c));
+  const total = widths.reduce((sum, w) => sum + w, 0) + tracking * Math.max(0, chars.length - 1);
+  let cx = x;
+  if (opts.align === "center") cx = x - total / 2;
+  else if (opts.align === "right") cx = x - total;
+  chars.forEach((c, i) => { doc.text(c, cx, y); cx += widths[i] + tracking; });
+  return total;
+}
 
-  const reportInnerHtml = el("printReport").innerHTML;
-  const doc = "<!DOCTYPE html><html lang=\"es\"><head><meta charset=\"utf-8\"><title>Reporte — Panel de Detecciones GRUSE-10</title><style>" +
-    buildStandaloneReportCss() +
-    "</style></head><body>" + reportInnerHtml +
-    "<script>window.addEventListener('load', function () { setTimeout(function () { window.print(); }, 200); });<\/script>" +
-    "</body></html>";
+function pdfTruncateToWidth(doc, text, maxW) {
+  if (doc.getTextWidth(text) <= maxW) return text;
+  let t = text;
+  while (t.length > 1 && doc.getTextWidth(t + "…") > maxW) t = t.slice(0, -1);
+  return t + "…";
+}
 
-  const blob = new Blob([doc], { type: "text/html;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
+function pdfWrapLines(doc, text, maxW, maxLines) {
+  let lines = doc.splitTextToSize(String(text), maxW);
+  if (lines.length > maxLines) {
+    lines = lines.slice(0, maxLines);
+    lines[maxLines - 1] = pdfTruncateToWidth(doc, lines[maxLines - 1].replace(/[…]+$/, ""), maxW);
+  }
+  return lines;
+}
 
-  let openedWindow = null;
-  try { openedWindow = window.open(url, "_blank"); } catch (err) { openedWindow = null; }
+function pdfDotGrid(doc, x, y, w, h, spacing, rgb, alpha, r) {
+  r = r || 0.24;
+  pdfWithAlpha(doc, alpha, () => {
+    pdfFill(doc, rgb);
+    for (let gy = y; gy <= y + h; gy += spacing) {
+      for (let gx = x; gx <= x + w; gx += spacing) doc.circle(gx, gy, r, "F");
+    }
+  });
+}
 
-  if (!openedWindow) {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "reporte_uas_sentinel.html";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    alert("El navegador bloqueó la ventana emergente. Se descargó el reporte como archivo HTML: ábrelo y usa Ctrl+P (o el menú de impresión) para guardarlo como PDF.");
+function pdfGlowBlob(doc, cx, cy, rMax, rgb, steps, peakAlpha) {
+  steps = steps || 7;
+  doc.saveGraphicsState();
+  for (let i = steps; i >= 1; i--) {
+    const t = i / steps;
+    const rr = rMax * t;
+    const a = peakAlpha * (1 - t) + peakAlpha * 0.08;
+    doc.setGState(new doc.GState({ opacity: Math.max(0.008, Math.min(a, 0.95)) }));
+    pdfFill(doc, rgb);
+    doc.circle(cx, cy, rr, "F");
+  }
+  doc.restoreGraphicsState();
+}
+
+function pdfCornerBrackets(doc, x, y, w, h, len, rgb, lineW, alpha) {
+  pdfWithAlpha(doc, alpha, () => {
+    pdfStroke(doc, rgb);
+    doc.setLineWidth(lineW);
+    [[x, y, 1, 1], [x + w, y, -1, 1], [x, y + h, 1, -1], [x + w, y + h, -1, -1]].forEach(([cx, cy, sx, sy]) => {
+      doc.line(cx, cy, cx + len * sx, cy);
+      doc.line(cx, cy, cx, cy + len * sy);
+    });
+  });
+}
+
+function pdfBasePage(doc, opts) {
+  opts = opts || {};
+  pdfFill(doc, PDF_COLORS.bg);
+  doc.rect(0, 0, PDF_PAGE_W, PDF_PAGE_H, "F");
+  pdfGlowBlob(doc, PDF_PAGE_W + 10, -10, 130, PDF_COLORS.primary, 8, 0.05);
+  pdfGlowBlob(doc, -20, PDF_PAGE_H + 20, 140, PDF_COLORS.violet, 8, 0.045);
+  if (opts.dots !== false) pdfDotGrid(doc, 0, 0, PDF_PAGE_W, PDF_PAGE_H, 7, PDF_COLORS.primary, 0.05);
+  pdfWithAlpha(doc, 0.28, () => {
+    pdfStroke(doc, PDF_COLORS.primary);
+    doc.setLineWidth(0.25);
+    doc.rect(6, 6, PDF_PAGE_W - 12, PDF_PAGE_H - 12, "S");
+  });
+  pdfCornerBrackets(doc, 6, 6, PDF_PAGE_W - 12, PDF_PAGE_H - 12, 7, PDF_COLORS.primary, 0.5, 0.75);
+}
+
+function pdfRunningHeader(doc, logoDataUrl, kicker, title) {
+  const y0 = 10;
+  if (logoDataUrl) {
+    try { doc.addImage(logoDataUrl, "PNG", PDF_MARGIN, y0, 9, 9); } catch (e) {}
+  }
+  const tx = logoDataUrl ? PDF_MARGIN + 12.5 : PDF_MARGIN;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10.5);
+  pdfTextColor(doc, PDF_COLORS.text);
+  doc.text("PANEL DE DETECCIONES GRUSE-10", tx, y0 + 4.4);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.6);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  pdfTracked(doc, "FUERZA AEROESPACIAL COLOMBIANA · REPORTE DE DETECCIONES", tx, y0 + 8.4, { tracking: 0.28 });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.6);
+  pdfTextColor(doc, PDF_COLORS.primary);
+  pdfTracked(doc, kicker, PDF_PAGE_W - PDF_MARGIN, y0 + 4.4, { align: "right", tracking: 0.5 });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.6);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  doc.text(title, PDF_PAGE_W - PDF_MARGIN, y0 + 8.4, { align: "right" });
+
+  pdfWithAlpha(doc, 0.5, () => {
+    pdfStroke(doc, PDF_COLORS.primary);
+    doc.setLineWidth(0.35);
+    doc.line(PDF_MARGIN, y0 + 12, PDF_PAGE_W - PDF_MARGIN, y0 + 12);
+  });
+  pdfWithAlpha(doc, 0.18, () => {
+    pdfStroke(doc, PDF_COLORS.primary);
+    doc.setLineWidth(2);
+    doc.line(PDF_MARGIN, y0 + 12.9, PDF_PAGE_W - PDF_MARGIN, y0 + 12.9);
+  });
+}
+
+function pdfFooterChrome(doc, pageNum, totalPages, authorName, generatedLabel) {
+  const y = PDF_PAGE_H - 12;
+  pdfWithAlpha(doc, 0.35, () => {
+    pdfStroke(doc, PDF_COLORS.primary);
+    doc.setLineWidth(0.25);
+    doc.line(PDF_MARGIN, y - 3.6, PDF_PAGE_W - PDF_MARGIN, y - 3.6);
+  });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.6);
+  pdfTextColor(doc, PDF_COLORS.mutedDim);
+  doc.text(`${authorName} · ${generatedLabel}`, PDF_MARGIN, y);
+  doc.setFont("courier", "bold");
+  pdfTextColor(doc, PDF_COLORS.muted);
+  doc.text(`PÁG. ${String(pageNum).padStart(2, "0")} / ${String(totalPages).padStart(2, "0")}`, PDF_PAGE_W - PDF_MARGIN, y, { align: "right" });
+}
+
+function pdfPolar(cx, cy, r, angleDeg) {
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+
+function pdfFillPolygon(doc, points, rgb, alpha) {
+  if (points.length < 3) return;
+  const rel = [];
+  for (let i = 1; i < points.length; i++) rel.push([points[i].x - points[i - 1].x, points[i].y - points[i - 1].y]);
+  const draw = () => { pdfFill(doc, rgb); doc.lines(rel, points[0].x, points[0].y, [1, 1], "F", true); };
+  if (alpha !== undefined) pdfWithAlpha(doc, alpha, draw); else draw();
+}
+
+function pdfDonutSegmentPoints(cx, cy, rOuter, rInner, startDeg, endDeg, steps) {
+  const pts = [];
+  for (let i = 0; i <= steps; i++) { const t = startDeg + (endDeg - startDeg) * i / steps; pts.push(pdfPolar(cx, cy, rOuter, t)); }
+  for (let i = steps; i >= 0; i--) { const t = startDeg + (endDeg - startDeg) * i / steps; pts.push(pdfPolar(cx, cy, rInner, t)); }
+  return pts;
+}
+
+/* Dona de "Amenaza real vs. UAS Amigo": se dibuja como polígonos rellenos
+   (arco externo + arco interno) en vez de con un trazo grueso, para poder
+   dejar un hueco angular real entre segmentos (separador) en lugar de una
+   línea divisoria encima. */
+function pdfDrawDonut(doc, cx, cy, rOuter, thickness, segments) {
+  const total = segments.reduce((s, v) => s + v.value, 0);
+  const rInner = rOuter - thickness;
+  pdfWithAlpha(doc, 0.16, () => { pdfFill(doc, PDF_COLORS.primary); doc.circle(cx, cy, rOuter + 2.2, "F"); });
+  if (!total) {
+    pdfStroke(doc, PDF_COLORS.hairline);
+    doc.setLineWidth(thickness);
+    doc.circle(cx, cy, (rOuter + rInner) / 2, "S");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    pdfTextColor(doc, PDF_COLORS.muted);
+    doc.text("Sin datos", cx, cy + 1.5, { align: "center" });
+    return;
+  }
+  const gapDeg = 2.6;
+  let angle = 0;
+  segments.filter(s => s.value > 0).forEach(seg => {
+    const span = seg.value / total * 360;
+    const start = angle, end = angle + span;
+    angle = end;
+    const drawStart = span > gapDeg ? start + gapDeg / 2 : start;
+    const drawEnd = span > gapDeg ? end - gapDeg / 2 : end;
+    const steps = Math.max(6, Math.round((drawEnd - drawStart) / 3.5));
+    const pts = pdfDonutSegmentPoints(cx, cy, rOuter, rInner, drawStart, drawEnd, steps);
+    pdfFillPolygon(doc, pts, seg.color);
+    pdfWithAlpha(doc, 0.55, () => pdfFillPolygon(doc, pts, seg.color, undefined));
+  });
+
+  doc.setFont("courier", "bold");
+  doc.setFontSize(rOuter * 0.62);
+  pdfTextColor(doc, PDF_COLORS.textHi);
+  doc.text(String(total), cx, cy + rOuter * 0.09, { align: "center" });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.4);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  pdfTracked(doc, "TOTAL", cx, cy + rOuter * 0.32, { align: "center", tracking: 0.6 });
+}
+
+function pdfDrawLegend(doc, x, y, w, rowH, segments, total) {
+  segments.forEach((seg, i) => {
+    const ry = y + i * rowH;
+    pdfFill(doc, seg.color);
+    doc.roundedRect(x, ry, 3.6, 3.6, 1, 1, "F");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.4);
+    pdfTextColor(doc, PDF_COLORS.text);
+    doc.text(pdfTruncateToWidth(doc, seg.label, w - 30), x + 6.4, ry + 3.1);
+    const pct = total ? Math.round(seg.value / total * 100) : 0;
+    doc.setFont("courier", "bold");
+    doc.setFontSize(9.4);
+    pdfTextColor(doc, PDF_COLORS.textHi);
+    doc.text(String(seg.value), x + w - 12, ry + 3.1, { align: "right" });
+    doc.setFont("courier", "normal");
+    doc.setFontSize(7.4);
+    pdfTextColor(doc, PDF_COLORS.muted);
+    doc.text(pct + "%", x + w, ry + 3.1, { align: "right" });
+  });
+}
+
+/* Gráfica de barras genérica (franjas horarias, modelos, zonas). Las
+   etiquetas de categoría van horizontales y envueltas a máx. 2 líneas —
+   nunca rotadas — para que sigan siendo legibles sin importar cuántas
+   barras haya ni qué tan largo sea el nombre del modelo/zona. */
+function pdfDrawBarChart(doc, x, y, w, h, items, colorRgb, opts) {
+  opts = opts || {};
+  const percentTotal = opts.percentTotal || items.reduce((s, i) => s + i.value, 0) || 1;
+
+  if (!items.length) {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    pdfTextColor(doc, PDF_COLORS.muted);
+    doc.text("Sin datos disponibles", x + w / 2, y + h / 2, { align: "center" });
+    return;
   }
 
-  setTimeout(() => URL.revokeObjectURL(url), 60000);
+  const padTop = 15.5, padBottom = 21;
+  const plotX = x + 2, plotW = w - 4;
+  const plotTop = y + padTop, plotBottom = y + h - padBottom;
+  const plotH = plotBottom - plotTop;
+  const n = items.length;
+  const maxVal = Math.max.apply(null, items.map(i => i.value).concat([1]));
+  const slot = plotW / n;
+  const barW = Math.min(13, slot * 0.5);
+
+  pdfWithAlpha(doc, 0.55, () => {
+    pdfStroke(doc, PDF_COLORS.gridline);
+    doc.setLineWidth(0.15);
+    [0.25, 0.5, 0.75].forEach(f => {
+      const gy = plotBottom - plotH * f;
+      doc.line(plotX, gy, plotX + plotW, gy);
+    });
+  });
+  pdfStroke(doc, PDF_COLORS.axis);
+  doc.setLineWidth(0.28);
+  doc.line(plotX, plotBottom, plotX + plotW, plotBottom);
+
+  items.forEach((item, i) => {
+    const cx = plotX + slot * i + slot / 2;
+    const barH = Math.max(item.value / maxVal * plotH, 1.6);
+    const by = plotBottom - barH;
+
+    pdfWithAlpha(doc, 0.22, () => {
+      pdfFill(doc, colorRgb);
+      doc.roundedRect(cx - barW / 2 - 0.9, plotTop, barW + 1.8, plotBottom - plotTop, 1, 1, "F");
+    });
+    pdfFill(doc, colorRgb);
+    doc.roundedRect(cx - barW / 2, by, barW, barH, 1.1, 1.1, "F");
+    pdfWithAlpha(doc, 0.4, () => {
+      pdfFill(doc, [255, 255, 255]);
+      doc.roundedRect(cx - barW / 2, by, barW, Math.min(1.3, barH * 0.3), 1, 1, "F");
+    });
+
+    doc.setFont("courier", "bold");
+    doc.setFontSize(8.4);
+    pdfTextColor(doc, PDF_COLORS.textHi);
+    doc.text(String(item.value), cx, by - 5.6, { align: "center" });
+    const pct = Math.round(item.value / percentTotal * 100);
+    doc.setFont("courier", "normal");
+    doc.setFontSize(6.4);
+    pdfTextColor(doc, PDF_COLORS.muted);
+    doc.text(pct + "%", cx, by - 2.1, { align: "center" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    pdfTextColor(doc, PDF_COLORS.muted);
+    pdfWrapLines(doc, item.label, slot - 1.2, 2).forEach((ln, li) => {
+      doc.text(ln, cx, plotBottom + 5 + li * 3.3, { align: "center" });
+    });
+  });
+}
+
+function pdfStatTile(doc, x, y, w, h, accentRgb, eyebrow, value, sub, valueColorRgb) {
+  pdfFill(doc, PDF_COLORS.card);
+  doc.roundedRect(x, y, w, h, 2.4, 2.4, "F");
+  pdfWithAlpha(doc, 0.7, () => {
+    pdfStroke(doc, PDF_COLORS.cardBorder);
+    doc.setLineWidth(0.22);
+    doc.roundedRect(x, y, w, h, 2.4, 2.4, "S");
+  });
+  pdfFill(doc, accentRgb);
+  doc.roundedRect(x + 3.2, y, w - 6.4, 1.4, 0.7, 0.7, "F");
+  pdfWithAlpha(doc, 0.28, () => { pdfFill(doc, accentRgb); doc.rect(x + 3.2, y + 1.4, w - 6.4, 4.5, "F"); });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(6.4);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  pdfTracked(doc, eyebrow.toUpperCase(), x + 4.6, y + 10.3, { tracking: 0.32 });
+
+  doc.setFont("courier", "bold");
+  doc.setFontSize(17.5);
+  pdfTextColor(doc, valueColorRgb || PDF_COLORS.textHi);
+  doc.text(String(value), x + 4.6, y + 21.6);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.5);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  doc.text(pdfWrapLines(doc, sub, w - 9, 2), x + 4.6, y + 27.2, { lineHeightFactor: 1.35 });
+}
+
+function pdfFactTile(doc, x, y, w, h, label, value, sub) {
+  pdfFill(doc, PDF_COLORS.cardSoft);
+  doc.roundedRect(x, y, w, h, 2.2, 2.2, "F");
+  pdfWithAlpha(doc, 0.5, () => {
+    pdfStroke(doc, PDF_COLORS.cardBorder);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(x, y, w, h, 2.2, 2.2, "S");
+  });
+  pdfFill(doc, PDF_COLORS.primary);
+  doc.circle(x + 5.4, y + h / 2, 1, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(6.2);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  pdfTracked(doc, label.toUpperCase(), x + 9.5, y + 7.4, { tracking: 0.28 });
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10.5);
+  pdfTextColor(doc, PDF_COLORS.textHi);
+  doc.text(pdfTruncateToWidth(doc, value, w - 13), x + 9.5, y + 14.8);
+  doc.setFont("courier", "normal");
+  doc.setFontSize(7.2);
+  pdfTextColor(doc, PDF_COLORS.primary);
+  doc.text(sub, x + 9.5, y + h - 3.4);
+}
+
+function pdfCardPanel(doc, x, y, w, h, opts) {
+  opts = opts || {};
+  pdfFill(doc, PDF_COLORS.card);
+  doc.roundedRect(x, y, w, h, 3, 3, "F");
+  pdfWithAlpha(doc, 0.6, () => {
+    pdfStroke(doc, PDF_COLORS.cardBorder);
+    doc.setLineWidth(0.22);
+    doc.roundedRect(x, y, w, h, 3, 3, "S");
+  });
+  if (opts.dots) pdfDotGrid(doc, x, y, w, h, 6, PDF_COLORS.primary, 0.045);
+  pdfCornerBrackets(doc, x + 2, y + 2, w - 4, h - 4, 4.5, PDF_COLORS.primary, 0.35, 0.5);
+}
+
+function pdfSectionEyebrow(doc, x, y, num, label) {
+  doc.setFont("courier", "bold");
+  doc.setFontSize(9);
+  pdfTextColor(doc, PDF_COLORS.primary);
+  doc.text(num, x, y);
+  const numW = doc.getTextWidth(num);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(15.5);
+  pdfTextColor(doc, PDF_COLORS.textHi);
+  doc.text(label, x + numW + 3, y);
+  pdfWithAlpha(doc, 0.45, () => {
+    pdfStroke(doc, PDF_COLORS.primary);
+    doc.setLineWidth(0.3);
+    doc.line(x, y + 3, x + PDF_CONTENT_W, y + 3);
+  });
+}
+
+function pdfCardTitle(doc, x, y, label) {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8.4);
+  pdfTextColor(doc, PDF_COLORS.text);
+  pdfTracked(doc, label.toUpperCase(), x, y, { tracking: 0.35 });
+  pdfFill(doc, PDF_COLORS.primary);
+  doc.circle(x - 3.2, y - 1.3, 0.7, "F");
+}
+
+/* Recolecta los escudos/insignias a mostrar en la portada. Hoy solo hay uno
+   (el emblema ya usado en el encabezado del panel); cuando se agreguen más
+   basta con empujar más data-URLs "data:image/png;base64,..." a este array. */
+function getShieldImages() {
+  const shields = [];
+  try {
+    const headerLogo = document.querySelector("header img");
+    if (headerLogo && headerLogo.src) shields.push(headerLogo.src);
+  } catch (e) {}
+  return shields;
+}
+
+function buildPdfReport(a, shields, now) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
+  const dateLong = now.toLocaleString("es-CO", { dateStyle: "long", timeStyle: "medium" });
+  const dateShort = now.toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" });
+  const hi = computeHighlights(a);
+  const primaryLogo = shields[0] || null;
+
+  /* ---------- Página 1: Portada ---------- */
+  pdfBasePage(doc, { dots: true });
+
+  if (shields.length) {
+    const s = 17, gap = 9;
+    const totalW = shields.length * s + (shields.length - 1) * gap;
+    let sx = PDF_PAGE_W / 2 - totalW / 2;
+    const sy = 24;
+    shields.forEach(src => {
+      pdfWithAlpha(doc, 0.9, () => { pdfFill(doc, [255, 255, 255]); doc.roundedRect(sx - 1.1, sy - 1.1, s + 2.2, s + 2.2, 2, 2, "F"); });
+      try { doc.addImage(src, "PNG", sx, sy, s, s); } catch (e) {}
+      sx += s + gap;
+    });
+  }
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8.6);
+  pdfTextColor(doc, PDF_COLORS.primary);
+  pdfTracked(doc, "FUERZA AEROESPACIAL COLOMBIANA", PDF_PAGE_W / 2, 52, { align: "center", tracking: 0.9 });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  pdfTracked(doc, "SISTEMA DE DETECCIÓN Y CLASIFICACIÓN DE UAS · GRUSE-10", PDF_PAGE_W / 2, 58, { align: "center", tracking: 0.55 });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(34);
+  pdfTextColor(doc, PDF_COLORS.textHi);
+  doc.text("PANEL DE DETECCIONES", PDF_PAGE_W / 2, 78, { align: "center" });
+  doc.setFontSize(40);
+  pdfTextColor(doc, PDF_COLORS.primary);
+  doc.text("GRUSE-10", PDF_PAGE_W / 2, 92, { align: "center" });
+
+  pdfWithAlpha(doc, 0.55, () => {
+    pdfStroke(doc, PDF_COLORS.primary);
+    doc.setLineWidth(0.4);
+    doc.line(PDF_PAGE_W / 2 - 30, 99, PDF_PAGE_W / 2 + 30, 99);
+  });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  pdfTracked(doc, "REPORTE DE DETECCIONES", PDF_PAGE_W / 2, 107, { align: "center", tracking: 2.2 });
+
+  pdfCardPanel(doc, PDF_PAGE_W / 2 - 68, 122, 136, 46, { dots: true });
+  doc.setFont("courier", "bold");
+  doc.setFontSize(30);
+  pdfTextColor(doc, PDF_COLORS.textHi);
+  doc.text(String(a.totalUnico), PDF_PAGE_W / 2, 148, { align: "center" });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  pdfTracked(doc, "DETECCIONES ÚNICAS ANALIZADAS", PDF_PAGE_W / 2, 156, { align: "center", tracking: 0.5 });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7);
+  pdfTextColor(doc, PDF_COLORS.mutedDim);
+  doc.text(`${a.totalBruto} registros brutos procesados en esta corrida`, PDF_PAGE_W / 2, 163.5, { align: "center" });
+
+  const creditY = 196;
+  pdfWithAlpha(doc, 0.4, () => {
+    pdfStroke(doc, PDF_COLORS.primary);
+    doc.setLineWidth(0.25);
+    doc.line(PDF_MARGIN + 20, creditY - 10, PDF_PAGE_W - PDF_MARGIN - 20, creditY - 10);
+  });
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7);
+  pdfTextColor(doc, PDF_COLORS.primary);
+  pdfTracked(doc, "ELABORADO POR", PDF_PAGE_W / 2, creditY, { align: "center", tracking: 0.9 });
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
+  pdfTextColor(doc, PDF_COLORS.textHi);
+  doc.text(PDF_AUTHOR_NAME, PDF_PAGE_W / 2, creditY + 7.4, { align: "center" });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.4);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  doc.text(`Exportado el ${dateLong}`, PDF_PAGE_W / 2, creditY + 14.5, { align: "center" });
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.6);
+  pdfTextColor(doc, PDF_COLORS.mutedDim);
+  pdfTracked(doc, "GRUSE-10 · DOCUMENTO GENERADO AUTOMÁTICAMENTE A PARTIR DE LOS DATOS CARGADOS EN EL PANEL", PDF_PAGE_W / 2, PDF_PAGE_H - 17, { align: "center", tracking: 0.15 });
+
+  /* ---------- Página 2: Resumen ejecutivo ---------- */
+  doc.addPage();
+  pdfBasePage(doc, { dots: false });
+  pdfRunningHeader(doc, primaryLogo, "REPORTE 01", "Resumen ejecutivo");
+  let cy = 34;
+  pdfSectionEyebrow(doc, PDF_MARGIN, cy, "01", "Resumen ejecutivo");
+  cy += 10;
+
+  const tileGap = 4.2, tileW = (PDF_CONTENT_W - tileGap * 3) / 4, tileH = 34;
+  pdfStatTile(doc, PDF_MARGIN, cy, tileW, tileH, PDF_COLORS.primary, "Total detecciones", a.totalBruto, `${a.totalUnico} sin duplicados`);
+  pdfStatTile(doc, PDF_MARGIN + (tileW + tileGap), cy, tileW, tileH, PDF_COLORS.amenaza, "Amenazas reales", a.amenazas, "ID/IP no está en la whitelist", PDF_COLORS.amenaza);
+  pdfStatTile(doc, PDF_MARGIN + (tileW + tileGap) * 2, cy, tileW, tileH, PDF_COLORS.amiga, "UAS amigos", a.amigas, "ID/IP coincide con la whitelist", PDF_COLORS.amiga);
+  pdfStatTile(doc, PDF_MARGIN + (tileW + tileGap) * 3, cy, tileW, tileH, PDF_COLORS.muted, "Modelos desconocidos", a.modelRowsAmenaza.length, "Modelos distintos detectados");
+  cy += tileH + 8;
+
+  const donutCardH = 82;
+  pdfCardPanel(doc, PDF_MARGIN, cy, PDF_CONTENT_W, donutCardH, { dots: true });
+  pdfCardTitle(doc, PDF_MARGIN + 9, cy + 11, "Amenaza real vs. UAS Amigo");
+  const donutSegs = [
+    { label: "Amenaza real", value: a.amenazas, color: PDF_COLORS.amenazaDeep },
+    { label: "UAS Amigo", value: a.amigas, color: PDF_COLORS.amigaDeep },
+    { label: "Modelos Desconocidos", value: a.modelRowsAmenaza.length, color: PDF_COLORS.violet }
+  ];
+  const donutTotal = donutSegs.reduce((s, v) => s + v.value, 0);
+  pdfDrawDonut(doc, PDF_MARGIN + 40, cy + 48, 26, 9.5, donutSegs);
+  pdfDrawLegend(doc, PDF_MARGIN + 84, cy + 30, PDF_CONTENT_W - 84 - 10, 11.5, donutSegs, donutTotal);
+  cy += donutCardH + 7;
+
+  if (a.warnings && a.warnings.length) {
+    const shown = a.warnings.slice(0, 6);
+    const extra = a.warnings.length - shown.length;
+    const noteLines = shown.map(w => "• " + w);
+    if (extra > 0) noteLines.push(`+ ${extra} advertencia(s) adicional(es) — ver panel completo en pantalla.`);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    let wrapped = [];
+    noteLines.forEach(l => wrapped = wrapped.concat(doc.splitTextToSize(l, PDF_CONTENT_W - 16)));
+    const noteH = 8 + wrapped.length * 4.1;
+    pdfCardPanel(doc, PDF_MARGIN, cy, PDF_CONTENT_W, noteH);
+    pdfFill(doc, PDF_COLORS.primary);
+    doc.triangle(PDF_MARGIN + 6, cy + noteH / 2 - 2.6, PDF_MARGIN + 10.2, cy + noteH / 2 + 2.6, PDF_MARGIN + 1.8, cy + noteH / 2 + 2.6, "F");
+    pdfTextColor(doc, PDF_COLORS.text);
+    doc.text(wrapped, PDF_MARGIN + 15, cy + 6.4);
+    cy += noteH + 7;
+  }
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.4);
+  pdfTextColor(doc, PDF_COLORS.muted);
+  pdfTracked(doc, "ASPECTOS DESTACADOS DE ESTA CORRIDA", PDF_MARGIN, cy, { tracking: 0.4 });
+  cy += 5.5;
+  const factGap = 4.2, factW = (PDF_CONTENT_W - factGap * 2) / 3, factH = 21;
+  pdfFactTile(doc, PDF_MARGIN, cy, factW, factH, "Franja más activa",
+    hi.topBucket ? hi.topBucket[0] : "Sin datos", hi.topBucket ? `${hi.topBucket[1]} detección(es)` : "—");
+  pdfFactTile(doc, PDF_MARGIN + (factW + factGap), cy, factW, factH, "Modelo con más amenazas",
+    hi.topAmenaza ? hi.topAmenaza[0] : "Sin datos", hi.topAmenaza ? `${hi.topAmenaza[1]} detección(es)` : "—");
+  pdfFactTile(doc, PDF_MARGIN + (factW + factGap) * 2, cy, factW, factH, "Zona más activa",
+    hi.topZona ? hi.topZona[0] : "Sin datos", hi.topZona ? `${hi.topZona[1]} detección(es)` : "—");
+
+  /* ---------- Página 3: franja horaria + zona ---------- */
+  doc.addPage();
+  pdfBasePage(doc, { dots: false });
+  pdfRunningHeader(doc, primaryLogo, "REPORTE 02", "Tiempo y ubicación");
+  cy = 34;
+  pdfSectionEyebrow(doc, PDF_MARGIN, cy, "02", "Detecciones por franja horaria y zona");
+  cy += 10;
+
+  const bigChartH = 108;
+  pdfCardPanel(doc, PDF_MARGIN, cy, PDF_CONTENT_W, bigChartH, { dots: true });
+  pdfCardTitle(doc, PDF_MARGIN + 9, cy + 11, "Detecciones por franja horaria");
+  pdfDrawBarChart(doc, PDF_MARGIN + 6, cy + 14, PDF_CONTENT_W - 12, bigChartH - 20,
+    BUCKET_ORDER.filter(k => a.bucketCounts[k]).map(k => ({ label: BUCKET_LABELS[k], value: a.bucketCounts[k] || 0 })),
+    PDF_COLORS.primary, { percentTotal: a.totalUnico });
+  cy += bigChartH + 7;
+
+  pdfCardPanel(doc, PDF_MARGIN, cy, PDF_CONTENT_W, bigChartH, { dots: true });
+  pdfCardTitle(doc, PDF_MARGIN + 9, cy + 11, "Detecciones por zona");
+  pdfDrawBarChart(doc, PDF_MARGIN + 6, cy + 14, PDF_CONTENT_W - 12, bigChartH - 20,
+    (a.zoneRows || []).slice(0, 10).map(([label, value]) => ({ label, value })),
+    PDF_COLORS.amigaDeep, { percentTotal: a.totalUnico });
+
+  /* ---------- Página 4: modelos ---------- */
+  doc.addPage();
+  pdfBasePage(doc, { dots: false });
+  pdfRunningHeader(doc, primaryLogo, "REPORTE 03", "Modelos de UAS");
+  cy = 34;
+  pdfSectionEyebrow(doc, PDF_MARGIN, cy, "03", "Modelos de UAS detectados");
+  cy += 10;
+
+  pdfCardPanel(doc, PDF_MARGIN, cy, PDF_CONTENT_W, bigChartH, { dots: true });
+  pdfCardTitle(doc, PDF_MARGIN + 9, cy + 11, "Modelos de UAS — amenaza real");
+  pdfDrawBarChart(doc, PDF_MARGIN + 6, cy + 14, PDF_CONTENT_W - 12, bigChartH - 20,
+    a.modelRowsAmenaza.slice(0, 10).map(([label, value]) => ({ label, value })),
+    PDF_COLORS.amenazaDeep, { percentTotal: a.amenazas });
+  cy += bigChartH + 7;
+
+  pdfCardPanel(doc, PDF_MARGIN, cy, PDF_CONTENT_W, bigChartH, { dots: true });
+  pdfCardTitle(doc, PDF_MARGIN + 9, cy + 11, "Modelos de UAS — amigos");
+  pdfDrawBarChart(doc, PDF_MARGIN + 6, cy + 14, PDF_CONTENT_W - 12, bigChartH - 20,
+    a.modelRowsAmiga.slice(0, 10).map(([label, value]) => ({ label, value })),
+    PDF_COLORS.amigaDeep, { percentTotal: a.amigas });
+
+  /* ---------- Página 5+: análisis de resultados (el resumen final, siempre
+     al cierre del reporte, después de todas las gráficas) ---------- */
+  doc.addPage();
+  pdfBasePage(doc, { dots: false });
+  pdfRunningHeader(doc, primaryLogo, "REPORTE 04", "Análisis de resultados");
+  cy = 34;
+  pdfSectionEyebrow(doc, PDF_MARGIN, cy, "04", "Análisis de resultados");
+  cy += 11;
+
+  buildAnalysisSections(a, hi).forEach((sec, i) => {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.6);
+    const bodyLines = doc.splitTextToSize(sec.text, PDF_CONTENT_W - 18);
+    const blockH = 12 + bodyLines.length * 4.3 + 6;
+    if (cy + blockH > PDF_PAGE_H - 20) {
+      doc.addPage();
+      pdfBasePage(doc, { dots: false });
+      pdfRunningHeader(doc, primaryLogo, "REPORTE 04", "Análisis de resultados");
+      cy = 34;
+    }
+    pdfCardPanel(doc, PDF_MARGIN, cy, PDF_CONTENT_W, blockH);
+    pdfFill(doc, PDF_COLORS.primary);
+    doc.circle(PDF_MARGIN + 8, cy + 9, 3.6, "F");
+    doc.setFont("courier", "bold");
+    doc.setFontSize(8.5);
+    pdfTextColor(doc, PDF_COLORS.bg);
+    doc.text(String(i + 1), PDF_MARGIN + 8, cy + 10.3, { align: "center" });
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9.6);
+    pdfTextColor(doc, PDF_COLORS.textHi);
+    doc.text(sec.title, PDF_MARGIN + 15, cy + 10.3);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.6);
+    pdfTextColor(doc, PDF_COLORS.text);
+    doc.text(bodyLines, PDF_MARGIN + 8, cy + 17.5);
+    cy += blockH + 5.5;
+  });
+
+  doc.setFont("helvetica", "italic");
+  doc.setFontSize(7.6);
+  pdfTextColor(doc, PDF_COLORS.mutedDim);
+  doc.text("— Fin del reporte —", PDF_PAGE_W / 2, Math.min(cy + 6, PDF_PAGE_H - 20), { align: "center" });
+
+  const totalPages = doc.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    pdfFooterChrome(doc, p, totalPages, PDF_AUTHOR_NAME, dateShort);
+  }
+
+  return doc;
+}
+
+/* Genera el PDF íntegramente en el navegador con jsPDF (vectorial, sin pasar
+   por window.print()): así el diseño oscuro con resplandores se ve siempre
+   igual sin importar la configuración de impresión del usuario, y el archivo
+   se descarga directo, sin pie de página del navegador ni ventana emergente. */
+function exportPdf() {
+  if (!state.lastAnalysis) { alert("No hay resultados para exportar todavía. Carga un archivo de detecciones primero."); return; }
+  if (!window.jspdf || !window.jspdf.jsPDF) { alert("No se pudo cargar el generador de PDF. Verifica tu conexión a internet e inténtalo de nuevo."); return; }
+  try {
+    const now = new Date();
+    const doc = buildPdfReport(state.lastAnalysis, getShieldImages(), now);
+    const stamp = now.getFullYear() + String(now.getMonth() + 1).padStart(2, "0") + String(now.getDate()).padStart(2, "0")
+      + "_" + String(now.getHours()).padStart(2, "0") + String(now.getMinutes()).padStart(2, "0");
+    doc.save(`reporte_gruse10_${stamp}.pdf`);
+  } catch (err) {
+    alert("No se pudo generar el PDF: " + err.message);
+  }
 }
 
 /* ---------- Wiring de la interfaz ---------- */
