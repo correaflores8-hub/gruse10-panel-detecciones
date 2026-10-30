@@ -1,0 +1,351 @@
+{
+ "nota": "Casos revisados a mano, uno por uno, con su fuente. Tienen prioridad sobre los detectados automáticamente. fechaTipo: exacta | aprox (inferida del día de la semana) | reporte (fecha de publicación). excluirTitulares: textos de titulares que la búsqueda automática debe ignorar (falsos positivos).",
+ "cifras": [
+  {
+   "valor": "176",
+   "texto": "Ataques con drones explosivos · 1 ene – 1 oct 2026",
+   "fuente": "Comando General FF.MM., vía Blu Radio",
+   "url": "https://www.bluradio.com/nacion/van-176-ataques-con-drones-explosivos-en-2026-el-ano-con-mas-casos-contra-la-fuerza-publica-rg10"
+  },
+  {
+   "valor": "9",
+   "texto": "Uniformados muertos · 1 ene – 1 oct 2026",
+   "fuente": "FF.MM., vía Infobae",
+   "url": "https://www.infobae.com/colombia/2026/10/10/ataques-con-drones-explosivos-marcan-record-en-colombia-van-176-en-2026-y-dejan-nueve-uniformados-muertos/",
+   "alerta": true
+  },
+  {
+   "valor": "318",
+   "texto": "Ataques registrados · 1 ene – 1 oct 2026 (uno cada 20 h)",
+   "fuente": "Fundación Ideas para la Paz",
+   "url": "https://ideaspaz.org/publicaciones/noticias/2026-10/cada-20-horas-se-registra-un-ataque-con-drones-en-colombia-como-responder-a-esta-amenaza"
+  }
+ ],
+ "excluirTitulares": [],
+ "ataques": [
+  {
+   "fecha": "2026-10-20",
+   "fechaTipo": "reporte",
+   "municipio": "El Carmen",
+   "depto": "Norte de Santander",
+   "inst": "policia",
+   "objetivo": "Estación de Policía atacada por un enjambre de drones durante unos 30 minutos; daños materiales",
+   "muertos": 0,
+   "heridos": 0,
+   "autoria": "No indicada",
+   "fuentes": [
+    {
+     "nombre": "Vanguardia",
+     "url": "https://www.vanguardia.com/colombia/2026/10/20/enjambre-de-drones-ataco-la-estacion-de-policia-de-el-carmen-y-causo-danos-materiales/"
+    }
+   ],
+   "lat": 8.5108,
+   "lon": -73.4468
+  },
+  {
+   "fecha": "2026-10-23",
+   "fechaTipo": "exacta",
+   "municipio": "Guapi",
+   "depto": "Cauca",
+   "inst": "armada",
+   "objetivo": "Embarcación de la Armada en puesto de control fluvial, río Guapi",
+   "muertos": 1,
+   "heridos": 4,
+   "autoria": "En investigación (versiones distintas)",
+   "lat": 2.5708,
+   "lon": -77.8826,
+   "fuentes": [
+    {
+     "nombre": "El Tiempo",
+     "url": "https://www.eltiempo.com/justicia/conflicto-y-narcotrafico/ataque-con-explosivos-lanzados-desde-un-dron-contra-una-embarcacion-de-la-armada-deja-un-militar-muerto-y-cuatro-heridos-en-cauca-3595875"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-10-21",
+   "fechaTipo": "exacta",
+   "municipio": "Pelaya",
+   "depto": "Cesar",
+   "inst": "policia",
+   "objetivo": "Estación de Policía, cuatro cargas explosivas",
+   "muertos": 0,
+   "heridos": 6,
+   "autoria": "No identificada",
+   "lat": 8.6857,
+   "lon": -73.669,
+   "fuentes": [
+    {
+     "nombre": "El Tiempo",
+     "url": "https://www.eltiempo.com/colombia/otras-ciudades/ataque-con-drones-en-el-sur-del-cesar-dejo-seis-policias-heridos-dos-siguen-graves-las-autoridades-ofrecen-150-millones-3595154"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-10-16",
+   "fechaTipo": "exacta",
+   "municipio": "Teruel",
+   "depto": "Huila",
+   "inst": "policia",
+   "objetivo": "Estación de Policía y Alcaldía, cuatro explosivos",
+   "muertos": 0,
+   "heridos": 1,
+   "autoria": "Disidencias de las FARC (según autoridades)",
+   "lat": 2.7416,
+   "lon": -75.5683,
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://www.infobae.com/colombia/2026/10/16/un-ataque-con-drones-a-la-estacion-de-policia-de-teruel-huila-dejo-un-uniformado-herido/"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-10-15",
+   "fechaTipo": "exacta",
+   "municipio": "Palermo",
+   "depto": "Huila",
+   "inst": "policia",
+   "objetivo": "Estación de Policía",
+   "muertos": 0,
+   "heridos": 2,
+   "autoria": "No identificada",
+   "lat": 2.8897,
+   "lon": -75.4347,
+   "fuentes": [
+    {
+     "nombre": "Blu Radio",
+     "url": "https://www.bluradio.com/nacion/ataque-con-explosivos-lanzados-desde-drones-deja-dos-policias-heridos-en-palermo-huila-pr30"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-10-14",
+   "fechaTipo": "reporte",
+   "municipio": "San José del Palmar",
+   "depto": "Chocó",
+   "inst": "ejercito",
+   "objetivo": "Batallón de Ingenieros Militares n.º 15",
+   "muertos": 0,
+   "heridos": 9,
+   "autoria": "ELN (según el Ejército)",
+   "lat": 4.895,
+   "lon": -76.235,
+   "fuentes": [
+    {
+     "nombre": "Prensa Latina",
+     "url": "https://www.prensa-latina.cu/2026/10/14/colombia-ataque-contra-ejercito-nacional-dejo-nueve-soldados-heridos/"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-09-16",
+   "fechaTipo": "exacta",
+   "municipio": "Candelaria (El Carmelo)",
+   "depto": "Valle del Cauca",
+   "inst": "aerea",
+   "objetivo": "Radar 3D de la Aeronáutica Civil, radomo afectado",
+   "muertos": 0,
+   "heridos": 0,
+   "autoria": "Sin confirmar",
+   "lat": 3.4025,
+   "lon": -76.4175,
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://www.infobae.com/colombia/2026/09/16/con-drones-atacan-radar-de-la-aeronautica-civil-en-candelaria-valle-vecinos-registraron-en-videos-el-bombardeo/"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-08-19",
+   "fechaTipo": "exacta",
+   "municipio": "Norosí",
+   "depto": "Bolívar",
+   "inst": "policia",
+   "objetivo": "Estación de Policía, drones y disparos de fusil",
+   "muertos": 0,
+   "heridos": 7,
+   "heridosMin": true,
+   "autoria": "En investigación",
+   "lat": 8.4933,
+   "lon": -74.1121,
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://www.infobae.com/colombia/2026/08/19/ataque-con-drones-a-estacion-de-policia-de-norosi-sur-de-bolivar-dejo-varios-uniformados-heridos-esto-se-sabe/"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-08-15",
+   "fechaTipo": "aprox",
+   "municipio": "Ábrego",
+   "depto": "Norte de Santander",
+   "inst": "ejercito",
+   "objetivo": "Grupo de Caballería Liviano n.º 7 en un eje vial",
+   "muertos": 1,
+   "heridos": 5,
+   "autoria": "ELN, Frente Armando Cacua Guerrero (según el Ejército)",
+   "lat": 8.0819,
+   "lon": -73.2209,
+   "fuentes": [
+    {
+     "nombre": "Diario Libre",
+     "url": "https://www.diariolibre.com/mundo/america-latina/2026/08/16/un-soldado-muerto-y-5-heridos-tras-ataque-con-drones-en-colombia/3630365"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-08-14",
+   "fechaTipo": "aprox",
+   "municipio": "El Carmen",
+   "depto": "Norte de Santander",
+   "inst": "ejercito",
+   "objetivo": "Tropas del Ejército",
+   "muertos": 1,
+   "heridos": 4,
+   "autoria": "No indicada",
+   "lat": 8.5108,
+   "lon": -73.4468,
+   "fuentes": [
+    {
+     "nombre": "Diario Libre",
+     "url": "https://www.diariolibre.com/mundo/america-latina/2026/08/16/un-soldado-muerto-y-5-heridos-tras-ataque-con-drones-en-colombia/3630365"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-08-12",
+   "fechaTipo": "reporte",
+   "municipio": "Cajibío",
+   "depto": "Cauca",
+   "inst": "ejercito",
+   "objetivo": "Tropas en zona rural (además, un civil herido de gravedad)",
+   "muertos": 0,
+   "heridos": 2,
+   "autoria": "No indicada en el reporte",
+   "lat": 2.6232,
+   "lon": -76.5694,
+   "fuentes": [
+    {
+     "nombre": "Vanguardia",
+     "url": "https://www.vanguardia.com/colombia/2026/08/12/ataque-con-drones-en-cauca-dejo-dos-militares-heridos-y-un-civil-en-estado-grave/"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-07-13",
+   "fechaTipo": "reporte",
+   "municipio": "Arenal del Sur",
+   "depto": "Bolívar",
+   "inst": "policia",
+   "objetivo": "Estación de Policía, destruida",
+   "muertos": 0,
+   "heridos": 4,
+   "autoria": "ELN (preliminar, según autoridades)",
+   "lat": 8.4594,
+   "lon": -73.943,
+   "fuentes": [
+    {
+     "nombre": "La República",
+     "url": "https://larepublica.pe/mundo/2026/07/11/ataque-con-drones-destroza-estacion-de-policia-en-colombia-y-deja-alrededor-de-cuatro-uniformados-heridos-437943"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-06-08",
+   "fechaTipo": "reporte",
+   "municipio": "Bajo Baudó (Belén de Docampadó)",
+   "depto": "Chocó",
+   "inst": "armada",
+   "objetivo": "Batallón Fluvial de Infantería de Marina n.º 22",
+   "muertos": 0,
+   "heridos": 5,
+   "autoria": "ELN (preliminar)",
+   "lat": 4.6759,
+   "lon": -77.2183,
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://www.infobae.com/colombia/2026/06/08/5-uniformados-de-la-armada-quedan-heridos-tras-ataque-con-drones-en-choco-eln-seria-responsable/"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-05-19",
+   "fechaTipo": "aprox",
+   "municipio": "Suárez (vereda Cañutico)",
+   "depto": "Cauca",
+   "inst": "ejercito",
+   "objetivo": "Batallón de Despliegue Rápido n.º 14",
+   "muertos": 1,
+   "heridos": 6,
+   "autoria": "Bloque Jaime Martínez (según el Ejército)",
+   "lat": 2.9544,
+   "lon": -76.6949,
+   "fuentes": [
+    {
+     "nombre": "El Debate (EFE)",
+     "url": "https://www.eldebate.com/internacional/20260520/muere-militar-otros-seis-resultan-heridos-ataque-dron-colombia_419479.html"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-04-12",
+   "fechaTipo": "reporte",
+   "municipio": "Jamundí (Timba)",
+   "depto": "Valle del Cauca",
+   "inst": "ejercito",
+   "objetivo": "Tercera Brigada, enjambre de al menos 15 drones",
+   "muertos": 0,
+   "heridos": 2,
+   "autoria": "Estructura Jaime Martínez (fuentes oficiales)",
+   "lat": 3.122,
+   "lon": -76.6225,
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://www.infobae.com/colombia/2026/04/13/colombia-registro-el-primer-ataque-con-enjambre-de-drones-contra-el-ejercito-en-valle-del-cauca/"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-02-28",
+   "fechaTipo": "exacta",
+   "municipio": "Montecristo",
+   "depto": "Bolívar",
+   "inst": "ejercito",
+   "objetivo": "Tropas de la Brigada 19 en la Serranía de San Lucas; helicóptero UH-60 afectado",
+   "muertos": 0,
+   "heridos": 14,
+   "autoria": "ELN (según autoridades)",
+   "lat": 7.9306,
+   "lon": -74.4074,
+   "fuentes": [
+    {
+     "nombre": "Vanguardia",
+     "url": "https://www.vanguardia.com/colombia/2026/02/28/eln-ataca-helicoptero-black-hawk-en-bolivar-y-deja-14-militares-heridos/"
+    }
+   ]
+  },
+  {
+   "fecha": "2026-01-14",
+   "fechaTipo": "exacta",
+   "municipio": "San José del Palmar (Alto del Oso)",
+   "depto": "Chocó",
+   "inst": "ejercito",
+   "objetivo": "Batallón de Operaciones Terrestres n.º 25",
+   "muertos": 0,
+   "heridos": 10,
+   "autoria": "ELN, frente Ernesto Che Guevara (según el Ejército)",
+   "lat": 4.895,
+   "lon": -76.235,
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://www.infobae.com/colombia/2026/01/15/10-militares-heridos-tras-ola-de-ataques-con-drones-explosivos-en-choco-tambien-se-reporto-hostigamiento-en-cauca/"
+    }
+   ]
+  }
+ ]
+}

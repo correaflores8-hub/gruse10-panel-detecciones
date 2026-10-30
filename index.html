@@ -182,7 +182,7 @@
   .shell { padding: calc(var(--header-h) + 16px) 16px 48px; }
   .content { display: flex; gap: 16px; align-items: flex-start; max-width: 1600px; margin: 0 auto; }
   .center { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
-  .section { scroll-margin-top: calc(var(--header-h) + 16px); display: flex; flex-direction: column; gap: 10px; animation: float-in .4s ease both; }
+  .section { scroll-margin-top: calc(var(--header-h) + 16px); display: flex; flex-direction: column; gap: 10px; }
   .side-panel { display: none; width: 20rem; flex-shrink: 0; flex-direction: column; gap: 16px; position: sticky; top: calc(var(--header-h) + 16px); }
 
   /* ---------- Paneles ---------- */
@@ -290,6 +290,152 @@
   .info-modal-body li { margin-bottom: 8px; }
   .info-modal-body strong { color: var(--text); }
 
+  /* ---------- Mapa de ataques con drones a la Fuerza Pública ---------- */
+  .atk-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 6px; }
+  .atk-stat { padding: 8px 10px; background: rgba(22,27,41,0.9); display: flex; flex-direction: column; gap: 4px; }
+  .atk-stat-v { font-family: var(--font-mono); font-size: 22px; line-height: 26px; font-weight: 700; letter-spacing: 0.04em; color: var(--text); }
+  .atk-stat-k { font-size: 10px; line-height: 13px; letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; color: var(--text-variant); }
+  .atk-stat-src { font-size: 10px; line-height: 13px; color: var(--muted); }
+  .atk-stat-src a, .atk-src a, .atk-note a { color: var(--primary); }
+  .atk-stat-src a:hover, .atk-src a:hover, .atk-note a:hover { text-decoration: underline; }
+  .atk-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .atk-filters { display: flex; gap: 4px; flex-wrap: wrap; }
+  .atk-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; background: rgba(37,42,56,0.8); color: var(--text-variant); font-size: 10px; line-height: 12px; letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; transition: background-color .15s ease, color .15s ease; }
+  .atk-chip:hover { color: var(--text); background: var(--surface-highest); }
+  .atk-chip.on { background: var(--primary); color: #00354a; font-weight: 700; }
+  .atk-legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-variant); }
+  .atk-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .atk-glyph { flex-shrink: 0; display: inline-block; vertical-align: middle; }
+  .atk-grid { display: grid; grid-template-columns: 1fr; gap: 8px; align-items: start; }
+  .atk-map-frame { aspect-ratio: 500 / 684; width: 100%; max-width: 560px; margin: 0 auto; }
+  .atk-map-frame > svg { display: block; width: 100%; height: 100%; }
+  .atk-deptos path { fill: rgba(56,189,248,0.045); stroke: rgba(142,213,255,0.32); stroke-width: 0.6; stroke-linejoin: round; transition: fill .2s ease; }
+  .atk-deptos path:hover { fill: rgba(56,189,248,0.11); }
+  .atk-deptos { filter: drop-shadow(0 0 3px rgba(56,189,248,0.35)); }
+  .atk-grat { stroke: rgba(142,213,255,0.07); stroke-width: 0.6; }
+  .atk-grat-label { fill: rgba(189,200,209,0.55); font: 600 8px var(--font-mono); letter-spacing: 0.08em; }
+  .atk-inset rect { fill: rgba(9,14,27,0.85); stroke: rgba(142,213,255,0.25); stroke-width: 0.6; }
+  .atk-inset path { fill: rgba(56,189,248,0.12); stroke: rgba(142,213,255,0.55); stroke-width: 0.6; }
+  .atk-inset text { fill: var(--text-variant); font: 600 6.5px var(--font-mono); letter-spacing: 0.08em; }
+  .atk-sweep, .ppi-sweep { transform-box: view-box; transform-origin: 0 0; animation: radar-spin var(--sweep, 6s) linear infinite; }
+  .atk-sweep-edge, .ppi-sweep-edge { stroke: rgba(56,189,248,0.7); stroke-width: 1; }
+  .atk-origin { fill: var(--primary); }
+  .atk-origin-ring { fill: none; stroke: rgba(142,213,255,0.6); stroke-width: 0.8; stroke-dasharray: 2 2; }
+  .atk-origin-label { fill: var(--primary); font: 700 8px var(--font-mono); letter-spacing: 0.12em; }
+  .atk-marker { cursor: pointer; outline: none; transition: opacity .45s ease calc(var(--k, 0) * 45ms); }
+  .atk-hit { fill: transparent; }
+  .atk-shape, .ppi-blip-shape { animation: radar-flash var(--sweep, 6s) linear infinite; }
+  .atk-shape > * { stroke: #090e1b; stroke-width: 1.2; }
+  .atk-ping { fill: none; stroke-width: 1.5; transform-box: fill-box; transform-origin: center; animation: radar-ping var(--sweep, 6s) linear infinite; }
+  .atk-fatal { fill: none; stroke-width: 1.2; opacity: 0.85; }
+  .atk-marker:hover .atk-shape, .atk-marker:focus-visible .atk-shape, .atk-marker.active .atk-shape { animation: none; opacity: 1; filter: drop-shadow(0 0 4px currentColor); }
+  .atk-marker:focus-visible .atk-hit, .atk-marker.active .atk-hit { stroke: var(--text); stroke-width: 1; stroke-dasharray: 3 2; }
+  .atk-marker.is-off, .ppi-blip.is-off { opacity: 0.08; pointer-events: none; }
+  .atk-tip { position: absolute; z-index: 5; width: 230px; padding: 10px; background: rgba(9,14,27,0.96); box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.25); transform: translate(14px, -50%); pointer-events: none; display: flex; flex-direction: column; gap: 5px; }
+  .atk-tip.flip-x { transform: translate(calc(-100% - 14px), -50%); }
+  .atk-tip.flip-y { transform: translate(14px, -90%); }
+  .atk-tip.flip-x.flip-y { transform: translate(calc(-100% - 14px), -90%); }
+  .atk-tip[hidden] { display: none; }
+  .atk-tip-top { display: flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 0.1em; font-weight: 700; text-transform: uppercase; color: var(--text-variant); }
+  .atk-tip-date { margin-left: auto; color: var(--primary); }
+  .atk-tip-place { font-family: var(--font-head); font-size: 15px; line-height: 19px; font-weight: 600; color: var(--text); }
+  .atk-tip-desc { font-size: 11px; line-height: 16px; color: var(--text-variant); }
+  .atk-tip-bal { font-size: 12px; font-weight: 700; color: var(--text); }
+  .atk-tip-src { font-size: 10px; line-height: 14px; color: var(--muted); }
+  .atk-list { display: flex; flex-direction: column; gap: 4px; max-height: 640px; overflow-y: auto; padding-right: 2px; }
+  .atk-item { padding: 8px 10px; background: rgba(22,27,41,0.9); cursor: pointer; display: flex; flex-direction: column; gap: 4px; box-shadow: inset 2px 0 0 transparent; transition: background-color .15s ease, box-shadow .15s ease, opacity .2s ease; outline: none; }
+  .atk-item:hover { background: var(--surface-high); }
+  .atk-item:focus-visible { box-shadow: inset 0 0 0 1px var(--primary); }
+  .atk-item.active { background: rgba(56,189,248,0.1); box-shadow: inset 2px 0 0 var(--primary-container); }
+  .atk-item.is-off { display: none; }
+  .atk-item-top { display: flex; align-items: center; gap: 6px; font-size: 10px; line-height: 12px; letter-spacing: 0.1em; font-weight: 700; text-transform: uppercase; }
+  .atk-date { margin-left: auto; color: var(--text-variant); font-weight: 600; white-space: nowrap; }
+  .atk-place { font-family: var(--font-head); font-size: 14px; line-height: 18px; font-weight: 600; color: var(--text); }
+  .atk-desc { font-size: 11px; line-height: 16px; color: var(--text-variant); }
+  .atk-bal { font-size: 11px; line-height: 15px; font-weight: 700; color: var(--text); }
+  .atk-bal.fatal::before { content: "† "; color: var(--error); }
+  .atk-src { display: flex; justify-content: space-between; gap: 8px; font-size: 10px; line-height: 14px; color: var(--muted); }
+  .atk-src a { flex-shrink: 0; font-weight: 600; }
+  .atk-note { padding: 0 4px; font-size: 10px; line-height: 15px; color: var(--muted); }
+
+  /* ---------- Radar PPI ---------- */
+  .ppi { padding: 6px; background: rgba(9,14,27,0.9); }
+  .ppi svg { display: block; width: 100%; height: auto; }
+  .ppi-ring { fill: none; stroke: #303443; stroke-width: 1; }
+  .ppi-ring.dashed { stroke-dasharray: 3 3; }
+  .ppi-axis { stroke: #303443; stroke-width: 0.75; }
+  .ppi-axis.dotted { stroke-dasharray: 2 4; stroke-width: 0.5; }
+  .ppi-label { fill: var(--muted); font: 600 7.5px var(--font-mono); letter-spacing: 0.08em; }
+  .ppi-card { fill: var(--text-variant); font: 700 8px var(--font-mono); text-anchor: middle; }
+  .ppi-center { fill: var(--primary); }
+  .ppi-blip { cursor: pointer; transition: opacity .2s ease; }
+  .ppi-blip.active .ppi-blip-shape { animation: none; opacity: 1; filter: drop-shadow(0 0 4px #fff); }
+  .ppi-foot { display: flex; justify-content: space-between; gap: 8px; padding: 2px 8px 4px; font-size: 10px; line-height: 13px; letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; color: var(--text-variant); }
+  .ppi-slot:empty { display: none; }
+  .ppi-slot > .panel { max-width: 440px; width: 100%; margin: 0 auto; background: rgba(22,27,41,0.6); box-shadow: none; }
+  .side-panel { max-height: calc(100vh - var(--header-h) - var(--footer-h) - 32px); overflow-y: auto; }
+  .side-panel::-webkit-scrollbar { width: 0; }
+  @keyframes radar-spin { to { transform: rotate(360deg); } }
+  @keyframes radar-flash { 0% { opacity: 1; } 55% { opacity: 0.5; } 100% { opacity: 0.5; } }
+  @keyframes radar-ping { 0% { transform: scale(1); opacity: 0.9; } 30% { transform: scale(3.4); opacity: 0; } 100% { transform: scale(3.4); opacity: 0; } }
+
+  /* ---------- Datos en vivo del mapa ---------- */
+  .panel-title-sub { color: var(--text-variant); font-size: 12px; letter-spacing: 0.08em; }
+  .atk-estado { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; line-height: 12px; letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .atk-estado .sq-dot { background: var(--muted); }
+  .atk-estado.en-linea { color: var(--tertiary); }
+  .atk-estado.en-linea .sq-dot { background: var(--tertiary); box-shadow: 0 0 8px var(--tertiary); animation: pulse 1.6s ease-in-out infinite; }
+  .atk-estado.cargando .sq-dot { background: var(--primary); animation: pulse .7s ease-in-out infinite; }
+  .atk-estado.sin-conexion { color: var(--unknown); }
+  .atk-estado.sin-conexion .sq-dot { background: var(--unknown); }
+  .atk-badge { padding: 1px 5px; font-size: 9px; line-height: 12px; letter-spacing: 0.1em; font-weight: 700; }
+  .atk-badge.ver { background: rgba(31,159,216,0.18); color: var(--friend); }
+  .atk-badge.auto { background: rgba(169,148,14,0.2); color: var(--unknown); }
+  .atk-prob { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--unknown); font-weight: 600; margin-left: 4px; white-space: nowrap; }
+  .atk-links { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .atk-empty { padding: 16px; font-size: 12px; line-height: 18px; color: var(--muted); background: rgba(22,27,41,0.9); }
+  .atk-cursor { position: absolute; left: 8px; bottom: 8px; z-index: 4; padding: 3px 8px; background: rgba(9,14,27,0.88); color: var(--primary); font: 600 10px/14px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transition: opacity .2s ease; pointer-events: none; }
+  .atk-cursor.on { opacity: 1; }
+  .atk-cross { pointer-events: none; }
+  .atk-cross line { stroke: rgba(142,213,255,0.4); stroke-width: 0.6; stroke-dasharray: 3 3; }
+  .ppi-cursor { pointer-events: none; }
+  .ppi-cursor circle { fill: none; stroke: var(--primary); stroke-width: 1; }
+  .ppi-cursor text { fill: var(--primary); font: 700 8px var(--font-mono); letter-spacing: 0.06em; }
+  .js-reveal #seccion-mapa:not(.in) .atk-marker { opacity: 0; }
+
+  /* ---------- Interacción con el mouse y animación de secciones ---------- */
+  body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(640px circle at var(--gx, 72%) var(--gy, 18%), rgba(56,189,248,0.07), transparent 62%); }
+  .app-header::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; pointer-events: none; background: linear-gradient(90deg, transparent, rgba(56,189,248,0.75), transparent) no-repeat; background-size: 35% 100%; animation: header-scan 7s linear infinite; }
+  @keyframes header-scan { from { background-position: -40% 0; } to { background-position: 140% 0; } }
+  .panel, .metric-card, .atk-stat { position: relative; }
+  .panel::after, .metric-card::after, .atk-stat::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .35s ease; mix-blend-mode: screen; background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(56,189,248,0.11), transparent 62%); }
+  .lit::after { opacity: 1; }
+  .panel, .metric-card, .atk-stat { transition: box-shadow .25s ease, transform .25s ease, opacity .55s ease; }
+  .panel.lit, .metric-card.lit, .atk-stat.lit { box-shadow: 0 0 0 1px rgba(56,189,248,0.22), 0 12px 30px rgba(0,0,0,0.35); }
+  .metric-card, .atk-stat { will-change: transform; transform-style: preserve-3d; }
+  .js-reveal .section { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .js-reveal .section.in { opacity: 1; transform: none; }
+  .js-reveal .reveal-item { opacity: 0; transform: translateY(16px) scale(0.97); }
+  .js-reveal .reveal-item.in { opacity: 1; transform: none; transition: opacity .55s ease calc(var(--i, 0) * 90ms), transform .6s cubic-bezier(.2,.7,.2,1) calc(var(--i, 0) * 90ms), box-shadow .25s ease; }
+  .js-reveal .reveal-item.in.settled { transition: opacity .3s ease, transform .18s ease-out, box-shadow .25s ease; }
+  .nav-item { transition: background-color .15s ease, color .15s ease, padding-left .2s ease; }
+  .nav-item:hover { padding-left: 18px; }
+  .nav-bullet { transition: transform .2s ease, background-color .2s ease; }
+  .nav-item:hover .nav-bullet { transform: scale(1.5) rotate(45deg); background: var(--primary); }
+  .btn { transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, transform .1s ease; }
+  .btn:active { transform: translateY(1px) scale(0.98); }
+  .dz-icon { transition: transform .25s cubic-bezier(.2,.7,.2,1); }
+  .dropzone:hover .dz-icon { transform: translateY(-4px) scale(1.08); }
+  .bucket { transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease; }
+  .bucket:hover { transform: translateY(-3px); background: var(--surface-high); box-shadow: 0 0 0 1px rgba(56,189,248,0.2); }
+  .atk-item { transition: background-color .15s ease, box-shadow .15s ease, opacity .2s ease, transform .18s ease; }
+  .atk-item:hover { transform: translateX(3px); }
+  .chart-frame rect { transition: filter .2s ease; }
+  .chart-frame rect:hover { filter: brightness(1.35); }
+  .atk-map-frame { transition: background-position .25s ease-out; }
+  .info-pin { transition: transform .2s ease, color .15s ease, background-color .15s ease; }
+  .info-pin:hover { transform: rotate(12deg) scale(1.1); }
+
   /* ---------- Responsivo ---------- */
   .hide-mobile { display: inline; }
   @media (max-width: 767px) {
@@ -314,10 +460,19 @@
     .show-xl { display: inline-flex; }
     .side-panel { display: flex; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .animate-pulse, .ping::after, .section { animation: none !important; }
+  @media (min-width: 900px) {
+    .atk-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
   }
+  /* Animaciones apagadas con el botón del encabezado (activadas por defecto). */
+  .btn-icon { padding: 7px 9px; }
+  .btn-icon .material-symbols-outlined { font-size: 18px; }
+  .btn-icon[aria-pressed="true"] { color: var(--primary); }
+  .motion-off { scroll-behavior: auto; }
+  .motion-off .animate-pulse, .motion-off .ping::after, .motion-off .atk-sweep, .motion-off .ppi-sweep, .motion-off .atk-shape, .motion-off .ppi-blip-shape,
+  .motion-off .atk-ping, .motion-off .app-header::after, .motion-off .atk-estado .sq-dot { animation: none !important; }
+  .motion-off .atk-ping { display: none; }
+  .motion-off .nav-item:hover, .motion-off .atk-item:hover, .motion-off .bucket:hover, .motion-off .dropzone:hover .dz-icon, .motion-off .info-pin:hover { transform: none; }
+  .motion-off .nav-item:hover { padding-left: 14px; }
 </style>
 </head>
 <body>
@@ -336,6 +491,7 @@
       <div class="chip chip-quiet show-xl"><span class="chip-k">Unidad</span><span class="chip-v">Fuerza Aeroespacial Colombiana</span></div>
     </div>
     <div class="header-actions">
+      <button id="btnMotion" class="btn btn-icon" type="button" aria-pressed="true" aria-label="Animaciones activadas" title="Animaciones activadas (clic para apagarlas)"><span class="material-symbols-outlined">animation</span></button>
       <button id="btnReanalyze" class="btn" type="button">Analizar<span class="hide-mobile"> de nuevo</span></button>
       <button id="btnExport" class="btn btn-primary" type="button"><span class="hide-mobile">Exportar </span>PDF</button>
     </div>
@@ -347,17 +503,18 @@
   <div>
     <div class="side-strip">
       <span class="label-caps"><span class="sq-dot sq-sm bg-primary"></span>Navegación</span>
-      <span class="label-caps text-primary">08 secc.</span>
+      <span class="label-caps text-primary">09 secc.</span>
     </div>
     <nav class="side-nav">
       <a href="#seccion-resumen" class="nav-item active"><span class="nav-l"><span class="nav-bullet"></span><span>Resumen</span></span><span class="nav-meta">01</span></a>
-      <a href="#seccion-archivos" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Archivos</span></span><span class="nav-meta">02</span></a>
-      <a href="#seccion-whitelist" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Whitelist</span></span><span class="nav-meta">03</span></a>
-      <a href="#seccion-franjas" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Franjas horarias</span></span><span class="nav-meta">04</span></a>
-      <a href="#seccion-modelos-amenaza" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Modelos amenaza</span></span><span class="nav-meta">05</span></a>
-      <a href="#seccion-modelos-amigos" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Modelos amigos</span></span><span class="nav-meta">06</span></a>
-      <a href="#seccion-zonas" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Zonas</span></span><span class="nav-meta">07</span></a>
-      <a href="#seccion-detalle" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Detalle</span></span><span class="nav-meta">08</span></a>
+      <a href="#seccion-mapa" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Mapa de ataques</span></span><span class="nav-meta">02</span></a>
+      <a href="#seccion-archivos" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Archivos</span></span><span class="nav-meta">03</span></a>
+      <a href="#seccion-whitelist" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Whitelist</span></span><span class="nav-meta">04</span></a>
+      <a href="#seccion-franjas" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Franjas horarias</span></span><span class="nav-meta">05</span></a>
+      <a href="#seccion-modelos-amenaza" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Modelos amenaza</span></span><span class="nav-meta">06</span></a>
+      <a href="#seccion-modelos-amigos" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Modelos amigos</span></span><span class="nav-meta">07</span></a>
+      <a href="#seccion-zonas" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Zonas</span></span><span class="nav-meta">08</span></a>
+      <a href="#seccion-detalle" class="nav-item"><span class="nav-l"><span class="nav-bullet"></span><span>Detalle</span></span><span class="nav-meta">09</span></a>
     </nav>
   </div>
   <div class="side-foot">
@@ -447,6 +604,32 @@
           <span class="panel-meta">Avisos</span>
         </div>
         <div id="warningsBox" class="log">Carga un archivo de detecciones para comenzar.</div>
+      </div>
+    </section>
+
+    <!-- Mapa de ataques con drones a la Fuerza Pública -->
+    <section id="seccion-mapa" class="section">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title-wrap"><span class="material-symbols-outlined panel-icon" style="color:var(--threat)">crisis_alert</span><h2 class="panel-title">Ataques con drones a la Fuerza Pública <span class="panel-title-sub">· últimos 30 días</span></h2></div>
+          <span id="atkEstado" class="atk-estado"></span>
+        </div>
+        <div id="atkStats" class="atk-stats"></div>
+        <div class="atk-toolbar">
+          <div id="atkFilters" class="atk-filters" role="group" aria-label="Filtrar por institución"></div>
+          <div id="atkLegend" class="atk-legend"></div>
+        </div>
+        <div class="atk-grid">
+          <div class="chart-frame atk-map-frame dot-pattern">
+            <div class="corner-b"></div>
+            <svg id="atkMap" viewBox="0 0 500 684" role="img" aria-label="Mapa de Colombia con los ataques con drones a la Fuerza Pública verificados"><defs><linearGradient id="atkSweepGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#38bdf8" stop-opacity="0"/><stop offset="1" stop-color="#38bdf8" stop-opacity="0.13"/></linearGradient></defs><g class="atk-grat"><line x1="48.0" y1="0" x2="48.0" y2="684"/><line x1="128.0" y1="0" x2="128.0" y2="684"/><line x1="208.0" y1="0" x2="208.0" y2="684"/><line x1="288.0" y1="0" x2="288.0" y2="684"/><line x1="368.0" y1="0" x2="368.0" y2="684"/><line x1="448.0" y1="0" x2="448.0" y2="684"/><line x1="0" y1="28.0" x2="500" y2="28.0"/><line x1="0" y1="108.0" x2="500" y2="108.0"/><line x1="0" y1="188.0" x2="500" y2="188.0"/><line x1="0" y1="268.0" x2="500" y2="268.0"/><line x1="0" y1="348.0" x2="500" y2="348.0"/><line x1="0" y1="428.0" x2="500" y2="428.0"/><line x1="0" y1="508.0" x2="500" y2="508.0"/><line x1="0" y1="588.0" x2="500" y2="588.0"/><line x1="0" y1="668.0" x2="500" y2="668.0"/></g><g class="atk-grat-label"><text x="51.0" y="678">78°O</text><text x="131.0" y="678">76°O</text><text x="211.0" y="678">74°O</text><text x="291.0" y="678">72°O</text><text x="371.0" y="678">70°O</text><text x="451.0" y="678">68°O</text><text x="470" y="105.0">10°N</text><text x="470" y="185.0">8°N</text><text x="470" y="265.0">6°N</text><text x="470" y="345.0">4°N</text><text x="470" y="425.0">2°N</text><text x="470" y="505.0">0°</text><text x="470" y="585.0">2°S</text><text x="470" y="665.0">4°S</text></g><g class="atk-deptos"><path d="M133.3 288.5L133.6 293.1L135.6 293.5L139.0 292.1L142.5 294.5L142.6 295.4L140.3 297.8L138.1 296.6L135.1 297.2L135.9 299.9L134.6 303.4L132.4 302.8L131.5 304.6L131.1 306.3L132.2 309.5L135.4 311.2L138.1 306.2L140.0 310.2L141.9 310.1L142.4 309.0L143.3 310.7L148.8 311.3L150.9 315.3L153.0 315.8L155.1 313.1L153.9 310.6L153.9 309.4L155.3 307.8L154.3 304.7L156.5 302.5L158.6 303.0L160.2 301.4L163.4 301.6L165.7 297.0L167.6 296.3L170.4 295.5L173.1 296.2L174.9 295.2L178.6 296.5L179.7 293.2L180.9 293.0L181.0 290.5L181.9 290.3L181.0 287.5L182.4 286.4L181.9 285.0L183.1 280.1L181.6 278.9L181.7 277.0L180.7 276.8L179.5 277.0L178.5 280.0L177.1 280.5L173.4 278.1L168.3 279.4L167.4 280.9L164.3 281.8L164.3 284.6L162.5 286.9L159.2 287.9L156.9 291.3L156.7 288.9L155.3 289.2L154.4 283.9L152.7 283.1L152.9 281.0L150.9 280.1L148.9 281.5L146.6 280.4L146.3 279.2L144.0 278.5L144.0 280.8L145.1 281.4L144.4 282.2L145.2 287.2L140.6 287.0L138.8 285.5L136.6 286.4L134.7 288.5L133.3 288.5Z"><title>Caldas</title></path><path d="M192.5 530.4L193.6 533.2L193.0 534.1L194.5 535.1L192.9 536.8L193.2 537.5L195.4 538.2L195.5 539.7L196.8 539.2L196.8 541.1L198.3 540.8L197.2 543.2L195.9 542.6L195.2 543.2L196.8 544.0L197.1 547.2L205.4 550.1L207.3 548.2L206.9 550.5L207.8 552.0L208.9 552.3L209.4 551.3L209.7 553.2L211.5 552.7L213.5 557.2L216.7 557.6L217.2 558.5L218.2 556.0L218.9 557.9L221.0 557.6L222.1 558.7L223.2 558.6L223.6 560.7L225.3 560.9L224.9 562.5L225.9 564.7L224.8 565.1L226.6 565.3L227.0 566.9L228.4 567.3L228.4 570.8L229.7 571.0L227.6 573.2L226.5 576.0L229.8 577.7L230.9 579.6L232.5 578.9L235.4 581.1L236.0 579.1L238.1 579.3L237.8 580.3L238.6 580.1L239.3 577.9L240.2 579.5L242.1 580.2L241.9 582.4L243.7 583.4L242.8 587.7L244.3 589.7L243.5 590.9L245.2 591.7L243.3 593.2L242.8 595.3L241.3 595.4L241.4 597.5L243.4 599.6L243.2 601.1L244.2 601.0L245.7 602.4L246.7 600.5L247.9 602.4L249.9 601.5L250.8 606.3L253.7 605.6L256.9 603.4L258.2 605.1L259.5 603.5L260.8 606.1L262.6 602.3L265.3 604.0L270.1 605.3L271.7 604.6L273.3 607.6L277.6 606.4L277.6 605.3L279.3 606.0L281.1 605.1L281.7 607.2L282.8 604.4L286.2 601.4L287.8 602.8L290.2 602.2L291.1 603.2L290.4 600.6L292.5 600.6L294.8 595.5L296.1 596.2L298.6 593.6L299.2 597.2L301.9 596.0L304.0 597.6L307.2 598.0L308.1 602.2L308.8 601.4L308.2 599.0L309.9 599.2L312.3 602.2L311.7 603.7L312.3 604.4L315.3 603.2L316.1 601.5L317.0 601.9L316.8 603.6L318.7 601.5L321.0 603.3L321.5 601.3L322.8 601.6L322.7 599.4L326.2 598.6L328.2 600.3L327.2 597.2L328.0 596.4L330.3 598.2L332.9 596.9L334.7 599.8L337.3 599.9L338.0 601.2L341.5 602.2L340.9 604.2L342.9 603.8L342.7 607.0L345.7 606.9L345.9 606.0L344.1 604.9L345.2 604.7L347.7 607.1L349.1 606.2L350.7 609.0L353.3 607.7L355.9 608.1L356.0 609.1L353.7 610.2L354.1 610.9L358.1 610.1L359.2 613.8L360.2 614.3L361.4 613.5L361.6 615.6L362.6 616.2L364.8 614.2L365.6 618.3L365.0 619.6L339.5 659.9L340.6 659.8L343.3 661.7L344.9 660.7L347.4 663.2L353.8 660.1L356.6 661.0L358.1 663.9L360.8 665.2L362.9 669.4L365.5 671.3L370.1 677.3L370.7 676.8L389.7 567.6L390.7 566.2L390.6 564.0L392.1 562.6L390.8 557.1L392.2 553.0L391.0 551.1L389.2 551.5L389.6 553.5L388.4 554.0L389.4 555.1L388.9 556.5L385.5 555.8L384.2 553.9L382.6 554.7L382.4 556.7L381.5 557.1L380.8 552.9L381.9 553.3L382.0 552.7L380.0 550.1L377.2 549.4L378.7 551.4L377.7 551.9L374.6 549.1L372.9 551.2L369.7 551.8L369.1 551.0L370.3 549.2L369.8 547.8L371.9 546.8L370.4 545.9L368.0 547.0L367.3 545.4L366.6 547.1L364.7 545.8L362.9 547.1L362.6 548.7L364.4 548.5L364.9 549.4L362.9 552.3L361.3 552.5L360.9 551.0L358.9 549.9L360.1 547.4L357.9 548.8L355.7 546.6L359.1 543.3L356.2 539.7L356.4 538.0L358.0 537.5L357.4 531.3L356.2 530.2L355.5 531.5L354.9 530.5L358.2 526.7L359.9 526.9L359.5 525.6L358.0 525.7L356.4 524.5L355.7 525.6L353.4 526.1L355.1 526.8L354.6 527.9L352.8 527.9L352.1 526.5L349.7 527.8L349.8 525.5L347.2 522.3L344.8 523.7L342.9 520.9L341.0 522.1L338.6 519.5L336.8 520.5L337.6 521.1L334.9 522.6L332.9 519.3L332.7 516.5L330.1 514.1L332.3 512.6L330.9 511.5L330.9 510.0L328.7 508.1L327.3 508.5L326.9 509.9L326.0 509.3L326.5 508.2L324.1 508.3L323.8 506.9L322.7 507.9L322.1 505.4L320.5 504.1L318.9 505.8L316.2 505.2L316.4 504.1L315.1 503.5L312.1 506.8L303.3 508.6L299.2 512.0L299.3 517.0L298.0 518.1L294.9 518.9L286.5 518.7L285.2 521.0L281.9 522.5L280.2 526.8L278.7 527.6L278.3 532.4L274.0 533.6L271.8 532.2L271.5 530.6L270.7 530.6L265.7 536.3L261.0 533.4L257.9 530.2L255.4 532.0L251.7 532.7L249.1 530.0L247.0 529.2L245.8 530.1L245.0 532.9L243.1 532.2L239.7 533.0L234.8 528.3L232.8 529.4L230.9 528.5L228.5 529.2L226.6 527.5L225.3 528.7L224.7 525.9L221.9 526.3L222.4 524.7L221.0 524.9L219.3 523.2L217.5 524.3L214.3 523.9L192.5 530.4Z"><title>Amazonas</title></path><path d="M170.6 391.7L174.6 391.6L176.2 390.7L177.4 392.9L180.9 392.4L181.4 395.6L183.3 398.1L182.5 399.8L184.4 401.6L180.6 406.2L182.0 408.2L181.2 410.9L178.9 413.8L178.7 417.1L180.9 416.6L180.5 417.2L181.7 419.5L184.4 420.2L183.6 425.2L185.3 429.9L185.4 434.0L188.9 435.7L195.3 436.5L197.2 437.9L199.4 437.3L199.8 439.4L203.5 440.2L204.4 442.3L208.0 441.7L208.7 443.9L210.2 442.2L213.7 441.7L216.8 441.8L221.6 443.4L221.8 416.2L222.9 416.1L222.6 415.0L223.4 414.3L222.7 413.5L223.4 412.9L224.6 412.4L225.1 413.8L226.9 412.5L227.6 414.7L228.0 413.6L230.1 414.3L230.3 412.5L230.5 414.9L231.4 413.7L232.9 415.0L233.7 413.2L233.8 415.0L234.7 414.6L234.7 413.6L236.0 414.5L237.2 413.6L238.4 414.0L238.4 413.2L237.3 412.8L239.3 411.8L240.0 412.7L241.3 412.0L241.5 413.4L243.0 412.8L242.4 412.1L243.0 411.5L243.6 412.8L245.4 410.9L246.3 410.5L246.7 411.5L249.4 410.0L249.5 408.8L250.7 409.4L249.8 407.3L251.1 406.8L251.5 405.3L255.2 403.5L258.2 405.2L260.7 403.1L262.0 405.1L262.3 403.5L263.4 403.0L264.5 404.7L264.6 402.2L265.7 402.0L265.2 401.0L266.6 400.7L266.6 399.9L269.2 400.4L269.3 398.6L271.8 399.0L275.2 396.0L277.0 396.9L277.7 395.0L280.3 397.1L279.8 393.5L282.0 393.5L282.6 392.5L284.8 395.1L287.8 394.9L288.7 396.0L290.2 394.7L294.8 394.5L295.1 393.3L294.0 393.2L295.1 392.9L296.5 393.3L296.8 395.3L297.5 392.1L300.0 394.4L301.6 393.2L301.1 395.0L302.1 395.3L305.0 394.2L304.7 393.1L307.9 393.0L309.2 393.9L309.4 392.1L312.3 394.1L312.7 392.5L313.6 392.4L314.0 393.7L315.3 391.0L316.5 393.3L317.6 392.6L319.0 393.4L320.6 391.8L321.9 393.1L322.6 391.9L323.6 393.1L324.9 392.7L324.9 311.0L319.4 315.4L316.4 315.8L310.5 319.3L304.9 321.0L303.9 322.4L298.7 325.0L295.7 324.7L288.5 332.5L285.8 332.9L284.8 331.4L282.4 330.4L278.5 330.6L271.8 335.2L270.8 333.8L269.2 335.3L266.8 334.2L265.1 334.6L265.2 335.8L261.0 335.3L260.1 336.6L258.3 335.6L256.9 334.0L257.3 333.4L255.9 332.9L256.6 332.0L255.6 332.4L255.5 330.7L254.2 330.8L252.4 329.1L246.5 321.4L246.0 318.5L242.5 339.4L239.9 337.0L234.0 335.2L229.3 336.9L226.3 335.9L225.1 331.2L223.8 329.5L225.3 327.0L223.2 325.6L221.6 326.2L215.5 331.7L216.6 335.9L218.2 337.3L217.4 338.5L218.3 340.0L215.6 339.9L215.2 340.9L210.7 342.1L209.1 344.1L207.0 343.9L206.6 345.5L205.3 345.6L202.9 348.0L201.4 347.3L199.3 347.7L197.7 350.8L195.2 352.8L196.1 355.2L194.5 355.1L192.3 357.1L192.5 357.9L187.9 362.4L185.8 366.6L184.3 367.1L182.6 369.2L183.6 370.5L182.5 373.4L183.4 375.0L181.2 380.0L179.5 380.8L177.7 384.0L176.4 384.5L176.3 385.5L170.6 391.7Z"><title>Meta</title></path><path d="M178.6 296.5L179.3 304.3L178.3 307.7L179.7 308.7L178.0 309.8L178.7 312.3L177.8 312.5L177.2 314.3L178.2 315.0L178.2 316.4L175.2 319.0L176.5 321.9L175.3 323.5L176.2 324.3L175.4 324.7L176.5 327.8L175.6 330.0L174.7 330.2L173.8 334.6L172.4 336.4L172.9 337.4L175.5 336.2L176.8 336.7L177.3 338.0L177.9 337.6L180.8 339.9L181.7 339.4L181.8 340.1L184.5 337.3L185.5 337.1L187.2 338.4L188.7 341.0L189.0 343.4L186.9 346.2L187.5 350.6L186.4 354.2L190.0 355.6L189.9 359.0L193.4 352.1L193.7 349.2L193.0 348.6L194.9 342.8L197.7 344.4L198.3 340.1L199.9 338.3L199.3 332.9L201.6 327.7L200.8 327.1L200.7 324.2L199.1 323.3L199.1 322.3L201.7 321.5L200.9 319.9L203.0 318.8L203.4 316.5L204.5 316.2L205.0 314.5L208.0 315.8L207.3 317.3L207.9 321.0L206.7 322.6L208.1 323.9L207.8 325.5L206.8 325.7L206.2 327.5L205.1 327.6L205.0 329.4L203.5 330.7L204.1 334.0L201.9 337.8L203.7 342.5L202.9 343.0L202.2 347.9L203.9 347.5L205.3 345.6L206.6 345.5L207.0 343.9L209.1 344.1L210.7 342.1L215.2 340.9L215.6 339.9L218.3 340.0L217.4 338.5L218.2 337.3L216.6 335.9L215.5 331.7L216.6 330.2L218.4 329.7L219.5 327.5L223.2 325.6L225.3 327.0L223.8 329.5L225.1 331.2L226.3 335.9L229.3 336.9L234.0 335.2L239.9 337.0L242.5 339.4L246.0 318.5L245.1 318.4L243.8 321.6L239.2 320.9L239.1 318.7L235.8 318.8L235.1 316.9L233.2 316.0L231.9 312.9L229.1 312.3L227.2 312.9L226.5 312.2L226.3 310.1L227.7 308.1L227.1 306.8L228.8 305.8L228.2 303.7L228.9 302.1L227.6 301.5L226.7 296.8L223.9 295.3L224.3 292.0L217.2 288.5L215.8 285.1L212.4 287.5L211.7 287.0L212.0 290.0L209.1 291.2L208.3 293.0L207.1 293.4L207.2 292.5L204.4 290.9L204.1 289.2L203.5 289.1L203.0 290.7L199.9 288.1L197.8 288.5L198.3 286.2L196.2 285.1L195.4 283.1L196.9 280.2L196.0 279.3L195.9 276.1L194.6 274.5L190.7 277.6L187.6 276.2L184.2 278.2L182.8 277.5L182.1 278.5L181.7 277.9L181.6 278.9L183.1 280.1L181.9 285.0L182.4 286.4L181.0 287.5L181.9 290.3L181.0 290.5L180.9 293.0L179.7 293.2L178.6 296.5Z"><title>Cundinamarca</title></path><path d="M153.0 315.8L152.9 318.8L151.1 321.8L151.2 323.6L149.3 324.0L147.4 325.8L147.0 328.2L144.9 329.9L144.1 336.8L141.7 339.0L140.3 342.6L138.1 344.2L138.5 345.9L136.3 347.7L135.6 351.0L133.6 352.8L133.3 354.7L129.6 359.8L129.9 361.0L128.3 362.5L128.6 365.6L126.3 370.5L126.8 372.6L125.6 373.8L126.4 378.0L125.6 379.9L124.4 380.0L125.1 383.1L123.7 383.8L127.1 387.9L126.8 390.4L127.1 389.1L128.4 388.7L129.8 391.3L130.9 391.1L133.7 393.1L136.0 392.5L140.2 388.2L143.1 387.6L144.0 386.1L143.1 385.0L144.9 382.3L144.9 379.0L147.0 375.2L148.5 374.9L148.9 373.6L150.3 374.1L152.9 373.1L153.3 371.7L154.7 372.0L155.2 371.2L157.9 373.3L158.9 371.4L160.6 372.7L162.1 370.6L165.6 370.7L166.4 370.9L166.6 372.6L165.7 372.8L165.1 376.2L168.0 376.9L171.7 376.4L177.4 370.3L176.7 368.0L178.9 365.8L178.5 364.4L181.0 361.2L184.3 359.0L186.5 355.3L187.5 349.9L186.7 349.2L186.9 346.2L189.0 343.4L188.7 341.0L187.2 338.4L185.5 337.1L184.5 337.3L181.8 340.1L181.7 339.4L180.8 339.9L177.9 337.6L177.3 338.0L176.8 336.7L175.5 336.2L172.9 337.4L172.4 336.4L173.8 334.6L174.7 330.2L175.6 330.0L176.5 327.8L175.4 324.7L176.2 324.3L175.3 323.5L176.5 321.9L175.2 319.0L178.2 316.4L178.2 315.0L177.2 314.3L177.8 312.5L178.7 312.3L178.0 309.8L179.7 308.7L178.3 307.7L179.3 304.3L178.6 296.5L174.9 295.2L173.1 296.2L170.4 295.5L167.6 296.3L165.7 297.0L163.4 301.6L160.2 301.4L158.6 303.0L156.5 302.5L154.3 304.7L155.3 307.8L153.9 309.4L153.9 310.6L155.1 313.1L153.0 315.8Z"><title>Tolima</title></path><path d="M181.7 277.0L182.5 273.1L184.5 272.1L183.6 269.2L185.6 267.9L185.5 265.0L183.9 264.2L183.7 262.3L186.4 257.4L189.4 255.5L190.9 252.4L193.3 251.7L191.8 249.2L192.0 244.4L193.5 242.7L194.8 242.8L198.8 239.5L201.2 238.9L207.8 231.5L212.6 227.9L212.5 225.2L210.4 221.0L211.5 216.1L198.2 227.8L193.8 227.6L193.9 224.7L191.6 219.9L192.5 216.9L192.0 214.4L194.3 211.0L193.1 208.8L191.5 209.6L191.5 212.4L188.4 214.3L184.1 209.6L184.4 207.6L185.3 207.3L185.5 202.2L188.4 201.5L189.5 199.0L187.0 196.7L187.2 191.8L183.9 186.5L181.7 185.8L179.0 183.3L175.5 182.3L175.0 180.0L173.0 180.1L172.8 182.4L170.8 185.0L169.3 184.2L166.2 185.9L159.0 185.6L157.6 188.1L155.3 190.2L154.6 190.0L154.0 192.7L151.3 194.6L149.8 194.7L148.3 199.0L145.7 200.2L143.9 204.7L141.0 204.1L139.5 204.7L137.6 203.8L136.4 209.6L134.9 210.6L134.4 213.5L112.6 212.3L107.6 204.6L108.4 201.6L108.2 198.0L109.3 193.7L111.2 191.6L111.4 185.2L114.2 181.0L115.2 176.9L117.1 174.2L120.4 172.3L118.6 166.2L119.1 165.1L118.0 164.8L116.7 162.1L114.3 162.2L113.4 159.3L111.5 158.1L112.6 156.4L111.5 152.4L111.2 153.6L107.6 155.9L107.4 156.8L102.8 158.7L102.0 161.2L92.6 163.1L90.5 166.2L95.0 168.1L97.6 172.1L97.0 177.4L98.5 181.4L97.8 183.1L98.3 185.4L98.9 184.3L99.4 185.5L98.5 187.3L98.9 188.7L98.1 191.2L97.1 191.7L93.5 192.0L91.1 191.3L91.0 186.9L92.3 186.2L94.3 187.3L93.0 185.9L94.8 186.1L93.1 185.2L94.8 184.4L93.8 184.3L93.9 183.1L95.7 182.9L92.3 182.7L92.5 183.4L90.7 184.3L90.0 182.2L91.6 180.8L90.4 180.8L90.9 179.7L89.7 180.6L89.3 178.3L90.3 178.1L88.8 177.8L90.0 181.2L89.8 183.2L88.9 182.7L88.5 183.8L90.1 185.3L89.8 186.3L88.2 187.1L86.8 192.8L84.2 195.0L82.9 194.8L83.1 196.5L88.5 202.7L94.8 207.1L99.3 213.3L104.9 216.0L106.7 217.7L108.7 222.7L107.7 222.5L106.1 227.9L105.1 228.9L104.3 227.5L101.0 226.9L94.6 228.0L94.9 229.8L96.0 230.0L96.4 233.3L94.8 233.7L95.2 234.6L91.4 234.2L90.7 235.5L89.1 235.8L89.3 238.4L90.7 239.6L89.6 240.9L90.4 240.6L90.9 242.0L92.0 241.2L91.6 242.8L93.6 243.1L92.4 243.8L92.3 245.3L93.9 245.6L94.3 247.1L95.2 247.0L95.2 248.5L96.0 247.7L97.3 248.9L96.2 250.2L97.5 250.7L96.2 251.2L97.4 252.4L96.6 252.8L97.1 253.5L96.4 255.1L96.8 256.5L98.0 256.8L97.7 257.9L99.0 258.5L99.3 261.1L102.2 261.3L104.7 260.3L108.7 261.5L111.2 261.4L112.9 260.2L118.4 259.6L120.0 261.6L120.1 264.8L121.4 267.7L122.7 268.0L123.5 267.2L125.3 268.9L124.0 274.3L125.4 277.8L124.5 280.5L127.8 283.1L127.6 285.3L128.7 287.2L130.8 287.7L131.8 288.8L134.7 288.5L136.6 286.4L138.8 285.5L140.6 287.0L145.2 287.2L144.4 282.2L145.1 281.4L144.0 280.8L144.0 278.5L146.3 279.2L146.6 280.4L148.9 281.5L150.9 280.1L152.9 281.0L152.7 283.1L154.4 283.9L155.3 289.2L156.7 288.9L156.9 291.3L159.2 287.9L162.5 286.9L164.3 284.6L164.3 281.8L167.4 280.9L168.3 279.4L173.4 278.1L177.1 280.5L178.5 280.0L179.5 277.0L181.7 277.0ZM91.1 180.2L90.7 180.7L91.5 180.8L91.1 180.2Z"><title>Antioquia</title></path><path d="M159.1 76.1L157.3 80.5L159.1 82.9L159.1 86.0L157.9 88.6L161.2 89.0L162.8 92.1L165.1 91.7L168.8 94.4L171.7 97.9L175.4 90.9L175.6 88.9L178.4 86.3L179.0 83.8L178.1 82.1L179.1 81.1L178.4 74.5L179.5 72.7L177.8 70.6L177.4 68.2L174.5 65.7L173.8 63.7L173.9 65.9L171.1 66.2L169.6 68.4L166.0 70.1L167.0 70.1L166.1 72.1L159.1 76.1Z"><title>Atlántico</title></path><path d="M120.4 132.6L121.1 132.1L120.4 132.6ZM133.7 116.3L134.9 116.2L133.7 116.3ZM211.5 216.1L212.2 211.3L211.4 208.5L214.0 206.5L215.6 203.3L215.3 202.3L216.1 201.9L214.7 198.9L216.0 197.1L213.3 186.4L214.3 184.3L217.0 182.3L216.9 179.5L218.0 177.2L218.0 169.4L215.2 162.1L215.5 158.8L216.4 157.9L216.2 155.6L213.4 152.6L212.4 148.8L208.8 148.6L206.6 146.2L205.8 147.2L204.0 147.2L203.4 146.4L202.5 146.8L203.3 146.0L201.8 145.7L198.1 141.4L196.1 141.6L196.1 139.9L194.1 138.7L191.9 139.5L190.7 137.1L187.3 138.6L185.4 135.5L183.5 134.4L183.3 133.1L181.1 131.5L178.7 131.2L177.4 129.4L175.8 130.1L176.4 126.9L175.8 125.8L177.1 123.8L175.9 121.3L176.6 120.2L175.4 118.8L175.7 116.8L174.0 115.2L173.1 110.6L176.4 109.1L176.6 107.7L173.7 104.2L170.3 103.1L171.7 97.9L169.5 95.0L165.1 91.7L162.8 92.1L161.2 89.0L157.9 88.6L159.1 86.0L159.1 82.9L157.3 80.5L159.1 76.1L157.5 76.0L156.7 79.7L152.2 80.7L149.9 82.9L149.5 84.4L147.4 85.2L148.3 88.5L145.3 92.1L146.2 92.4L146.0 91.1L147.7 92.6L147.9 95.9L146.8 95.7L146.6 96.9L145.4 97.6L144.5 96.1L144.6 97.5L143.1 97.9L144.5 99.0L143.8 98.4L141.8 101.4L139.8 102.3L141.2 102.5L142.5 100.5L146.4 98.2L147.1 98.5L146.0 99.4L147.0 99.2L147.2 101.1L146.1 100.8L146.7 101.5L145.4 103.1L148.1 102.1L146.2 106.2L147.3 107.0L148.7 106.5L149.5 109.5L148.8 111.8L153.3 113.2L154.3 111.6L155.1 112.9L153.1 122.8L154.2 122.3L154.8 123.5L156.9 120.5L158.7 122.2L161.4 122.1L160.5 122.8L160.8 123.9L162.6 124.1L164.8 126.7L167.4 126.8L166.8 129.7L172.7 130.6L171.5 131.4L170.1 134.2L170.8 135.0L170.1 136.3L171.5 138.5L171.3 140.2L173.9 142.7L175.2 145.8L177.9 146.2L178.5 147.3L180.7 147.5L182.4 148.9L185.2 153.8L185.7 155.9L185.1 157.1L183.6 157.6L183.7 158.9L184.2 164.3L185.5 165.2L184.8 166.3L186.6 168.9L186.4 170.6L185.6 172.4L183.6 171.9L183.5 174.1L181.9 176.8L179.4 175.9L178.8 176.7L178.1 175.7L175.7 177.0L176.3 178.2L174.6 179.3L175.5 182.3L179.0 183.3L181.7 185.8L183.9 186.5L187.2 191.8L187.0 196.7L189.5 199.0L188.4 201.5L185.5 202.2L185.3 207.3L184.4 207.6L184.1 209.6L188.4 214.3L191.5 212.4L191.5 209.6L193.1 208.8L194.3 211.0L192.0 214.4L192.5 216.9L191.6 219.9L193.9 224.7L193.8 227.6L198.2 227.8L211.5 216.1ZM138.0 100.7L139.1 100.7L138.0 100.7ZM144.3 94.1L144.7 95.3L146.5 93.7L145.0 92.7L144.3 94.1Z"><title>Bolívar</title></path><path d="M217.0 182.3L219.3 187.8L219.1 189.2L221.1 190.9L221.1 192.3L218.0 195.0L218.5 196.7L217.5 197.2L217.9 198.0L224.5 198.3L228.7 200.9L231.6 199.2L233.8 196.4L234.0 192.3L235.8 191.7L237.0 190.2L236.7 188.3L236.1 188.6L235.6 187.4L233.4 187.5L232.9 183.8L230.6 182.1L231.8 178.1L233.2 176.9L233.0 175.2L234.0 174.7L233.5 170.3L231.4 169.6L232.3 172.7L230.3 174.4L228.7 172.8L226.9 172.7L229.0 169.3L226.0 169.1L224.9 168.0L227.3 166.9L227.1 161.7L229.7 158.0L231.4 157.3L230.1 153.2L231.0 152.1L230.4 149.0L231.6 141.8L233.3 141.5L233.9 139.3L234.6 139.5L237.5 134.6L237.6 133.2L240.4 130.2L239.9 129.2L241.1 128.8L242.2 126.3L244.6 125.7L245.8 120.9L250.2 114.5L248.3 113.0L248.9 112.4L248.0 111.0L249.8 105.4L251.5 103.5L251.7 94.2L252.6 92.6L252.2 90.6L248.6 92.0L244.6 90.9L242.2 92.1L242.3 90.5L240.8 89.4L244.0 86.0L244.9 82.5L241.6 79.6L239.7 79.8L238.5 78.4L236.9 79.0L237.9 75.4L236.4 73.5L235.5 74.1L228.9 73.3L223.9 74.6L222.5 76.5L226.3 77.8L224.2 79.8L223.3 82.2L224.1 82.5L224.2 84.0L223.5 85.4L225.2 86.3L225.5 87.7L222.2 88.1L221.9 89.6L219.9 89.5L219.9 90.8L218.4 90.6L216.9 92.2L212.7 92.3L210.7 93.4L209.6 94.6L209.5 96.4L206.4 99.2L204.6 105.1L208.1 110.3L209.7 110.7L212.2 114.6L214.3 116.1L215.6 120.3L215.8 122.3L205.6 124.4L202.4 128.2L209.0 132.3L208.3 135.0L210.3 136.4L209.7 140.5L213.4 140.7L213.0 142.8L216.1 145.7L213.2 151.3L213.4 152.6L216.2 155.6L216.4 157.9L215.5 158.8L215.3 162.5L217.2 165.7L216.9 167.3L218.0 169.4L218.0 177.2L216.9 179.5L217.0 182.3Z"><title>Cesar</title></path><path d="M171.7 97.9L170.3 103.1L173.7 104.2L176.6 107.7L176.4 109.1L173.1 110.6L174.0 115.2L175.7 116.8L175.4 118.8L176.6 120.2L175.9 121.3L177.1 123.8L175.8 125.8L176.4 126.9L175.8 130.1L177.4 129.4L178.7 131.2L181.1 131.5L183.3 133.1L183.5 134.4L185.4 135.5L187.3 138.6L190.7 137.1L191.9 139.5L194.1 138.7L196.1 139.9L196.1 141.6L198.1 141.4L201.8 145.7L203.3 146.0L202.5 146.8L203.4 146.4L204.0 147.2L205.8 147.2L206.6 146.2L208.8 148.6L212.4 148.8L213.2 151.3L216.1 145.7L213.0 142.8L213.4 140.7L209.7 140.5L210.3 136.4L208.3 135.0L209.0 132.3L202.4 128.2L205.6 124.4L215.8 122.3L215.6 120.3L214.3 116.1L212.2 114.6L209.7 110.7L208.1 110.3L204.6 105.1L206.4 99.2L209.5 96.4L209.6 94.6L210.7 93.4L212.7 92.3L216.9 92.2L218.4 90.6L219.9 90.8L219.9 89.5L221.9 89.6L222.2 88.1L225.5 87.7L225.2 86.3L223.5 85.4L224.2 84.0L224.1 82.5L223.3 82.2L224.2 79.8L226.3 77.8L222.5 76.5L223.9 74.4L221.4 68.4L222.6 66.3L221.9 62.5L224.4 60.9L225.4 57.8L216.4 57.8L208.8 54.4L206.2 54.1L205.7 54.9L205.4 54.2L204.7 55.4L203.8 54.1L203.7 55.3L203.0 54.6L202.6 55.4L202.2 54.5L201.6 55.0L202.1 56.0L200.2 55.9L199.7 57.0L200.3 57.4L198.3 59.2L199.4 65.1L197.5 67.6L194.1 68.9L186.2 68.3L173.9 63.7L179.4 72.1L178.4 74.5L179.1 81.1L178.1 82.1L179.0 83.8L178.4 86.3L175.6 88.9L175.4 90.9L171.7 97.9Z"><title>Magdalena</title></path><path d="M145.4 103.1L144.7 103.2L145.0 109.1L143.2 112.9L143.1 115.8L139.8 120.0L143.5 120.3L144.9 122.6L145.1 125.2L143.0 130.3L141.1 131.8L140.1 131.5L140.5 132.4L139.5 133.6L140.7 133.5L142.1 134.8L143.0 133.9L146.2 137.7L147.9 137.0L148.4 138.2L149.7 137.7L149.3 140.3L151.1 141.4L151.0 142.5L152.7 142.0L156.3 144.1L156.2 145.3L158.1 145.1L159.7 146.1L158.7 147.1L161.0 149.5L159.8 149.3L159.8 151.3L157.3 152.0L156.0 153.5L155.5 152.8L153.0 153.7L153.2 156.3L155.4 158.0L154.5 158.4L154.1 161.2L154.8 161.8L154.3 162.5L155.5 168.6L158.3 169.6L160.7 172.1L166.1 169.3L170.6 168.4L172.4 169.9L173.1 171.9L175.9 173.7L176.2 176.8L178.2 175.7L178.8 176.7L179.4 175.9L181.9 176.8L183.5 174.1L183.6 171.9L185.6 172.4L186.7 169.4L184.8 166.3L185.5 165.2L184.2 164.3L183.7 158.9L183.6 157.6L185.1 157.1L185.7 155.9L185.2 153.8L182.4 148.9L180.7 147.5L178.5 147.3L177.9 146.2L175.2 145.8L173.9 142.7L171.3 140.2L171.5 138.5L170.1 136.3L170.8 135.0L170.1 134.2L171.5 131.4L172.7 130.6L166.8 129.7L167.4 126.8L164.8 126.7L162.6 124.1L160.8 123.9L160.5 122.8L161.4 122.1L158.7 122.2L156.9 120.5L154.8 123.5L154.2 122.3L153.1 122.8L155.1 112.9L154.3 111.6L153.3 113.2L148.8 111.8L149.5 109.5L148.7 106.5L147.3 107.0L146.2 106.2L148.1 102.1L145.4 103.1Z"><title>Sucre</title></path><path d="M175.0 180.0L174.7 179.2L176.3 178.0L175.7 177.0L176.6 177.0L175.9 173.7L173.1 171.9L172.4 169.9L170.6 168.4L166.1 169.3L160.7 172.1L158.3 169.6L155.5 168.6L154.3 162.5L154.8 161.8L154.1 161.2L154.5 158.4L155.4 158.0L153.2 156.3L153.0 153.7L155.5 152.8L156.0 153.5L157.3 152.0L159.8 151.3L159.8 149.3L161.0 149.5L158.7 147.1L159.7 146.1L158.1 145.1L156.2 145.3L156.3 144.1L152.7 142.0L151.0 142.5L151.1 141.4L149.3 140.3L149.7 137.7L148.4 138.2L147.9 137.0L146.2 137.7L143.0 133.9L142.1 134.8L140.7 133.5L139.5 133.6L140.5 132.4L140.1 131.5L138.2 131.2L136.7 132.3L134.9 132.3L134.9 131.4L136.3 131.5L136.0 130.7L132.6 131.1L130.1 130.3L129.2 132.7L124.7 134.5L123.6 135.9L123.7 137.4L121.2 138.8L120.5 143.3L118.0 145.7L117.4 148.1L114.5 151.2L111.5 152.4L112.6 156.4L111.3 157.8L113.4 159.3L114.3 162.2L116.7 162.1L118.0 164.8L119.1 165.1L118.6 166.2L120.4 172.0L115.9 175.4L114.2 181.0L111.4 185.2L111.2 191.6L109.3 193.7L108.2 198.0L107.9 205.6L112.6 212.3L134.4 213.5L134.9 210.6L136.4 209.6L137.6 203.8L139.5 204.7L141.0 204.1L143.9 204.7L145.7 200.2L148.3 199.0L149.8 194.7L151.3 194.6L154.0 192.7L154.6 190.0L155.3 190.2L157.6 188.1L159.0 185.6L166.2 185.9L169.3 184.2L170.8 185.0L172.8 182.4L173.0 180.1L175.0 180.0Z"><title>Córdoba</title></path><path d="M252.2 90.6L254.2 88.6L255.2 85.2L258.6 81.9L259.3 78.4L260.8 77.4L262.0 72.8L263.5 72.7L265.8 70.4L268.7 65.6L268.1 64.6L270.3 62.9L274.0 61.9L278.0 62.4L289.1 42.1L312.9 35.5L312.4 34.9L315.1 33.9L316.4 31.5L314.9 31.9L314.9 31.1L316.7 31.7L319.2 29.4L322.6 27.9L323.4 24.6L318.9 16.0L316.0 13.9L310.5 12.8L307.0 10.5L301.3 9.7L299.3 10.6L298.6 11.6L300.6 10.2L300.0 11.3L301.9 10.6L301.0 11.8L302.9 11.5L300.2 12.3L300.0 13.6L300.7 13.4L299.1 13.2L299.1 11.6L297.5 12.8L298.5 13.1L297.8 14.7L295.2 15.6L294.4 14.4L295.7 13.4L295.1 13.1L289.8 17.1L292.3 16.9L293.5 19.3L293.2 20.4L291.1 20.7L290.8 22.0L288.6 22.1L288.0 20.5L289.5 17.7L284.7 18.8L282.4 18.4L280.8 19.3L282.1 20.0L282.5 23.8L278.4 32.2L279.2 31.7L278.9 32.5L270.2 36.8L267.4 36.9L265.7 38.3L257.2 40.9L252.8 45.4L246.8 48.3L236.9 56.6L233.6 57.5L225.3 57.7L224.4 60.9L221.9 62.5L222.6 66.3L221.4 68.4L223.9 74.6L228.9 73.3L236.8 73.7L237.9 75.9L236.9 79.0L238.5 78.4L239.7 79.8L241.6 79.6L244.9 82.5L244.0 86.0L240.8 89.4L242.3 90.5L242.2 92.1L244.6 90.9L248.6 92.0L252.2 90.6Z"><title>La Guajira</title></path><path d="M88.8 177.8L86.5 177.9L82.8 171.5L78.0 169.1L76.5 165.1L73.4 161.8L73.7 161.0L73.2 162.5L71.6 162.2L72.3 164.4L70.2 165.8L70.1 169.1L72.1 169.5L73.8 172.2L74.0 176.1L74.8 177.3L76.2 177.3L76.8 179.6L77.9 180.5L77.7 181.7L78.9 182.5L79.3 184.5L78.6 187.0L82.4 189.8L80.8 189.6L81.9 190.8L80.9 190.7L80.9 191.3L74.6 192.3L73.3 194.8L74.3 197.4L72.0 197.1L72.1 199.0L70.4 201.7L69.4 201.5L68.4 205.3L67.3 204.7L65.4 207.7L63.5 206.3L62.2 201.9L58.9 200.0L58.1 203.5L59.9 207.7L57.8 209.5L55.3 209.1L52.3 219.1L58.1 224.5L57.7 223.7L59.2 225.1L59.7 224.6L60.8 226.3L61.7 229.4L60.1 230.4L59.9 234.3L61.4 233.0L64.5 235.3L66.9 242.1L67.8 242.0L68.3 239.8L71.7 240.5L72.0 243.2L75.0 246.0L73.0 251.0L73.7 252.2L71.5 252.6L73.2 253.7L72.2 258.6L71.6 258.9L69.1 256.1L68.7 260.3L73.1 266.2L73.5 268.0L73.5 265.6L74.1 266.4L75.7 273.1L77.8 276.3L78.1 275.6L78.6 277.5L78.3 278.3L77.8 276.7L77.3 279.8L75.4 281.2L74.5 283.3L73.5 283.8L71.8 282.8L69.6 284.2L68.5 283.7L66.4 288.8L68.3 289.3L69.5 288.4L70.8 289.2L71.0 290.7L71.7 289.8L72.4 290.3L72.6 292.4L71.5 291.8L72.0 294.1L72.5 293.3L72.9 294.2L71.8 295.0L73.6 294.8L72.9 295.1L73.7 296.3L73.2 297.3L74.3 298.1L73.4 297.6L73.0 298.6L73.4 297.7L72.5 296.5L72.2 301.2L72.6 301.7L72.9 300.3L74.4 299.8L72.9 300.8L73.7 302.3L73.8 301.0L73.9 302.4L75.0 302.1L74.0 302.6L72.9 302.0L73.4 303.1L72.5 301.9L73.5 304.3L72.8 304.8L73.0 309.6L75.1 309.5L74.4 309.3L73.3 310.8L74.6 313.2L73.5 313.5L74.1 315.9L74.9 315.7L74.1 316.7L75.6 316.7L76.6 318.4L74.9 318.6L74.9 320.6L75.8 320.9L75.8 322.3L75.3 321.1L74.9 321.7L74.5 326.6L75.2 327.0L74.4 327.5L73.9 330.6L74.6 330.8L70.4 335.6L71.5 336.3L68.4 337.8L68.7 336.3L67.4 336.8L67.0 342.9L70.0 345.4L70.9 344.3L70.5 342.3L72.4 342.1L73.9 340.1L75.8 341.3L77.6 338.6L79.0 341.7L81.7 340.7L83.7 343.9L90.1 343.3L91.9 344.3L93.3 346.7L94.7 346.5L95.4 347.7L100.6 349.4L103.0 347.6L104.2 348.1L104.4 349.2L106.5 347.4L107.0 345.3L108.2 345.2L110.2 341.0L109.8 338.8L107.1 336.6L105.8 332.0L108.8 331.4L113.4 328.3L112.1 326.5L114.2 325.6L115.3 323.7L116.5 319.5L115.8 317.6L119.6 314.8L122.5 314.3L124.1 311.1L124.1 306.6L125.6 302.8L122.8 300.8L119.5 294.1L120.7 291.6L124.5 290.2L125.0 286.1L127.4 285.4L127.9 284.0L127.5 282.8L124.5 280.5L125.4 277.8L124.0 274.3L125.3 268.9L123.5 267.2L122.7 268.0L121.4 267.7L119.0 260.2L118.4 259.6L114.9 259.9L108.9 261.5L104.7 260.3L102.2 261.3L99.3 261.1L99.0 258.5L97.7 257.9L98.0 256.8L96.8 256.5L96.4 255.1L97.1 253.5L96.6 252.8L97.4 252.4L96.2 251.2L97.5 250.7L96.2 250.2L97.3 248.9L96.0 247.7L95.2 248.5L95.2 247.0L94.3 247.1L93.9 245.6L92.3 245.3L92.4 243.8L93.7 243.2L91.6 242.8L92.0 241.2L90.9 242.0L90.4 240.6L89.4 240.7L90.7 239.6L89.3 238.4L89.2 235.5L90.7 235.5L91.2 234.2L92.9 233.9L95.2 234.6L94.8 233.7L96.4 233.3L96.0 230.0L94.9 229.8L94.6 228.0L101.0 226.9L104.3 227.5L105.1 228.9L106.1 227.9L107.7 222.5L108.7 222.7L106.7 217.7L104.9 216.0L99.3 213.3L94.8 207.1L88.5 202.7L83.1 196.5L82.9 194.8L84.2 195.0L86.8 192.8L88.2 187.1L89.8 186.3L90.1 185.3L88.5 183.8L88.9 182.7L89.8 183.2L90.0 181.2L88.8 177.8ZM60.2 226.5L58.1 224.5L60.2 226.5Z"><title>Chocó</title></path><path d="M137.9 344.9L134.4 343.9L135.0 339.0L136.5 336.3L136.0 332.3L132.2 331.0L133.4 329.8L132.7 326.7L133.4 323.4L135.0 321.5L139.8 321.8L139.4 319.5L133.7 318.9L134.0 316.8L132.4 317.8L131.0 317.6L131.3 316.2L130.6 315.7L131.5 315.4L132.0 313.8L131.4 313.0L130.2 313.7L128.4 313.1L128.5 311.5L126.9 310.5L126.0 307.7L124.3 306.5L124.4 310.1L122.5 314.3L119.6 314.8L115.8 317.6L116.5 319.5L115.3 323.7L114.2 325.6L112.1 326.5L113.4 328.3L108.8 331.4L105.8 332.0L107.1 336.6L109.8 338.8L110.2 341.0L108.2 345.2L107.0 345.3L106.5 347.4L104.4 349.2L104.2 348.1L103.0 347.6L100.6 349.4L95.4 347.7L94.7 346.5L93.3 346.7L91.9 344.3L90.1 343.3L83.7 343.9L81.7 340.7L79.0 341.7L77.6 338.6L75.8 341.3L73.9 340.1L72.4 342.1L70.5 342.3L70.5 347.6L72.4 348.4L73.7 350.9L76.7 345.5L76.9 346.2L78.0 345.0L77.7 345.9L79.5 345.2L80.7 345.9L78.0 348.5L78.6 349.2L77.4 350.0L77.9 348.9L77.1 348.5L75.3 349.9L75.2 351.9L77.0 352.1L75.8 353.0L76.7 354.4L80.8 354.7L80.7 354.0L83.5 353.0L84.3 352.2L83.7 351.7L86.2 351.8L85.6 353.9L83.8 354.1L83.7 355.4L82.5 355.6L83.1 356.3L82.1 355.6L82.9 357.1L82.2 357.2L82.5 357.9L80.2 358.1L80.4 360.9L81.3 360.3L82.1 362.4L80.5 361.8L80.2 363.5L78.7 364.9L75.9 365.4L73.2 368.8L73.4 370.0L71.5 373.7L68.3 375.7L66.4 379.3L69.0 379.6L69.2 378.6L70.9 377.9L72.8 379.9L73.5 382.2L75.3 381.0L78.7 383.7L81.6 381.0L82.8 381.6L84.5 380.6L90.4 383.4L91.7 380.0L95.7 379.6L97.1 378.6L98.7 383.0L101.3 384.0L102.8 382.9L103.7 384.4L105.0 382.9L106.2 383.9L107.5 383.2L106.7 382.5L108.0 382.2L108.0 380.0L109.6 378.1L108.5 376.8L109.1 376.5L108.2 376.3L109.6 374.8L113.1 376.5L118.8 377.0L120.4 378.9L125.5 379.5L126.4 378.0L125.6 373.8L126.8 372.6L126.3 370.5L128.6 365.6L128.3 362.5L129.9 361.0L129.6 359.8L133.3 354.7L133.6 352.8L135.6 351.0L136.3 347.7L138.5 345.9L137.9 344.9Z"><title>Valle del Cauca</title></path><path d="M222.5 198.0L225.0 199.0L228.4 204.3L231.5 205.4L232.6 204.8L233.8 206.2L236.7 206.0L237.8 206.8L237.7 204.5L239.2 202.7L243.1 203.7L248.7 203.2L248.9 206.8L252.2 208.8L252.0 210.6L254.5 213.7L254.6 215.9L252.9 217.4L254.7 219.7L253.7 221.8L254.5 224.1L256.4 226.0L258.0 225.6L258.6 228.5L260.9 227.7L261.4 229.1L261.9 228.1L265.5 228.0L266.2 232.4L267.7 232.6L268.7 230.8L269.5 232.0L272.3 233.1L275.1 231.1L277.0 227.4L278.0 227.8L278.2 228.9L280.0 227.7L280.6 225.9L282.7 226.8L286.1 226.5L281.0 217.9L281.8 214.9L280.1 212.6L275.0 213.0L270.4 211.9L270.1 209.5L269.0 208.5L269.9 205.6L268.9 202.7L269.0 197.7L270.2 193.7L268.5 190.3L271.2 188.2L271.4 186.6L274.1 187.4L274.0 184.8L273.1 183.8L273.8 181.4L272.3 177.9L272.5 174.2L261.8 163.4L257.3 143.8L256.1 143.9L255.1 142.4L255.0 143.1L252.8 142.7L252.5 143.9L250.1 144.3L248.5 142.3L249.8 140.8L248.2 139.2L248.6 137.9L247.6 136.3L245.1 137.5L244.4 139.0L242.7 138.9L240.9 140.9L239.4 140.7L238.0 141.7L234.1 141.1L234.0 139.5L233.3 141.5L231.7 141.6L231.0 143.0L231.0 152.1L230.1 153.2L231.4 157.3L229.7 158.0L227.1 161.7L227.3 166.9L224.9 168.0L226.0 169.1L229.0 169.3L226.9 172.7L228.7 172.8L230.3 174.4L232.3 172.7L231.4 169.6L233.5 170.3L234.0 174.7L233.0 175.2L233.2 176.9L231.8 178.1L230.6 182.1L232.9 183.8L233.4 187.5L235.6 187.4L236.1 188.6L236.7 188.3L237.0 190.2L235.8 191.7L234.0 192.3L234.0 196.2L230.4 200.2L228.4 200.9L224.8 198.4L222.5 198.0Z"><title>Norte de Santander</title></path><path d="M152.5 319.4L148.7 321.4L145.9 319.9L141.6 320.0L139.9 319.1L139.8 321.8L135.1 321.4L134.0 322.5L132.8 326.6L133.4 329.8L132.2 331.3L135.9 332.2L136.5 336.3L134.3 341.9L134.5 344.1L137.8 345.0L140.3 342.6L141.7 339.0L144.1 336.8L144.9 329.9L147.0 328.2L147.4 325.8L149.3 324.0L151.2 323.6L151.1 321.8L152.5 319.4Z"><title>Quindío</title></path><path d="M324.9 392.7L325.6 393.9L327.5 393.7L328.5 394.9L329.9 394.4L330.0 396.5L330.9 395.6L330.7 393.7L333.3 397.0L335.3 395.5L336.2 396.4L335.6 397.6L339.1 396.3L339.6 398.5L342.4 395.9L341.7 393.8L342.6 394.1L343.1 396.3L344.6 394.4L348.1 396.6L348.3 395.5L353.8 393.9L353.9 391.4L356.9 390.7L355.9 386.6L357.8 386.2L355.2 384.7L356.7 384.4L356.6 383.0L358.0 382.1L358.1 380.9L359.7 381.1L359.4 379.7L360.4 381.1L361.4 380.8L361.0 378.6L362.0 380.3L362.8 380.0L361.7 377.0L363.6 376.2L361.1 374.0L362.8 373.4L363.0 372.0L364.9 372.5L366.8 371.3L367.8 373.1L370.1 372.3L369.8 369.7L372.0 371.1L373.2 370.5L373.6 368.8L372.2 366.6L373.1 366.6L374.0 368.4L375.3 368.9L374.3 366.1L375.2 365.7L376.0 367.7L376.7 365.5L379.4 366.1L378.4 364.3L379.8 365.1L380.1 366.4L381.6 364.6L382.9 365.2L383.7 364.1L384.4 365.3L385.2 361.2L384.4 360.7L387.8 360.9L388.3 362.0L389.9 359.6L391.2 361.5L392.5 360.6L393.2 361.4L395.8 359.3L396.2 362.2L397.2 360.9L396.7 359.0L398.1 359.3L398.7 361.0L399.7 359.9L400.0 361.3L401.2 361.1L400.6 362.7L403.3 360.9L404.0 362.4L405.0 361.8L405.7 362.5L408.2 360.3L410.4 360.7L410.6 358.3L411.1 360.6L413.5 359.7L414.8 361.3L413.9 358.4L416.1 359.2L417.7 356.7L422.0 357.6L420.8 356.2L421.2 355.6L422.7 357.1L425.0 356.4L426.0 357.5L425.1 355.4L427.6 356.9L427.5 355.1L428.8 354.0L430.3 354.4L430.3 352.6L432.2 354.0L432.3 353.1L430.5 351.6L434.1 351.1L434.3 348.3L439.6 349.6L439.8 348.2L442.6 348.1L442.8 350.2L444.7 348.8L444.9 350.5L446.7 347.6L447.0 348.9L450.6 349.5L451.5 351.7L459.3 346.6L458.6 342.9L456.1 338.5L455.8 334.9L457.5 334.0L457.1 331.2L456.1 330.5L456.0 328.5L453.7 327.0L455.3 319.7L454.5 310.3L455.8 305.8L453.8 302.6L455.0 300.2L454.0 295.8L463.0 289.0L464.0 286.2L463.2 285.4L462.5 281.0L464.1 274.9L466.7 271.8L471.6 268.2L468.2 262.8L469.7 260.3L469.3 259.6L466.1 257.3L464.5 257.5L463.0 256.3L457.5 256.3L455.6 255.0L450.8 258.6L446.9 260.2L444.9 258.9L442.3 258.9L435.7 261.5L430.1 260.5L427.6 260.8L426.3 262.0L424.5 261.3L422.2 262.8L419.7 261.9L416.3 262.1L414.8 260.8L412.7 261.3L407.4 260.3L406.2 259.1L403.1 260.4L398.5 264.8L395.6 264.5L394.0 262.4L386.3 266.3L376.0 265.6L374.3 266.8L373.5 269.0L362.8 283.2L356.5 285.6L353.8 284.3L344.9 290.9L340.4 292.7L340.9 295.0L340.3 296.4L334.2 301.7L330.4 302.8L327.7 309.2L324.9 311.0L324.9 392.7Z"><title>Vichada</title></path><path d="M390.7 550.9L391.3 549.8L390.2 548.9L391.3 547.9L389.6 547.8L389.2 546.3L386.9 545.0L387.0 542.7L385.1 541.6L385.4 540.3L383.0 537.9L385.5 533.5L383.9 531.8L383.7 528.0L374.9 523.0L374.2 521.5L371.2 521.0L366.3 515.6L366.1 485.5L367.8 486.2L368.0 485.0L368.9 484.9L370.6 485.9L371.3 484.4L375.1 484.3L375.9 485.1L381.2 481.3L383.8 483.5L384.1 481.8L385.5 480.6L386.6 480.8L386.7 479.9L388.8 478.6L390.7 479.5L394.0 483.4L394.6 482.3L395.2 483.0L396.4 482.0L396.2 483.8L400.0 483.8L400.8 481.9L403.1 482.7L403.3 481.8L400.4 478.4L402.0 477.3L401.4 474.3L402.6 473.1L400.5 471.5L401.4 470.3L399.3 469.1L400.1 468.0L398.2 465.7L396.5 465.9L395.2 464.5L392.9 464.5L391.1 466.3L390.4 465.0L385.5 465.2L383.6 464.1L379.8 465.0L379.6 463.3L377.1 463.9L375.7 465.5L374.3 465.1L374.3 439.4L366.0 437.0L362.0 433.3L360.9 433.2L361.5 430.8L362.5 430.6L362.4 428.9L363.5 427.9L363.6 424.8L361.9 425.1L360.8 427.0L358.0 426.8L353.9 428.7L353.3 427.8L352.5 428.6L350.6 428.0L348.5 430.2L346.7 429.7L344.8 430.9L343.2 430.8L342.5 431.9L340.4 432.1L338.7 431.0L337.6 431.6L337.2 430.9L336.0 431.8L333.4 431.7L332.3 430.9L329.5 434.4L328.0 435.4L324.3 436.0L324.2 436.8L323.0 436.7L320.8 438.2L317.8 441.3L315.4 439.4L313.5 439.9L312.4 438.6L312.4 444.0L311.1 444.7L309.8 449.2L308.4 450.1L308.9 451.8L306.9 456.9L305.9 456.9L305.9 459.7L306.6 459.7L308.6 463.6L307.0 463.4L306.7 461.6L305.8 461.7L306.4 463.4L304.7 462.9L304.6 466.2L303.3 466.5L301.5 469.1L298.3 468.6L297.2 469.6L296.8 471.8L286.7 481.3L288.8 482.7L287.5 484.1L288.4 485.5L289.9 486.4L290.3 485.2L290.8 485.9L291.5 487.5L290.9 488.5L292.0 489.2L291.3 490.0L292.4 490.2L292.5 489.3L293.8 489.8L294.2 491.6L295.0 491.7L293.9 493.9L295.0 494.4L295.9 493.9L295.4 493.1L297.4 493.2L296.5 494.7L297.9 494.7L298.5 496.6L299.9 495.3L299.1 497.0L300.1 498.5L303.1 499.4L303.3 500.2L302.6 500.6L305.6 499.3L304.5 501.4L306.8 501.4L306.7 503.1L308.2 502.6L309.1 500.6L309.8 501.0L309.4 502.0L311.2 502.3L312.0 500.5L313.6 502.2L314.7 501.8L314.9 503.5L316.4 504.2L316.2 505.2L319.0 505.8L320.9 504.2L322.2 505.5L322.7 507.9L323.8 506.9L324.1 508.3L326.5 508.2L326.0 509.3L326.9 509.9L327.3 508.5L329.2 508.3L332.3 512.5L330.1 514.1L332.7 516.5L332.9 519.3L334.9 522.6L337.6 521.1L336.8 520.5L338.6 519.5L341.0 522.1L342.9 520.9L344.8 523.7L347.2 522.3L349.8 525.5L349.7 527.8L352.1 526.5L352.8 527.9L354.6 527.9L355.1 526.8L353.4 526.1L355.7 525.6L356.4 524.5L358.0 525.7L359.5 525.6L359.9 526.9L358.2 526.7L354.9 530.5L355.5 531.5L356.2 530.2L357.4 531.3L358.0 537.5L356.4 538.0L356.2 539.7L359.1 543.3L355.7 546.6L357.9 548.8L360.1 547.4L358.9 549.9L360.9 551.0L361.3 552.5L362.9 552.3L364.9 549.4L364.4 548.5L362.6 548.7L362.9 547.1L364.7 545.8L366.6 547.1L367.3 545.4L368.0 547.0L370.4 545.9L371.9 546.8L369.8 547.8L370.3 549.2L369.1 551.0L369.7 551.8L372.9 551.2L374.6 549.1L377.7 551.9L378.7 551.4L377.2 549.4L380.0 550.1L382.0 552.7L381.9 553.3L380.8 552.9L381.5 557.1L382.4 556.7L382.6 554.7L384.2 553.9L385.5 555.8L388.9 556.5L389.4 555.1L388.4 554.0L389.6 553.5L389.4 551.2L390.7 550.9Z"><title>Vaupés</title></path><path d="M187.2 257.0L187.6 259.2L189.2 260.0L188.9 261.6L190.0 264.1L191.8 264.6L192.8 266.4L194.1 266.4L196.1 264.7L197.6 265.4L197.7 267.5L199.1 269.3L198.7 271.8L196.8 273.4L197.5 274.9L200.1 273.8L200.8 271.5L203.9 273.0L204.8 275.2L207.0 275.7L208.7 279.2L209.6 278.4L212.4 278.4L213.0 279.7L214.9 278.4L215.5 279.4L217.7 277.2L219.4 276.8L222.1 279.5L224.0 273.3L222.8 271.4L223.8 270.6L224.6 267.7L226.4 266.6L228.1 263.6L231.4 265.0L233.1 267.8L231.7 272.4L230.3 272.5L230.7 274.0L229.5 274.1L229.1 275.2L230.8 277.3L232.4 277.9L234.1 274.3L233.2 273.1L236.8 273.8L238.1 275.4L240.2 274.7L240.2 273.1L238.4 271.9L240.0 267.8L241.7 268.7L242.1 267.0L242.5 268.1L244.2 268.4L246.7 267.0L247.6 269.4L251.4 263.7L254.8 262.1L255.8 259.4L258.2 258.8L257.6 255.9L259.0 253.1L259.0 249.7L255.7 245.6L257.4 244.7L259.2 245.9L262.1 250.6L266.4 248.5L266.3 244.7L268.6 241.6L268.1 236.1L268.9 234.3L268.0 231.7L267.3 232.7L266.2 232.4L265.5 228.0L261.9 228.1L261.4 229.1L260.9 227.7L258.6 228.5L258.0 225.6L256.4 226.0L254.5 224.1L253.7 221.8L254.7 219.7L252.9 217.4L254.6 215.9L254.5 213.7L252.0 210.6L252.2 208.8L248.9 206.8L248.7 203.2L243.1 203.7L239.2 202.7L237.7 204.5L237.8 206.8L236.7 206.0L233.8 206.2L232.6 204.8L231.5 205.4L228.4 204.3L225.0 199.0L222.5 198.0L217.9 198.0L217.5 197.2L218.5 196.7L218.0 195.0L221.1 192.3L221.1 190.9L219.1 189.2L219.3 187.8L217.0 182.3L214.3 184.3L213.3 186.4L216.0 197.1L214.7 198.9L216.1 201.9L215.3 202.3L215.6 203.3L214.0 206.5L211.4 208.5L212.2 211.4L210.4 221.0L212.5 225.2L212.6 227.9L207.8 231.5L201.2 238.9L198.8 239.5L194.8 242.8L193.5 242.7L192.0 244.4L191.8 249.2L193.3 251.7L190.9 252.4L189.4 255.5L187.2 257.0Z"><title>Santander</title></path><path d="M133.3 288.5L131.8 288.8L130.8 287.7L128.7 287.2L127.6 285.3L126.5 285.4L125.0 286.1L124.5 290.2L120.2 292.3L119.5 294.1L122.8 300.8L125.6 302.8L124.1 306.6L126.0 307.7L126.9 310.5L128.5 311.5L128.4 313.1L130.2 313.7L131.4 313.0L132.0 313.8L131.5 315.4L130.6 315.7L131.3 316.2L131.1 317.6L134.0 316.8L133.7 318.9L145.9 319.9L148.7 321.4L150.3 320.7L152.9 318.8L153.0 315.8L150.9 315.3L148.8 311.3L143.3 310.7L142.4 309.0L141.9 310.1L140.0 310.2L138.1 306.2L135.4 311.2L132.2 309.5L131.1 306.3L131.5 304.6L132.4 302.8L134.6 303.4L135.9 299.9L135.1 297.2L138.1 296.6L140.3 297.8L142.6 295.4L142.5 294.5L139.0 292.1L135.6 293.5L133.6 293.1L133.3 288.5Z"><title>Risaralda</title></path><path d="M214.3 523.9L207.5 521.5L206.2 518.9L204.7 519.1L203.2 517.3L201.4 518.7L200.5 518.4L200.0 516.4L198.4 517.4L196.5 516.1L197.4 513.8L195.8 513.9L194.1 512.3L190.1 513.6L191.1 512.2L189.8 510.9L189.3 512.8L188.2 513.5L187.3 511.6L186.6 511.8L186.8 513.1L182.7 511.5L183.4 510.4L182.2 509.5L180.9 510.4L181.8 508.4L179.9 506.2L181.8 505.1L179.5 504.3L181.0 504.1L180.9 501.6L179.0 499.7L174.1 499.4L171.9 497.9L169.6 498.3L167.9 497.1L167.6 496.3L168.8 495.6L167.3 492.6L168.7 491.8L167.2 489.0L163.8 489.1L163.8 487.5L162.0 488.7L159.2 488.7L160.1 487.8L158.7 485.6L159.6 484.3L159.3 482.9L157.0 481.4L157.6 479.2L155.1 478.2L154.5 477.1L151.7 478.5L148.7 476.7L147.5 477.2L146.5 476.5L146.4 474.8L143.7 474.5L142.3 472.9L137.6 474.5L136.1 472.2L133.6 472.5L131.8 469.2L130.1 468.9L131.2 466.8L128.2 465.1L128.2 466.9L127.8 465.7L124.5 465.7L124.8 467.2L123.0 467.7L121.1 466.8L119.8 467.3L120.4 468.2L118.6 468.7L118.6 469.4L116.9 468.7L114.8 469.7L114.6 468.8L113.2 468.6L111.5 469.6L110.2 469.2L108.3 466.9L106.2 466.5L105.3 464.5L106.5 459.6L104.7 456.7L105.0 452.5L101.3 449.3L92.5 453.1L91.2 454.2L91.9 455.3L91.1 457.0L89.0 455.1L84.8 459.1L83.1 459.4L84.6 460.8L84.4 465.2L85.6 466.6L86.4 466.1L86.9 467.5L83.3 472.0L83.9 474.6L82.4 475.2L80.5 482.8L83.3 484.3L82.8 487.0L84.5 492.1L83.5 493.1L85.0 496.6L86.9 496.9L87.7 496.2L88.6 497.4L90.7 496.9L91.7 498.2L94.2 498.4L96.1 497.4L97.8 498.1L97.3 497.5L98.7 496.5L99.5 497.2L101.8 497.2L101.9 498.0L103.0 497.5L104.5 499.3L106.7 497.7L107.8 498.5L110.1 498.4L110.6 497.7L111.1 498.6L111.5 492.8L114.2 492.8L115.4 490.6L116.1 491.2L116.9 490.5L118.9 492.9L121.7 492.5L122.7 493.2L123.5 495.4L125.3 494.6L127.9 496.1L128.7 497.7L127.8 498.1L129.6 498.5L129.8 499.9L132.1 501.5L131.8 502.4L132.7 502.4L132.9 503.3L133.8 502.7L135.7 506.0L141.9 506.7L142.7 506.1L144.7 507.4L145.0 509.1L146.8 508.8L150.9 511.5L157.1 513.0L159.5 510.0L161.5 509.8L164.9 511.3L167.5 513.9L169.1 514.2L170.9 517.0L171.5 516.1L172.7 517.7L176.3 515.6L178.9 519.9L178.9 521.7L180.8 521.2L181.6 523.0L183.7 522.1L183.3 523.1L185.9 524.3L186.5 526.3L188.1 526.5L188.1 527.5L189.1 526.9L191.1 528.0L191.2 530.4L214.3 523.9Z"><title>Putumayo</title></path><path d="M17.8 435.2L18.1 435.8L19.1 435.0L17.8 435.2ZM15.2 449.4L14.7 450.0L15.2 449.4ZM91.2 454.2L90.8 448.0L93.7 447.1L94.6 443.4L91.9 441.5L90.6 438.8L87.1 439.4L85.1 441.3L82.5 441.8L82.0 440.6L78.5 441.7L74.8 440.7L76.2 437.4L75.6 435.8L76.5 434.0L79.9 430.0L79.1 428.5L74.6 425.8L75.7 423.7L75.1 419.1L73.6 417.5L69.6 416.6L68.8 417.1L68.5 420.2L65.8 419.9L63.9 421.4L58.4 422.7L54.5 420.9L54.1 417.6L51.2 411.3L51.3 403.7L50.9 402.4L50.7 403.2L49.0 402.3L49.2 401.5L46.5 402.3L45.7 403.3L47.0 404.8L46.0 405.8L44.8 402.6L43.9 402.1L43.1 403.1L42.0 400.7L39.6 401.4L40.6 404.7L38.5 402.8L38.2 401.4L35.9 401.6L36.6 403.8L35.6 404.5L34.3 402.9L34.7 401.8L32.2 403.8L30.1 404.2L27.6 408.4L26.2 408.3L25.7 410.3L25.2 410.1L23.3 412.8L23.4 414.1L21.4 417.0L21.8 417.9L20.8 418.2L19.6 421.1L19.9 423.4L21.3 423.1L21.6 424.1L20.5 423.7L20.8 425.6L22.1 426.1L21.1 426.2L21.1 429.0L22.0 428.9L22.5 427.5L23.9 428.2L24.6 429.5L23.9 430.1L24.1 432.3L25.9 432.0L26.6 433.7L26.0 435.2L26.8 436.0L25.6 436.2L25.8 437.7L24.7 438.4L25.3 437.9L24.4 437.1L23.9 438.2L24.0 436.3L22.0 436.3L21.8 437.0L20.5 436.7L20.5 438.0L20.3 436.6L20.0 437.2L19.3 436.3L18.9 438.5L18.0 438.3L19.0 437.5L17.5 435.0L16.5 435.9L14.7 435.3L7.7 441.9L8.4 442.1L7.8 442.6L8.3 443.8L11.8 446.3L13.2 445.8L13.9 448.9L16.0 448.6L15.1 449.5L16.6 450.1L16.3 451.6L17.5 451.6L16.8 451.4L16.9 452.3L21.5 455.3L23.2 458.1L25.9 458.0L27.4 459.5L27.4 460.5L28.2 460.1L29.8 461.0L30.5 460.2L31.0 462.5L31.3 461.6L35.6 460.4L36.7 463.5L38.0 464.0L36.7 465.8L39.7 467.9L40.6 470.5L43.5 470.7L44.5 472.1L50.6 475.3L54.3 475.9L59.5 474.0L61.4 475.3L60.9 476.3L61.6 476.4L60.1 478.3L61.0 478.5L61.4 479.8L65.6 482.0L68.8 481.8L68.8 483.8L67.2 486.8L66.9 492.0L70.8 490.5L72.4 492.5L73.2 492.0L76.5 493.5L79.4 493.5L80.9 492.4L83.5 493.1L84.5 492.1L82.8 487.0L83.3 484.3L80.5 482.8L82.4 475.2L83.9 474.6L83.3 472.0L86.9 467.5L86.4 466.1L85.6 466.6L84.4 465.2L84.6 460.8L83.1 459.4L84.8 459.1L89.0 455.1L91.1 457.0L91.9 455.3L91.2 454.2ZM22.8 414.9L23.2 413.7L22.8 414.9ZM46.1 404.5L45.3 404.9L46.1 405.5L46.7 405.1L46.1 404.5Z"><title>Nariño</title></path><path d="M221.6 443.4L221.7 444.9L225.8 449.8L226.4 451.9L228.7 453.1L229.8 455.6L231.0 456.4L231.3 460.3L232.3 462.0L238.2 466.4L238.4 467.5L241.0 468.1L240.5 469.3L242.5 471.3L243.6 471.1L244.8 472.2L247.6 471.5L250.7 467.4L253.2 466.9L253.6 465.2L252.6 465.0L253.2 464.6L252.7 464.1L254.0 463.8L253.1 462.5L253.8 461.5L254.9 461.9L255.2 460.8L257.1 460.7L256.9 462.0L258.0 462.8L259.1 462.0L258.9 460.5L261.6 461.9L262.0 460.7L263.0 462.5L267.6 465.3L269.8 464.8L272.0 467.8L272.0 469.3L273.0 469.6L272.3 471.2L274.5 471.0L274.9 474.4L275.1 473.0L276.4 473.0L276.0 474.3L276.6 475.2L275.6 475.6L277.2 477.5L277.2 476.2L278.1 476.5L279.2 479.8L280.4 478.9L281.5 479.4L281.4 478.6L282.4 479.3L282.9 478.5L283.6 479.9L285.2 480.3L284.6 481.7L285.9 481.8L296.8 471.8L297.2 469.6L298.3 468.6L301.5 469.1L303.3 466.5L304.6 466.2L304.7 462.9L306.4 463.4L305.8 461.7L306.7 461.6L307.0 463.4L308.6 463.6L306.6 459.7L305.9 459.7L305.9 456.9L306.9 456.9L308.9 451.8L308.4 450.1L309.8 449.2L311.1 444.7L312.4 444.0L312.4 438.6L313.5 439.9L315.4 439.4L317.8 441.3L320.8 438.2L323.0 436.7L324.2 436.8L324.3 436.0L328.0 435.4L329.5 434.4L332.8 430.7L333.4 431.7L336.0 431.8L337.2 430.9L337.6 431.6L338.7 431.0L340.4 432.1L342.5 431.9L343.2 430.8L344.8 430.9L346.7 429.7L348.5 430.2L350.6 428.0L352.5 428.6L353.3 427.8L353.9 428.7L358.0 426.8L360.8 427.0L361.9 425.1L363.7 424.7L363.3 423.5L364.0 422.8L366.7 421.7L366.6 420.7L367.7 420.7L368.2 419.2L365.4 416.2L364.6 417.5L362.1 416.9L362.3 418.0L361.6 417.4L361.7 418.4L361.0 418.5L360.3 417.9L360.2 418.8L358.1 418.3L358.3 417.4L357.1 418.5L355.8 417.9L356.3 418.9L355.5 419.7L354.3 418.1L353.4 418.6L352.0 417.3L348.1 418.7L347.6 416.7L346.8 417.3L342.8 415.5L340.9 410.3L338.7 408.6L337.9 406.5L336.3 407.2L334.8 406.7L333.9 405.2L331.0 405.3L330.3 403.7L347.7 396.5L344.6 394.4L343.3 396.3L342.6 394.1L341.7 393.8L342.4 395.9L339.6 398.5L339.1 396.3L335.6 397.6L336.2 396.4L335.3 395.5L333.3 397.0L330.7 393.7L330.9 395.6L330.0 396.5L329.7 394.3L328.5 394.9L327.5 393.7L325.6 393.9L324.8 392.7L323.6 393.1L322.6 391.9L322.1 393.1L320.6 391.8L319.0 393.4L317.6 392.6L316.5 393.3L315.3 391.0L314.2 393.6L312.9 392.4L312.5 394.1L309.4 392.1L309.2 393.9L307.9 393.0L304.7 393.1L305.0 394.2L302.1 395.3L301.1 395.0L301.6 393.2L300.0 394.4L297.5 392.1L296.8 395.3L296.5 393.3L295.1 392.9L294.0 393.2L295.1 393.3L294.8 394.5L290.2 394.7L288.7 396.0L287.8 394.9L284.8 395.1L282.6 392.5L282.0 393.5L279.8 393.5L280.3 397.1L277.7 395.0L277.0 396.9L275.2 396.0L271.8 399.0L269.3 398.6L269.2 400.4L266.6 399.9L266.6 400.7L265.2 401.0L265.7 402.0L264.6 402.2L264.5 404.7L263.4 403.0L262.3 403.5L262.0 405.1L260.7 403.1L258.2 405.2L255.2 403.5L251.5 405.3L251.1 406.8L249.8 407.3L250.7 409.4L249.5 408.8L249.4 410.0L246.7 411.5L246.3 410.5L245.4 410.9L243.6 412.8L243.0 411.5L242.4 412.1L243.0 412.8L241.5 413.4L241.3 412.0L240.0 412.7L239.3 411.8L237.3 412.8L238.4 413.2L238.4 414.0L237.2 413.6L236.0 414.5L234.7 413.6L234.7 414.6L233.8 415.0L233.7 413.2L232.9 415.0L231.4 413.7L230.5 414.9L230.3 412.5L230.1 414.3L228.0 413.6L227.6 414.7L226.9 412.5L225.1 413.8L224.6 412.4L223.4 412.9L222.7 413.5L223.4 414.3L222.6 415.0L222.9 416.1L221.8 416.2L221.6 443.4Z"><title>Guaviare</title></path><path d="M347.7 396.5L330.3 403.9L331.0 405.3L333.9 405.2L335.7 407.0L338.0 406.6L338.7 408.6L340.9 410.3L342.8 415.5L346.8 417.3L347.6 416.7L348.1 418.7L352.0 417.3L353.4 418.6L354.3 418.1L355.5 419.7L356.3 418.9L355.8 417.9L357.1 418.5L358.3 417.4L358.1 418.3L360.2 418.8L360.3 417.9L361.0 418.5L361.7 418.4L361.6 417.4L362.3 418.0L362.1 416.9L364.6 417.5L365.2 416.2L366.1 416.2L365.8 416.8L366.9 417.1L367.0 418.5L368.2 419.7L367.7 420.7L366.6 420.7L366.7 421.7L365.8 421.5L363.3 423.5L363.5 427.9L360.8 432.6L366.3 437.2L369.0 438.3L371.2 438.1L373.6 439.7L374.4 439.2L376.7 440.3L378.2 438.8L382.9 439.1L386.6 436.9L392.4 438.8L441.4 438.8L440.3 438.5L440.9 437.4L440.3 436.8L438.4 437.2L438.9 434.8L436.6 434.8L439.5 429.7L440.2 426.6L440.8 428.9L442.2 428.9L444.4 432.1L446.7 432.4L451.9 435.5L452.4 433.5L454.5 431.9L455.4 429.1L458.7 426.9L466.0 426.1L468.2 421.5L470.0 421.2L470.5 419.1L472.1 418.8L473.3 419.7L474.0 421.7L473.6 424.0L474.9 425.4L473.9 427.8L474.8 430.3L478.9 434.3L481.8 434.7L481.6 441.0L482.9 442.4L482.4 443.9L484.7 449.8L484.8 452.6L482.4 455.2L484.0 457.7L484.5 461.3L494.0 458.8L492.8 456.5L493.8 455.1L493.8 453.2L491.6 451.1L491.2 446.8L489.4 444.4L489.6 442.7L486.7 436.5L485.4 431.2L483.1 428.9L484.1 425.9L483.7 423.2L483.1 422.5L481.5 422.7L479.1 417.8L480.5 414.0L479.1 412.1L476.1 410.3L474.3 407.1L469.3 403.2L468.4 401.5L465.5 401.7L465.5 399.1L463.4 395.5L461.8 396.2L458.0 394.5L455.4 394.7L454.5 396.2L453.4 396.4L453.4 393.4L470.6 378.1L472.7 378.2L472.7 376.3L475.6 372.9L474.4 370.0L471.9 368.8L470.2 364.6L470.1 360.9L467.9 357.3L463.7 357.9L462.6 356.6L459.6 346.1L451.5 351.7L450.6 349.5L447.0 348.9L446.7 347.6L444.9 350.5L444.7 348.8L442.8 350.2L442.6 348.1L439.8 348.2L439.6 349.6L434.3 348.3L434.1 351.1L430.5 351.6L432.3 353.1L432.2 354.0L430.3 352.6L430.3 354.4L428.8 354.0L427.5 355.1L427.6 356.9L425.1 355.4L426.0 357.5L425.0 356.4L422.7 357.1L421.2 355.6L420.8 356.2L422.0 357.6L417.7 356.7L416.1 359.2L413.9 358.4L414.8 361.3L413.5 359.7L411.1 360.6L410.6 358.3L410.4 360.7L408.2 360.3L405.7 362.5L405.0 361.8L404.0 362.4L403.3 360.9L400.6 362.7L401.2 361.1L400.0 361.3L399.7 359.9L398.7 361.0L398.1 359.3L396.7 359.0L397.2 360.9L396.2 362.2L395.8 359.3L393.2 361.4L392.5 360.6L391.2 361.5L389.9 359.6L388.3 362.0L387.8 360.9L384.4 360.7L385.2 361.2L384.4 365.3L383.7 364.1L382.9 365.2L381.6 364.6L380.1 366.4L379.8 365.1L378.4 364.3L379.4 366.1L376.7 365.5L376.0 367.7L375.2 365.7L374.3 366.1L375.3 368.9L374.0 368.4L373.1 366.6L372.2 366.6L373.6 368.8L373.2 370.5L372.0 371.1L369.8 369.7L370.1 372.3L367.8 373.1L366.8 371.3L364.9 372.5L363.0 372.0L362.8 373.4L361.1 374.0L363.6 376.2L361.7 377.0L362.8 380.0L362.0 380.3L361.0 378.6L361.4 380.8L360.4 381.1L359.4 379.7L359.7 381.1L358.1 380.9L358.0 382.1L356.6 383.0L356.7 384.4L355.2 384.7L357.8 386.2L355.9 386.6L356.9 390.7L353.9 391.4L353.8 393.9L348.3 395.5L347.7 396.5Z"><title>Guainía</title></path><path d="M202.2 347.9L202.9 343.0L203.7 342.5L201.9 337.8L204.1 334.0L203.5 330.7L205.0 329.4L205.1 327.6L206.2 327.5L206.8 325.7L207.8 325.5L208.1 323.9L206.7 322.6L207.9 321.0L207.3 317.3L208.0 315.8L205.0 314.5L204.5 316.2L203.4 316.5L203.0 318.8L200.9 319.9L201.7 321.5L199.1 322.3L199.1 323.3L200.7 324.2L200.8 327.1L201.6 327.7L199.3 332.9L199.9 338.3L198.3 340.1L197.7 344.4L194.9 342.8L193.0 348.6L193.7 349.2L193.4 352.1L189.9 358.2L190.3 358.9L191.9 358.5L194.5 355.1L196.1 355.2L195.2 352.8L197.7 350.8L199.3 347.7L202.2 347.9Z"><title>Bogotá D.C.</title></path><path d="M390.8 263.7L363.3 228.8L359.0 229.0L357.4 230.4L355.1 230.6L353.1 228.8L351.3 228.8L350.8 227.7L347.9 227.8L345.7 224.8L342.3 225.2L340.5 223.8L331.3 225.9L331.1 227.1L329.2 227.3L327.1 229.0L323.5 228.4L323.9 227.7L322.8 226.7L318.4 227.5L317.4 226.7L313.2 227.4L311.0 226.4L309.4 227.5L306.9 226.6L304.5 227.4L304.5 225.8L299.8 226.7L298.2 225.4L295.6 225.5L294.6 227.0L290.2 227.6L286.0 237.2L284.1 238.2L284.4 242.2L282.9 247.6L281.1 248.0L280.7 249.6L279.7 249.4L279.1 250.6L277.6 250.7L275.3 254.6L273.9 254.3L273.3 256.3L274.2 259.0L276.7 260.3L277.0 262.7L282.5 265.3L289.8 261.1L291.9 261.7L295.2 260.4L301.1 260.5L302.5 258.9L305.2 260.4L305.1 259.6L306.0 260.2L306.7 259.0L307.6 260.2L308.2 259.3L308.6 259.9L310.5 259.3L310.1 258.1L311.2 259.0L311.4 258.3L312.7 258.3L312.9 259.0L316.2 257.0L317.1 257.6L317.3 256.7L318.7 257.4L319.1 256.1L321.7 257.5L324.3 256.8L325.6 257.8L326.6 257.3L328.6 258.8L333.3 259.2L336.0 257.8L339.0 259.4L344.8 258.0L346.8 258.8L352.8 256.0L357.2 257.1L360.2 256.2L361.0 256.8L361.6 256.1L363.4 258.6L366.6 260.5L365.7 261.6L368.0 262.1L368.5 261.3L368.5 262.5L370.0 262.3L372.3 265.9L373.5 266.4L376.2 265.6L386.3 266.3L390.8 263.7Z"><title>Arauca</title></path><path d="M181.6 277.9L182.1 278.5L182.8 277.5L184.2 278.2L187.6 276.2L190.7 277.6L194.6 274.5L195.9 276.1L196.0 279.3L196.9 280.2L195.4 283.1L196.2 285.1L198.3 286.2L197.8 288.5L199.9 288.1L203.0 290.7L203.5 289.1L204.1 289.2L204.4 290.9L207.2 292.5L207.1 293.4L208.3 293.0L209.1 291.2L212.0 290.0L211.7 287.0L212.4 287.5L215.8 285.1L217.2 288.5L224.3 292.0L223.9 295.3L226.7 296.8L227.6 301.5L228.9 302.1L228.2 303.7L228.8 305.8L227.1 306.8L227.7 308.1L226.3 310.1L226.5 312.2L227.2 312.9L229.1 312.3L231.9 312.9L233.2 316.0L235.1 316.9L235.8 318.8L238.6 318.6L239.2 320.9L243.8 321.6L245.1 318.4L246.1 318.2L245.0 315.3L246.3 313.0L246.8 308.7L247.3 307.9L249.1 309.0L251.9 305.3L251.6 303.9L250.9 304.1L249.1 302.0L251.7 298.0L252.9 293.6L253.9 294.1L256.1 292.2L260.0 297.1L262.5 294.4L264.8 293.9L265.3 293.0L264.7 292.7L267.7 290.4L271.3 285.3L272.1 285.2L274.2 287.7L276.8 283.8L277.5 281.2L276.0 280.5L277.8 276.3L272.3 275.1L273.3 274.9L275.0 272.5L274.4 268.1L273.4 266.5L275.3 264.8L273.2 264.8L272.3 262.9L273.1 262.0L272.2 260.5L271.2 260.6L272.5 257.5L272.0 257.1L274.0 254.2L275.3 254.6L277.6 250.7L279.1 250.6L279.7 249.4L280.7 249.6L281.1 248.0L282.9 247.6L284.4 242.2L284.1 238.2L286.0 237.2L290.2 227.6L284.8 226.2L282.7 226.8L281.0 225.8L279.2 228.6L278.2 228.9L278.0 227.8L276.8 227.6L275.1 231.1L272.3 233.1L268.5 230.8L267.9 232.7L268.9 234.3L268.1 236.1L268.6 241.6L266.3 244.7L266.5 248.4L262.1 250.6L259.2 245.9L257.4 244.7L255.7 245.6L259.0 249.7L259.0 253.1L257.6 255.9L258.2 258.8L255.8 259.4L254.8 262.1L251.4 263.7L247.6 269.4L246.7 267.0L244.2 268.4L242.5 268.1L242.1 267.0L241.7 268.7L240.0 267.8L238.4 271.9L240.5 273.7L239.8 275.0L238.1 275.4L236.8 273.8L233.2 273.1L234.1 274.3L232.9 277.4L230.8 277.3L229.1 275.2L229.5 274.1L230.7 274.0L230.3 272.5L231.7 272.4L233.1 267.8L231.4 265.0L228.1 263.6L226.4 266.6L224.6 267.7L223.8 270.6L222.8 271.4L224.0 273.3L222.1 279.5L219.4 276.8L217.7 277.2L215.5 279.4L214.9 278.4L213.0 279.7L212.4 278.4L209.6 278.4L208.7 279.2L207.0 275.7L204.8 275.2L203.9 273.0L200.8 271.5L200.1 273.8L197.5 274.9L196.8 273.4L198.7 271.8L199.1 269.3L197.7 267.5L197.6 265.4L196.1 264.7L194.1 266.4L192.8 266.4L191.8 264.6L190.0 264.1L188.9 261.6L189.2 260.0L187.6 259.2L187.2 257.0L183.6 262.8L183.9 264.2L185.5 265.0L185.6 267.9L183.6 269.2L184.5 272.1L182.5 273.1L181.6 277.9Z"><title>Boyacá</title></path><path d="M324.9 311.0L327.7 309.2L330.4 302.8L334.2 301.7L340.3 296.4L340.6 292.6L344.9 290.9L353.8 284.3L356.5 285.6L362.8 283.2L374.9 266.3L372.3 265.9L371.8 264.0L370.0 262.3L368.5 262.5L368.5 261.3L368.0 262.1L365.7 261.6L366.6 260.5L363.4 258.6L361.6 256.1L361.0 256.8L360.2 256.2L357.2 257.1L352.8 256.0L346.8 258.8L344.8 258.0L339.0 259.4L336.0 257.8L333.3 259.2L328.6 258.8L326.6 257.3L325.6 257.8L324.3 256.8L321.7 257.5L319.1 256.1L318.7 257.4L317.3 256.7L317.1 257.6L316.2 257.0L312.9 259.0L312.7 258.3L311.4 258.3L311.2 259.0L310.1 258.1L310.5 259.3L308.6 259.9L308.2 259.3L307.6 260.2L306.7 259.0L306.0 260.2L305.1 259.6L305.2 260.4L302.5 258.9L301.1 260.5L295.2 260.4L291.9 261.7L289.8 261.1L282.5 265.3L277.0 262.7L276.7 260.3L274.2 259.0L273.4 255.7L272.0 257.1L272.5 257.5L271.2 260.6L272.2 260.5L273.1 262.0L272.3 262.9L273.2 264.8L275.3 264.7L273.4 266.5L274.4 268.1L275.0 272.5L273.3 274.9L272.3 275.1L277.8 276.3L276.0 280.5L277.5 281.2L276.8 283.8L274.2 287.7L272.1 285.2L271.3 285.3L267.7 290.4L264.7 292.7L265.3 293.0L264.8 293.9L262.5 294.4L260.0 297.1L256.1 292.2L253.9 294.1L252.9 293.6L251.7 298.0L249.1 302.0L250.9 304.1L251.6 303.9L251.9 305.3L249.1 309.0L247.2 307.9L245.1 315.9L246.2 317.7L246.5 321.4L252.4 329.1L254.2 330.8L255.5 330.7L255.7 332.5L256.6 332.0L255.9 332.9L257.3 333.4L257.3 334.6L260.1 336.6L261.0 335.3L265.4 335.8L265.5 334.3L269.2 335.3L270.8 333.8L271.8 335.2L278.5 330.6L282.4 330.4L284.8 331.4L285.8 332.9L288.5 332.5L295.7 324.7L298.7 325.0L303.9 322.4L304.9 321.0L310.5 319.3L316.4 315.8L319.4 315.4L324.9 311.0Z"><title>Casanare</title></path><path d="M125.7 379.0L120.4 378.9L118.8 377.0L113.1 376.5L109.6 374.8L108.2 376.3L109.1 376.5L108.5 376.8L109.6 378.1L108.0 380.0L108.0 382.2L106.7 382.5L107.5 383.2L106.2 383.9L105.0 382.9L103.7 384.4L102.8 382.9L101.3 384.0L98.7 383.0L97.1 378.6L95.7 379.6L91.7 380.0L90.4 383.4L84.5 380.6L82.8 381.6L81.6 381.0L78.7 383.7L75.3 381.0L73.5 382.2L72.8 379.9L70.9 377.9L69.2 378.6L69.0 379.6L66.4 379.3L64.9 382.4L61.3 386.2L59.9 389.3L60.8 388.3L61.5 388.9L61.8 390.3L60.8 390.6L60.0 392.1L61.3 393.8L59.8 393.5L59.1 395.2L57.5 396.2L58.6 397.2L56.1 397.9L56.1 399.9L56.9 400.5L56.5 401.9L57.1 401.9L55.8 402.4L55.7 400.4L54.3 399.9L54.0 400.6L52.7 400.4L52.9 401.2L51.7 400.8L52.5 403.5L50.9 402.4L51.2 411.3L54.1 417.6L54.5 420.9L58.4 422.7L63.9 421.4L65.8 419.9L68.5 420.2L68.8 417.1L69.6 416.6L73.9 417.7L75.7 420.2L75.7 423.7L74.6 425.8L79.1 428.5L79.9 430.0L76.5 434.0L75.6 435.8L76.2 437.4L74.8 440.7L78.5 441.7L82.0 440.6L82.5 441.8L85.1 441.3L87.1 439.4L90.6 438.8L91.9 441.5L94.6 443.7L93.7 447.1L90.8 448.0L91.2 454.2L101.0 449.3L102.1 449.8L105.0 452.5L104.7 456.7L106.5 459.6L105.3 464.5L106.2 466.5L108.3 466.9L110.9 469.6L113.2 468.6L114.6 468.8L114.8 469.7L116.9 468.7L118.6 469.4L118.6 468.7L120.4 468.2L119.8 467.3L121.3 466.8L123.0 467.7L125.0 466.7L123.1 464.0L117.6 463.0L115.9 461.0L115.9 458.5L119.4 455.1L120.7 448.4L122.0 446.2L121.7 444.9L120.1 444.8L119.3 441.4L117.3 441.7L116.4 440.5L112.7 441.4L113.0 438.0L111.0 439.1L110.7 436.3L105.7 434.3L104.6 433.1L103.0 429.0L105.1 427.1L104.4 424.1L105.9 422.5L108.4 422.9L109.3 424.0L110.7 423.2L110.6 420.5L111.7 420.1L113.0 416.8L116.0 416.7L119.6 420.0L122.2 419.8L123.2 419.0L122.1 416.3L123.0 412.8L124.4 411.4L126.5 411.9L128.9 407.9L133.6 410.8L135.4 408.6L134.5 405.4L138.1 399.2L137.6 398.0L133.7 396.6L126.6 390.2L127.1 387.9L123.7 383.8L125.1 383.1L124.3 380.1L125.6 379.9L125.7 379.0Z"><title>Cauca</title></path><path d="M315.1 503.5L314.7 501.8L313.6 502.2L312.0 500.5L311.2 502.3L309.4 502.0L309.8 501.0L309.1 500.6L308.2 502.6L306.7 503.1L306.8 501.4L304.5 501.4L305.6 499.3L302.6 500.6L303.3 500.2L303.1 499.4L300.1 498.5L299.1 497.0L299.9 495.3L298.5 496.6L297.9 494.7L296.5 494.7L297.4 493.2L295.4 493.1L295.9 493.9L295.0 494.4L294.0 494.0L295.0 491.7L294.2 491.6L293.8 489.8L291.2 489.8L292.0 489.2L290.9 488.5L291.5 487.5L290.4 485.2L289.9 486.4L287.5 484.1L288.8 482.7L288.1 481.7L284.6 481.7L285.2 480.3L283.6 479.9L282.9 478.5L282.4 479.3L281.4 478.6L281.5 479.4L280.4 478.9L279.2 479.8L278.1 476.5L277.2 476.2L277.2 477.5L275.6 475.6L276.6 475.2L276.0 474.3L276.4 473.0L275.1 473.0L274.9 474.4L274.5 471.0L272.3 471.2L273.0 469.6L272.0 469.3L272.0 467.8L269.8 464.8L267.6 465.3L263.0 462.5L262.0 460.7L261.6 461.9L258.9 460.5L259.1 462.0L258.0 462.8L256.9 462.0L257.1 460.7L255.2 460.8L254.9 461.9L253.8 461.5L253.9 462.2L253.1 462.3L254.0 463.7L252.7 464.1L253.2 464.6L252.6 465.0L253.6 465.2L253.2 466.9L250.7 467.4L247.6 471.5L244.8 472.2L242.3 471.1L240.5 469.3L241.0 468.1L238.4 467.5L238.2 466.4L232.3 462.0L231.3 460.3L231.0 456.4L229.8 455.6L228.7 453.1L226.4 451.9L225.8 449.8L221.7 444.9L221.6 443.4L216.8 441.8L213.7 441.7L210.2 442.2L208.7 443.9L208.0 441.7L204.4 442.3L203.5 440.2L199.8 439.4L199.4 437.3L197.2 437.9L195.3 436.5L188.9 435.7L185.4 434.0L185.3 429.9L183.6 425.2L184.4 420.2L181.7 419.5L180.5 417.2L180.9 416.6L178.7 417.1L178.9 413.8L181.2 410.9L182.0 408.2L180.6 406.2L184.4 401.4L182.5 399.8L183.3 398.1L181.4 395.6L180.9 392.4L177.4 392.9L176.2 390.7L174.6 391.6L170.6 391.7L165.4 398.2L162.1 399.1L162.7 400.4L161.8 402.3L162.6 404.0L160.9 407.3L158.9 407.4L159.0 408.9L155.7 413.5L152.6 415.4L150.5 419.0L151.1 420.4L150.3 421.9L146.7 423.3L138.4 436.6L133.5 439.4L131.7 439.4L126.1 445.1L123.2 445.8L121.3 444.5L122.0 446.2L120.7 448.4L119.4 455.1L115.8 458.8L116.4 459.7L115.9 461.0L117.6 463.0L122.9 463.9L124.6 465.7L127.8 465.7L128.1 466.9L128.2 465.1L131.2 466.8L130.1 468.9L131.8 469.2L134.0 472.8L136.1 472.2L137.7 474.5L138.6 473.6L142.3 472.9L143.7 474.5L146.4 474.8L146.5 476.5L147.5 477.2L148.7 476.7L151.7 478.5L154.5 477.1L155.1 478.2L157.3 479.0L157.0 481.4L158.9 482.2L159.6 484.3L158.6 485.1L160.1 487.8L159.2 488.7L162.0 488.7L163.8 487.5L163.8 489.1L166.9 488.7L168.7 491.4L167.3 492.6L168.8 495.6L167.6 496.3L167.9 497.1L169.6 498.3L171.9 497.9L174.1 499.4L179.0 499.7L180.9 501.6L181.0 504.1L179.5 504.3L181.8 505.1L179.8 506.5L181.8 508.4L180.9 510.4L182.2 509.5L183.3 510.1L182.7 511.5L186.8 513.1L186.6 511.8L187.3 511.6L188.2 513.5L189.3 512.8L189.8 510.9L191.1 512.2L190.1 513.6L194.1 512.3L195.8 513.9L197.4 513.8L196.5 516.1L198.7 517.5L200.0 516.4L200.8 518.6L203.2 517.3L204.7 519.1L206.2 518.9L207.5 521.5L212.7 522.8L215.0 524.4L217.5 524.3L219.3 523.2L221.0 524.9L222.4 524.7L221.9 526.3L224.7 525.9L225.3 528.7L226.6 527.5L228.5 529.2L230.9 528.5L232.8 529.4L234.8 528.3L239.9 533.1L243.1 532.2L245.0 532.9L245.8 530.1L247.4 529.1L251.2 532.6L255.4 532.0L258.0 530.3L261.0 533.4L265.5 536.3L270.7 530.6L271.5 530.6L271.8 532.2L274.0 533.6L277.5 533.0L278.8 531.6L278.7 527.6L280.2 526.8L281.9 522.5L285.2 521.0L286.5 518.7L294.9 518.9L298.0 518.1L299.3 517.0L298.7 513.6L300.5 510.8L304.1 508.3L312.1 506.8L315.1 503.5Z"><title>Caquetá</title></path><path d="M191.4 358.4L189.9 359.0L190.0 355.6L186.4 354.2L185.7 357.3L178.5 364.4L178.9 365.8L176.7 368.0L177.4 370.3L171.7 376.4L168.0 376.9L165.1 376.2L165.7 372.8L166.6 372.6L166.3 370.8L162.1 370.6L160.6 372.7L158.9 371.4L157.9 373.3L155.2 371.2L154.7 372.0L153.4 371.6L152.9 373.1L150.3 374.1L148.9 373.6L148.5 374.9L147.0 375.2L144.9 379.0L144.9 382.3L143.1 385.0L143.9 386.4L142.6 388.2L140.2 388.2L139.9 389.2L137.6 390.3L137.4 391.4L134.2 393.2L130.9 391.1L129.8 391.3L128.4 388.7L127.1 389.1L126.8 390.4L129.5 393.0L133.7 396.6L137.9 398.3L137.7 400.7L134.5 405.4L135.4 408.6L133.6 410.8L132.6 410.9L131.0 408.8L128.9 407.9L126.5 411.9L123.9 411.7L122.1 416.3L123.2 419.0L121.9 420.0L119.6 420.0L116.9 417.0L113.0 416.8L111.7 420.1L110.6 420.5L110.7 423.2L109.3 424.0L108.4 422.9L105.8 422.5L104.4 424.1L105.0 427.5L103.0 429.0L104.6 433.1L105.7 434.3L110.7 436.3L111.0 439.1L113.0 438.0L112.7 441.4L116.4 440.5L117.3 441.7L119.3 441.4L120.1 444.8L121.7 444.6L123.2 445.8L126.8 444.7L128.8 441.8L132.0 439.2L133.5 439.4L138.4 436.6L146.7 423.3L150.3 421.9L151.1 420.4L150.5 419.0L152.6 415.4L155.7 413.5L159.0 408.9L158.9 407.4L160.9 407.3L162.6 404.0L161.8 402.3L162.7 400.4L162.1 399.1L165.4 398.2L176.3 385.5L176.4 384.5L177.7 384.0L179.5 380.8L181.2 380.0L183.4 375.0L182.5 373.4L183.6 370.5L182.6 369.2L184.3 367.1L185.8 366.6L187.9 362.4L191.4 358.4Z"><title>Huila</title></path></g><g class="atk-inset"><rect x="10" y="10" width="70" height="112"/><path d="M28.8 123.9L28.6 124.9L29.5 125.2L28.6 129.0L28.8 130.1L29.6 130.1L32.2 123.2L32.2 121.3L31.7 121.1L32.6 120.7L31.8 120.1L32.3 120.6L32.2 119.7L34.0 119.0L32.1 117.5L30.0 119.4L30.0 120.6L28.9 122.0L29.3 122.8L28.8 123.9ZM66.8 33.7L66.6 34.2L67.5 36.3L70.7 34.7L71.0 32.6L71.9 31.9L70.9 30.9L71.3 29.9L69.9 29.0L69.2 30.6L67.8 30.7L67.0 31.9L66.8 33.7ZM68.8 29.4L69.7 28.9L69.6 28.0L68.5 28.3L68.8 29.4Z"><title>San Andrés, Providencia y Santa Catalina</title></path><text x="15" y="109">SAN ANDRÉS</text><text x="15" y="117">Y PROVIDENCIA</text></g><g id="atkSweepLayer"></g><g id="atkCross" class="atk-cross" hidden><line class="h" x1="0" x2="500"/><line class="v" y1="0" y2="684"/></g><g id="atkMarkers"></g></svg>
+            <div id="atkTip" class="atk-tip" hidden></div>
+            <div id="atkCursor" class="atk-cursor" aria-hidden="true"></div>
+          </div>
+          <div id="atkList" class="atk-list scroll-slim" aria-label="Lista de ataques, del más reciente al más antiguo"></div>
+        </div>
+        <div id="ppiSlot" class="ppi-slot"></div>
+        <p class="atk-note">Se actualiza sola: una tarea en GitHub revisa la prensa colombiana cada 3 horas y el panel descarga la versión más reciente cada vez que se abre con internet (sin conexión muestra los últimos datos guardados). «Verificado»: caso revisado a mano con su fuente. «Automático»: extraído de los titulares; puede contener errores, confírmalo en la fuente. Las cifras totales difieren entre entidades por fecha de corte y método. Ubicación aproximada (municipio). «≈» fecha inferida del día de la semana; «rep.» fecha de publicación. El mapa y el radar toman como referencia la Escuela Militar de Aviación «Marco Fidel Suárez» (EMAVI, Cali); el barrido es una representación visual. Límites: geoBoundaries / © colaboradores de OpenStreetMap (ODbL).</p>
       </div>
     </section>
 
@@ -608,6 +791,14 @@
           <div id="panelWarnings" class="side-warnings">Sin avisos todavía.</div>
         </div>
       </div>
+    </div>
+    <div id="ppiPanel" class="panel">
+      <div class="panel-head">
+        <div class="panel-title-wrap"><span class="material-symbols-outlined panel-icon" style="color:var(--tertiary)">radar</span><h2 class="panel-title" style="color:var(--tertiary)">Radar PPI</h2></div>
+        <span class="panel-meta">Ref. EMAVI · Cali</span>
+      </div>
+      <div class="ppi"><svg id="ppiScope" viewBox="0 0 300 300" role="img" aria-label="Radar con el azimut y la distancia desde la Escuela Militar de Aviación (Cali) de cada ataque del mapa"></svg></div>
+      <div class="ppi-foot"><span id="ppiFoot"></span><span>Barrido 6 s</span></div>
     </div>
   </aside>
 
@@ -2315,6 +2506,881 @@ renderBarChart("chartZonas", [], "#7b8cf0");
     if (src) obs.observe(src, { childList: true, characterData: true, subtree: true });
   });
   sync();
+})();
+</script>
+<script>
+/* ---------- Mapa de ataques con drones a la Fuerza Pública y radar PPI ----------
+   Módulo independiente: no lee ni modifica el análisis de detecciones.
+   Datos: data/ataques.json del repositorio, que una tarea de GitHub Actions
+   (scripts/actualizar-ataques.mjs) regenera cada 3 horas con los ataques de los
+   últimos 30 días. Al abrir el panel con internet se descarga la versión más
+   reciente; sin conexión se usa la última guardada en este equipo o, si no hay,
+   la copia incluida en esta página. Para corregir o confirmar un caso, edita
+   data/ataques-verificados.json. */
+const ATAQUES_FUENTES = [
+  "https://raw.githubusercontent.com/correaflores8-hub/gruse10-panel-detecciones/main/data/ataques.json",
+  "data/ataques.json"
+];
+const ATAQUES_EMBEBIDOS = {
+ "generado": "2026-10-30T03:31:12.791Z",
+ "ventanaDias": 30,
+ "desde": "2026-09-29",
+ "hasta": "2026-10-29",
+ "metodo": "Búsqueda automática en Google News (prensa colombiana) cada 3 horas + casos verificados a mano",
+ "cifras": [
+  {
+   "valor": "176",
+   "texto": "Ataques con drones explosivos · 1 ene – 1 oct 2026",
+   "fuente": "Comando General FF.MM., vía Blu Radio",
+   "url": "https://www.bluradio.com/nacion/van-176-ataques-con-drones-explosivos-en-2026-el-ano-con-mas-casos-contra-la-fuerza-publica-rg10"
+  },
+  {
+   "valor": "9",
+   "texto": "Uniformados muertos · 1 ene – 1 oct 2026",
+   "fuente": "FF.MM., vía Infobae",
+   "url": "https://www.infobae.com/colombia/2026/10/10/ataques-con-drones-explosivos-marcan-record-en-colombia-van-176-en-2026-y-dejan-nueve-uniformados-muertos/",
+   "alerta": true
+  },
+  {
+   "valor": "318",
+   "texto": "Ataques registrados · 1 ene – 1 oct 2026 (uno cada 20 h)",
+   "fuente": "Fundación Ideas para la Paz",
+   "url": "https://ideaspaz.org/publicaciones/noticias/2026-10/cada-20-horas-se-registra-un-ataque-con-drones-en-colombia-como-responder-a-esta-amenaza"
+  }
+ ],
+ "ataques": [
+  {
+   "fecha": "2026-10-26",
+   "fechaTipo": "reporte",
+   "municipio": "El Cairo",
+   "depto": "Valle del Cauca",
+   "inst": "policia",
+   "objetivo": "Atacan con drones subestación de Policía en zona rural de El Cairo, Valle del Cauca",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "La FM",
+     "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxORXRra255ZGtjd3lzZkdTaWlBQXlBamhXblZiZVB0b2Nha25hRkpSZnhlQjBhTElSZjMtd3lqU2pqellGVkRfX3hlLVY3ai03c3NCZVJCV2JyMVlwVFMzcGpKRUZPaTZOU2F5S1Rlb0NQY2RZOUQ3THV0ZFFEWWJXdF9yc1RhaC1wYlVlNTZKNzFoRTV6emFRN1d4UHZRMTZYYnVzbkZRa0ZDTEIx0gGsAUFVX3lxTE5WQmZnOUhScmIyclJiaVJIeWVuWkJUNmU5cVdpd3M2WFREVzJUa1RzRDNxNXgyMWhlM0ZIdWoxUF9iRG5ucUY0Z3hnVkl5UGZwTjlocW82dENHNERzbmpscXotendBR2QwWnY3eGFURjBvbUFYaUVIaGxjUklzMFZkcmhoeUpraDB1MkFvQm1ocWV6akk5Si1MX2JVQ2xyVFUyVE9qUkQtNDkwY1Y?oc=5"
+    },
+    {
+     "nombre": "Caracol Radio",
+     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOUzQ2N2E4dzBENGlUX1oxSjItWUZjZXdqc0VPUE1UV1ZPeGRJaEZEdmFTRGtMaDFMV1N2dS1teHhMVHJlYk5sbDkxNGpnMFMxTXNITGJXSWp0TTZjQ3loNXA3bUV5WVEzT0FkdHZWTzU5RW9VWkJRYXNDQ1B1QkJyU0JydkktWmRWaWY0VnYxZk5xRFJSeFZmSW9fSksxQ0VpWk9jdkhiT044V3RfQ1hPaGtob2lPZ2lGdXVPUi0wc09YWWFN0gHYAUFVX3lxTE1DMDlZMDlnX2szT0tTZlBsM3RnWUw5SE1iZjhSeWZtSW1PWjRsMDRINjltaFdtRlhnZE1vQ3EyNlUzV0s0bkFPQnlQeFdzcGNSaUJxSURCUksybnl0aHJROXRUMFN4aU1hS2VqV0NvZ3FBdXBNMnZCdk5YQy1fYWlPcUswU3h5RDhsSGUzS25IaHdpWkZyaGhCMnMzcmZHVTlVUkZMN1AyY2dDOGtOeTdqV2x0R1FPTFhHTjNUNWFnYXoyYThzSmZIY2J3UWVPcThCZkhmZ0hGRw?oc=5"
+    }
+   ],
+   "notas": 2,
+   "lat": 4.7562,
+   "lon": -76.2148,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-23",
+   "fechaTipo": "exacta",
+   "municipio": "Guapi",
+   "depto": "Cauca",
+   "inst": "armada",
+   "objetivo": "Embarcación de la Armada en puesto de control fluvial, río Guapi",
+   "muertos": 1,
+   "heridos": 4,
+   "autoria": "En investigación (versiones distintas)",
+   "lat": 2.5708,
+   "lon": -77.8826,
+   "fuentes": [
+    {
+     "nombre": "El Tiempo",
+     "url": "https://www.eltiempo.com/justicia/conflicto-y-narcotrafico/ataque-con-explosivos-lanzados-desde-un-dron-contra-una-embarcacion-de-la-armada-deja-un-militar-muerto-y-cuatro-heridos-en-cauca-3595875"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-22",
+   "fechaTipo": "reporte",
+   "municipio": "Segovia",
+   "depto": "Antioquia",
+   "inst": "ejercito",
+   "objetivo": "Ejército busca a soldado desaparecido tras ataque con drones en Segovia, Antioquia",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "La FM",
+     "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxQUkItRllVQlV5N2RzNDdpQ2hrWDN0eTlVd2dYX1l3YUotbnBrSmwtYkV0NTIzSVYwUVZMeW1KeFlnZE1XTUVUQkhRdFNXZ2YxbFJFT2pFbWhpaGIyYlpjNjhkaXlJZTRFOTNrejI5RHNubVlibzhaZENGbVh2TUZsX3dvZldRMW40NWVtTHdRZ1RyUzZlOW5KZnNJcjNpWGtmeW9ObzFYdnVnNlllNzdsVGZ3TWhkQTI2SmVmdE1zR1c3MTBZRzU40gHHAUFVX3lxTE5GdlBWNDltdDZOQy1iYTN2N0s0ME5pMVAzeU9jcG94VWlUZ0JtTkdYdFNBaFBuUzZGMVNJdGZ5ZWh2enVTQUtqdTJ4eWNoZFlPMkdMYzNtOXpzVmw0ZEc3aEZrMXZJZU9tOHdMT0JFWnVvbnlGVUJZWWktbFBsU0RNeFk3YnhtM0lQZ2JtclQ4c0xEcG53allNdktscU8yMHhtcHQ2eXdXSVJJMWFsX0x5ZXo3d085X0QtOTZINzBFVHA0UTlidTA?oc=5"
+    },
+    {
+     "nombre": "Agencia de Periodismo Investigativo",
+     "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOaFhjWUNwS0RFRmpwVGtDcnJ0VWYtcldrUEl6bDlKREUyM2JfVTFzSDZLTzM0ZWd4cWg2VXZyeXNsQlVPX1dZSXlLWjdjTFc1RURFbm9ud1FnX29qbHU2dnJNc3ZBMjVad3dkV3daT3VqV1gtYndpWjFybEZYRkFaUVg1dDNOWXZtNGxBQTQyNEtnUTV0MVpnckptVTVCalhoZmw1S1BWT1RvWTJKMnV3UWQzMnliZ2liNHoycmNsOWFwUQ?oc=5"
+    },
+    {
+     "nombre": "El Colombiano",
+     "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNb2Z5OXNTUXVaUHdiYWx6aVhROXJCTEdleHVhVVNzdUJiMDVhWDhtQUlJYXJXS0RnVE9yamR0OVRXR0pGRHljUUphZWE5QlBiaUJvUjFtRG9TVkkzQ1g4TDNwSGY1VDNzcVhUUUExREZuT21wRFRlejZtZkg0YXlSRjBlZ0JuUEtQZjducTN1VUJ6cW1HMEY4MEhXdEx4OFhNVUJDNkxiVTd3MDl3NnBNQ2M3a9IBuAFBVV95cUxNbFpRYmdGUXNjZHcyUTV6cEo2Z29CZ0dPaFprNTg3ZnFHdllPTGFsVU15a3lZTTNTRkxWY1FId1JwX1o4Q3ltcWNIcU9hQTFORXNiVnFaOG1rdktFTk5ZOHdLbHA4RjItcmVGbkhnVC1sck1xeW9EcjNyYjBWMTA3TFN3V082RkRtd0lCLVRJaUt6XzJNSHp4di13bEJWbmo0eEJRdk9xQ0Nsb01pcHBoVGdFQW93UEg1?oc=5"
+    }
+   ],
+   "notas": 3,
+   "lat": 7.2669,
+   "lon": -74.6216,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-21",
+   "fechaTipo": "exacta",
+   "municipio": "Pelaya",
+   "depto": "Cesar",
+   "inst": "policia",
+   "objetivo": "Estación de Policía, cuatro cargas explosivas",
+   "muertos": 0,
+   "heridos": 6,
+   "autoria": "No identificada",
+   "lat": 8.6857,
+   "lon": -73.669,
+   "fuentes": [
+    {
+     "nombre": "El Tiempo",
+     "url": "https://www.eltiempo.com/colombia/otras-ciudades/ataque-con-drones-en-el-sur-del-cesar-dejo-seis-policias-heridos-dos-siguen-graves-las-autoridades-ofrecen-150-millones-3595154"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-20",
+   "fechaTipo": "reporte",
+   "municipio": "El Carmen",
+   "depto": "Norte de Santander",
+   "inst": "policia",
+   "objetivo": "Estación de Policía atacada por un enjambre de drones durante unos 30 minutos; daños materiales",
+   "muertos": 0,
+   "heridos": 0,
+   "autoria": "No indicada",
+   "fuentes": [
+    {
+     "nombre": "Vanguardia",
+     "url": "https://www.vanguardia.com/colombia/2026/10/20/enjambre-de-drones-ataco-la-estacion-de-policia-de-el-carmen-y-causo-danos-materiales/"
+    }
+   ],
+   "lat": 8.5108,
+   "lon": -73.4468,
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-16",
+   "fechaTipo": "exacta",
+   "municipio": "Teruel",
+   "depto": "Huila",
+   "inst": "policia",
+   "objetivo": "Estación de Policía y Alcaldía, cuatro explosivos",
+   "muertos": 0,
+   "heridos": 1,
+   "autoria": "Disidencias de las FARC (según autoridades)",
+   "lat": 2.7416,
+   "lon": -75.5683,
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://www.infobae.com/colombia/2026/10/16/un-ataque-con-drones-a-la-estacion-de-policia-de-teruel-huila-dejo-un-uniformado-herido/"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-15",
+   "fechaTipo": "exacta",
+   "municipio": "Palermo",
+   "depto": "Huila",
+   "inst": "policia",
+   "objetivo": "Estación de Policía",
+   "muertos": 0,
+   "heridos": 2,
+   "autoria": "No identificada",
+   "lat": 2.8897,
+   "lon": -75.4347,
+   "fuentes": [
+    {
+     "nombre": "Blu Radio",
+     "url": "https://www.bluradio.com/nacion/ataque-con-explosivos-lanzados-desde-drones-deja-dos-policias-heridos-en-palermo-huila-pr30"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-14",
+   "fechaTipo": "reporte",
+   "municipio": "San José del Palmar",
+   "depto": "Chocó",
+   "inst": "ejercito",
+   "objetivo": "Batallón de Ingenieros Militares n.º 15",
+   "muertos": 0,
+   "heridos": 9,
+   "autoria": "ELN (según el Ejército)",
+   "lat": 4.895,
+   "lon": -76.235,
+   "fuentes": [
+    {
+     "nombre": "Prensa Latina",
+     "url": "https://www.prensa-latina.cu/2026/10/14/colombia-ataque-contra-ejercito-nacional-dejo-nueve-soldados-heridos/"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-13",
+   "fechaTipo": "reporte",
+   "municipio": "Dagua",
+   "depto": "Valle del Cauca",
+   "inst": "policia",
+   "objetivo": "Cuatro civiles heridos en ataque con drones contra subestación de Policía de El Queremal, en Dagua",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": 4,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Blu Radio",
+     "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxOcVpnakU4QV9VWUhIZW1obmlBT0pxU200T2lnX3lXU1RIMVRsQVowZWhrYjNvaFBraGs4Z1A4RlNqRGV6UlNldGtBRHYzMGpvcGVFVGhJdUZQSkt0OVEwcTZ4MzBhYWVteFZodGV3RWhSRzRTZTI1VXp4VVBlVk9jdmY5ZlJSdW1xUFlySHpBRzJBbmlyWGluZ0VaRk9LcUxWc25VTGdTX2xFRDhwcmFxMUhCbDJaaWdBU085TkJzZW5keG5sWUFGczBnLUhZVlhRRVVxU1VuQzhEX1drWXfSAesBQVVfeXFMTmlWXzJGSFQtYkRWVVFhR2Z6d2k1ZEh1ajVPcE5qZERxdnctRFg1RTZyeVZtempEMUFMeWF6TGJOd09oZjJodkduSlpEVVNCX2VSNjRqa25kcTZZUFNYWHRFWkwxTWNsa2t4OWF4VWFORnlPbTg0WWpxQWk3QldhWXJfcTNaNmdWWjY3QWlfSUZMVlBEX2V3bkl1OGYxUGtWZmtLS0NPMHlmRk1jd2RMbWdINS1XWGRmWndvNTFhX2lSOWdvM2l2blRGTGtnZHM3R29IV1ZwbGMyV3BuSDRHRTNtSkJnRzNVMnpzVQ?oc=5"
+    }
+   ],
+   "notas": 1,
+   "lat": 3.6498,
+   "lon": -76.7204,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-11",
+   "fechaTipo": "reporte",
+   "municipio": "Toribío",
+   "depto": "Cauca",
+   "inst": "ejercito",
+   "objetivo": "Base militar de Toribío atacada con explosivos y drones",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Estrella Digital Colombia",
+     "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5OcG1lWm53bEs5RUZVdlV5QjA5cUpRM0RfWVJEOEd5UmR0VG15MV9hQ0JUX3hIRXlHdEZUdUYtdi0yRGxSNFJTU25Ba0l0enJrWnpYbk9XNnAtbTBNbkdPYThoZi11SEhuLWQ2Q2VKcllCbHBqQVRkQ3g5VUNMYm8?oc=5"
+    }
+   ],
+   "notas": 1,
+   "lat": 2.9758,
+   "lon": -76.2033,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-11",
+   "fechaTipo": "reporte",
+   "municipio": "La Vega",
+   "depto": "Cauca",
+   "inst": "ejercito",
+   "objetivo": "Asesinan a un soldado en un ataque con dron en la vereda Altamira, en La Vega, Cauca",
+   "muertos": 1,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "NTN24",
+     "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOV3UtaFNmYWJuMnI5cnBCbGEyZzQwa0pNZlRDZzlJdDZ3cTMyaVVVendJQ1RlU2MwMkhSWEFzYjdsNG1PelhhSy0wNERSYng1aXNWZU5qWWp5VGhTcnAyOXhjMWlhdlRBWlpJM0xuZldsZ1JtcmZJd1hOLWhMRnh2OG8xaWRCZUVYT3hLMEVHQ1dySDBzV3l4M0pmZDg2cmF2SlhUcXRuYlYtYnpwUUFnX1RtV2RSWDFGOS1tUW1od2N3UDZyM0J0ZFJ1NNIBywFBVV95cUxPZUhNVm9iU1RIbHdVVEJwYXFYQnhkMTM3OXpMS1lGNVc0UExtSmRrMWx6ZzloTWFBcnFFUzBDbHVDMlNqOWRYSGlwcV9UOVY4YTh5b0QtQndMWFZuMW0zN1JROGtKN3RjYkc0T3UwQlRKdDBLb1ZtOUNib0RvbUpSdjZVQjlXOTJBZm5TWXQ5U1g0NlpaSmo1V0pLSUIzU0piVFhpRVpWQ3NwLURYLWRqMmdFN3lrT1JQVDVDcDJFc0JLVEZLSWdBY2ZfRQ?oc=5"
+    },
+    {
+     "nombre": "Revista Semana",
+     "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNVjVGRVBERVFnbTJrNi1uckZaUWNGc29lMFVRSUdFS3I4bG1kZTRxQ293b0dtUFFSbklIeW9wMkhxUWZDMnBGZ19KMU9ZQ0NqVXVrRzJLcDVIZW5Pd1hrWk15UmxvWWRwdXFROEFuaUFNVVp1ZXQ1Z280RHF6TC1uWWpHUHpHZjdRY1oxM2p0WkhyWnh3WUgySXFPOW82aEhuUlgtUmdXLTJaLVJVQ1JfTWZLazd6NFpGQ214ck9hV2FnWW50RDM0cVNLckNCUVc4aFE?oc=5"
+    }
+   ],
+   "notas": 2,
+   "lat": 2.0539,
+   "lon": -76.7588,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-05",
+   "fechaTipo": "reporte",
+   "municipio": "Aguachica",
+   "depto": "Cesar",
+   "inst": "policia",
+   "objetivo": "Nuevo ataque con drones contra estación de Policía de Aguachica deja un interno herido",
+   "muertos": null,
+   "heridos": 1,
+   "civilesHeridos": 1,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Caracol Radio",
+     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPOGdudW03WmV2dHJfVGpyWktUSmQ4SGJYVGZfa1dmWFlqUGFNTVNlUnZOaEVOX210UFMzYlpMcURWYlE1VXQ3RHRxVUYtakh5WTd5Rm9sMDg5QVJ1c0c2MlozOHo1aTBpTzNEenpwdmpXSXBya1hQak9YZGVnSzJJcURscUtTZ0lIUlF3ZlZHcWVUa1lLWXJmLVVhTnZPYzFvNnlkYXlkaEdtVEhSYmQ5REpOMW1QSUE3TFR0bElR0gHSAUFVX3lxTE5xLVotNFlPQ0E2d3lMZUxGOXBnOUpzSVluU25GOW5VTDNla0NhYkgtc3hSZ185VXJQNTNuSHo0cmUxZ1k0RFlzTEFkZUFWWW91aXNjby05VzllWlhXN295dEdIeU5RWVVuVUxMS1lLdGJmWTdXRG1HLVRBTzBGU3BvYVZ3WnFVMnRkelR5aXR2VFhzTTVxN3lSaUUtTUZ6S1NWdmdadjlhN0F3cUtRQTBHcWI1eU0wZU42MG1qWTBvTTRCRkxMLWtqS1NMNFIzZm1xQQ?oc=5"
+    },
+    {
+     "nombre": "La Silla Vacía",
+     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQNU9PUHJyRXFZaG5sVVNKX1RJNVY5b1ZoelVhdTVMSEVrcGlNWGRzRS1uQWdmNEZTUDR0VlFPZGkxT284VUN2ZXl4TjlrcTBNN3M0aU9Eekp2dzFkUmpXWGkxdi1UaVpiaDl0ZVBadjBDOTJuZ3dzU0tKcFUwdF8yOEFlMlRPSzI3R3g0OUtLMkN1NWgzZVVEa3hyYzlhX0R4T2VNRVdncDlRaUk?oc=5"
+    },
+    {
+     "nombre": "ELHERALDO.CO",
+     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQQVdpbWJYd05ydmtWTnVPbnZoWDRsMnZzdG9PNEFiYzJnLUsyeUFLRE9qNVBCWUR3bjdoWktBbHkxUkJJX3ZQYk9UeXlRUXpHbmFlTXY4aUlQUlJZQzQyUzJnaUJma0F1c2R0ZDBuZFV2cjQxTjFUa1h4bTVHcWdicThWN3c2bDFiYUtmaFRyd2pyb0tZX0Q0QXgxYmplMDRuQmtpWlo3VGhicHBsWXZZQ0dNa1ZONDFWa2JpT21OeFVnb2lUSUE?oc=5"
+    }
+   ],
+   "notas": 13,
+   "lat": 8.2487,
+   "lon": -73.6227,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-05",
+   "fechaTipo": "reporte",
+   "municipio": "Aipe",
+   "depto": "Huila",
+   "inst": "policia",
+   "objetivo": "Ataque con drones en Huila: lanzaron dos granadas contra la estación de Policía de Aipe",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Blu Radio",
+     "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxNRFczc1h3WnRNRGxPcUpzclBDMjZvT1dXdXJOazhaZ09CVHRPWUNWaFA1dFlBZ1Z3cHNsaUMwdkFKNUxhNGN6VE9HaWl0NXNUdEM3aEdjQ0tJMC1xSnpjb3FucGlReUFuVlVGZExkaG54UWhobXB1VkZPT1Y2cEVqYWJPNWZMUHFraVZwc3VlVER6cHVNdjk3LUl6WE9yTDNfZEdLdUpqdDV5YUFCTHRVMl8zMlcwek9jWVR3Ui1KYS3SAc4BQVVfeXFMTnYzdWJnNkJHdFNRX1RmZHZqZFBGSFdJekhUcXZMRlNhX2RVQ1F5N0drTmdKbGkzYnQtcnMzWG9teHNhOEpfYmN5OXpwaW5KSUJYZC1pMFZFSjg3Um13RmNaYkk3d2ZoU2pWNlVfWE9xazJUemF2NWFDWkNPOUxtOG9XVWlNMnA1QTgxWFRTV193ZWZrS2tGbUtqVmFyRjI3LWxmTkwtS09fX1ZWN0k4VzJfak1Lcnh5Y2thTXhQZWVzMHZDTVlFLXpyZjVGTWc?oc=5"
+    }
+   ],
+   "notas": 1,
+   "lat": 3.2864,
+   "lon": -75.5303,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-04",
+   "fechaTipo": "reporte",
+   "municipio": "El Peñol",
+   "depto": "Nariño",
+   "inst": "policia",
+   "objetivo": "Ataque con drones y explosivos contra estación de Policía de El Peñol, Nariño",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Agencia de Periodismo Investigativo",
+     "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxONFFFRWFDYWMtaGZpaGYycHZYdnlQd1dEN0xheW1FVVAwWXJPSFp6OWtUUFo1RHduQjdNU1ZIc1VIbGtuc1RnYWlFWXlnX1ZaZGJkUEtOc1hRQWNzVW9Ud19ScDUyNERRN3hodE9MNFcxWFZCWElXaWluWlJOMVFQbDlWMVJiamJ3RmFjNmNMd2dfRjd5N0lCTkVjSVJDRkdOWnhCN181Q2w3RnV3UkVmLTFoT0Y4bWI5Mmc?oc=5"
+    }
+   ],
+   "notas": 1,
+   "lat": 1.5122,
+   "lon": -77.4306,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-02",
+   "fechaTipo": "reporte",
+   "municipio": "Neiva",
+   "depto": "Huila",
+   "inst": "ejercito",
+   "objetivo": "Un soldado murió y otro resultó herido en Neiva, Huila, tras un ataque con drones explosivos de las disidencias de 'Iván Mordisco'",
+   "muertos": 1,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "Disidencias de las FARC (según la prensa)",
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://news.google.com/rss/articles/CBMigAJBVV95cUxPUmFLMm5LbFNEUXF3RXVMVGQ0UkpubGctZ0J2dGpFQlNMYkIyS2pXUkM5X1Y4Q19McFFiVGN2T2dRcFZIMU1VQU1MVjhYUDRKY3VsSl8tRnRXYU1pMjE2eUYySmNEcHZjb3NHS01FZTR5X1RpMEFMbzRUVF9EY0NjeDNYMWw1RlRZZnRxM2E0b3VFdkVUZDBjQ0taOTU3RGhuN3RmeW45V2hFSldDNWxjRGc0dU10SlBzTElVeThmVHItYUJPaF9iWlFKSGFzSGZoVnV6LWx0MXBLd25aWmI4NzlBTm9ReVhiaU5lVXhsbVUwWk9TN1Rzd1lTQzBWOE5C0gGbAkFVX3lxTE90cThoR1d5ckZEYTRvMFNJZjRDdU93OVVhSTRMT2JGS1JzVDhOTmVlc0kxMVVzRUpOYlNlSTlSbng1QldLYjhKUVlKZ2N6QlJfakRmS1RPc0dqY05fNTc0VzJuaHJIUzlwdnZ5NWJKX1REcE9fVHFWRVM0Ti1hbld4UTV5aWlUT0dtaDN5U2ZsSFZPUThxZXBsQzlxQ2FsbFJ2RHAzOVBhWmF0a0ZTS3NpZlF2N1lGMlVYbWVQTVowZjhrOVlyNzBrSktPUkh3NTlTZDViSUdGV0ZncndXczBNSWctMmdJMjBjdG9WQi1KLUlzMW1wbWVKcS1Pd0thdTBMNVVKWFNiNW1rRVlXdzRIZlNEWkNGUDdMSU0?oc=5"
+    },
+    {
+     "nombre": "La FM",
+     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNNjJBX1dWODE0ZkFjRWpuRVhsT2tGS0RRNEt2eWZuNDVDZldxbFZmYTBRMVQ5dTZPQVhfSE9FRHRNdzBCT21uRW9MSHpTRWhvdWk3QmFKY1ZzZnR0Y3VQbndISW5qYnRYcWtraEJWZTF6b3RjNm0zeUVxZ25uRTVlcUktRi0tdm82NWtRWE9CUHJHM3VZZUJMYk93WlZoaHpOM25PWS1iYklyM0lPM3BFT2RVYlBKR1hKYXdvRVV30gG-AUFVX3lxTE9sU1h4RVJNTWxGTFJCWGltTUpveW50STc2Ny1jOE9CTFVIeU5NSFZLOTJxM2ZrYWJYWFZza0twcnJkQmNHaTdGVXo3MjRFampZOVM3MWJXZGRETmdjU1R4bllVN19FWU5GY1BCRnlidjNMczFOM21rQWIyLTBzOERQVGJLdzdRR1BYYVJIWTM0TFNmYnJmVklGMWM2OWJVeEd2ZWFKX28tU0ctMHRJdjFpbi1BbzRTZzZCbzBXVlE?oc=5"
+    },
+    {
+     "nombre": "El Colombiano",
+     "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQaVUyUmg5dEVxMG9hd01rdG8tcERlYjBNUmlzM0hSMXl5Y1JKMDF4dXRfbTJWc1JMWklMNjk2Y2lpWmViRm92eEVVb3NCQkNYUm53UXliV1djaHFEbGZVN0hBT0h6UEwtR2dEUzhQckhRSnBnWVZvTkZsVi1CMDRYX2kyV2x6SEJBZlB1TGJPdFRsZFpMODRiMHBkZ0RDdUZSN3ZoVFhvNGRhTUNYSmd6MjJ30gG3AUFVX3lxTE91N3VUTHJWc3JyQmN0Z2hiekItdFA1MUh3d0FkbkZoSHBsRWRvR2d1SzgwckFYUTV1OUlrdDJJQUdCeGJxcjBmVjFoYmhhdUF1Nlk5azd3VHZBeWR1TjBzOHl1SHdoVEp0QTM1N2Z2bzF5OGdNbWkxMTNfNTFOaXZFVUQ3dktMT0dNaklRaXNWcjJWTUtOOVppcV9vU1hjSmdFcktUUFpyQ2tEbnplbEU2OERqWTZGSQ?oc=5"
+    }
+   ],
+   "notas": 6,
+   "lat": 2.9933,
+   "lon": -75.2724,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-01",
+   "fechaTipo": "reporte",
+   "municipio": "Santa Rita",
+   "depto": "Chocó",
+   "inst": "policia",
+   "objetivo": "Atacaron con drones contra estación de Policía en Santa Rita de Iró, Chocó",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "ELN (según la prensa)",
+   "fuentes": [
+    {
+     "nombre": "Blu Radio",
+     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQY3RLbWhSM3p5b0QtVUVvcUxjQ2ZqTkhIYnVWaVd2RnJOZjFndGF2aDF6dUkzOXRCdlhpd1RnRVlnLUF4N3g0NGVVbzAyQkN1eFFmTXZZZWRtelQzSDlSX3NjX2JUajVTRU5SdGwxMG1VQnBjSWdlNDFfTVEyOFhZeWlRRGFkaGxKVjI2elk4Ml9wRGFERXd5MUpyaDdPc0ZONHlacmVxTDdfMExzSVVILVVKZklvVUtuZEloUUZB0gHLAUFVX3lxTE9IMzJ1Y0UxWk9hc1Y5cE1xTkhYTlFjNk12V3hUSFdfWWI3bTN2SUs5RmJXeTFwamREbXYxR2xPeHZ2TjVGbmdGa1plOXNlenJ5Y0hiRUh5cXh6ZG1qYWVfLUF1RTA4bENWWUlwNnZyTHcyX2lWUEtneGpMNFY5RmpoNjNQVDZzRE13djg3dnlnX1N2T3hWWEpqRmpseU5pSHhDbzdmRzJ6aEhDUGRUa2pnMy1CN0pFb0ZXQ3BkWEtJVWtQN3RXbk9hWGQ4?oc=5"
+    },
+    {
+     "nombre": "La FM",
+     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxQenYzbFpsSGZOUWlja0VTbE1yaG95cWdLaVBTdmQ3RnRQa1RReWp6TEQ2ZmVFUDVtUDdDLVlKQVZDS1dIZURyem1qV0VuaHMzcEpVbm90aTJ3alNvZENtanhPSFNVbkkxbUlhYzhVby1FeVduaFhrTlBhVzhWNkdXTmJUSkZiTTJPb0RnUGtDSk5zamxlMzN1U3M1Z252VzNmUUHSAaIBQVVfeXFMTXRrSlNaaDVIbVhuR3lxZzBXdnljeGhoUHdQcVJWUi15SzRtbjNoNlpybTBVYTFCOEhMRHFWQWdMaEViMC1oVGtSQ3hmWkhDMzgtT1FodFRoM1pKZUNyckFNWnRZN29acXhuNkgzS1J4SmJhTFVxQ0tuZFZITmxTeHp2Nm55WXBCWkp2SWpCRC1sZUZrdGFVNkg5QmlMVU1YTGVB?oc=5"
+    }
+   ],
+   "notas": 2,
+   "lat": 5.1726,
+   "lon": -76.4845,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-09-30",
+   "fechaTipo": "reporte",
+   "municipio": "Nóvita",
+   "depto": "Chocó",
+   "inst": "policia",
+   "objetivo": "Atención: reportan ataque contra la estación de Policía de Nóvita, en el Chocó; seis granadas habrían sido lanzadas desde drones por el Eln",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "ELN (según la prensa)",
+   "fuentes": [
+    {
+     "nombre": "El Tiempo",
+     "url": "https://news.google.com/rss/articles/CBMilgJBVV95cUxOZ2ZFREtob0JiT0hUM1BhRU10OE9JVklkY0ZMMFQ4ZmxfUXdicGx5bDI2YTBMTnJfZlFBM1BJTjllb2dHaEU3ZWxncWM1clZLc19fVjJmeGpDbjFULTRNOFVqcnhyenhZZlhHTngtQl9BNXJhY1J1dDNmUl9LeU5ydEtsY3BVQkVBcXA4N2FBLVlucUF5SmtLYzB3RnEwUG1CQnVzYnZVbkNuT25IUk01Tmc4R0F4VFZBbUFlbDBlLUtDUFVON0lfOGdtZG5CTGVPaUMzYnFDZ1VtaXZnMXJhcWFNRjJCMEtZYjVaTEgzTHg4X3dNZzVKRWVMUTVsc2xkRHloSjV6RlRYS2I4cWxrVzFDbGtRQdIBmwJBVV95cUxPNTh4VVU3V0xUNkRuOVhYYkJ4cW1HYWlRbERSMDVDdmFacE9qa3luZG90Q3I1WV9WbS1qc2ZWb20zak5wYmZ2NkhiZXB6eEZpeThHM1ZLZUExaTI3NFA4NVVjdTg3NHRFanY3bVJmUWN5REZsXzIzbFZiUDUwdzJNb0d2eTNZbGZiLXp3dzUxaFZFc21rSFpfcFduZmRNeDN5RDY5QkNCZEp6aU1ZMGRkUE1VVFh2c2NWTVkycmtyNXQxNlJvU2NmalpjcFptVHV5YjhoSzdpazkyR1Z5U0ZONXRkOTZrZlkzcXFyUUpwY05QRWNrcEEtTTczV2VHbnNaVmE1bTN2TmNvOUF2R2pDQ2Y1ZkZEbUxHWHZN?oc=5"
+    },
+    {
+     "nombre": "Blu Radio",
+     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOTkpRMExTdTRqUGtlQTUzelgxY0Z0LTBrN2hTUl9SUXFJbkswWXdjUy1BYVNMZEZyYWNUc2ZfaE5EUGFGdVhManliZ1Ryall5WHF6UmtOVC1KSFQyNnhJZldYTkc4SFJDREN4MVk2b0ttYUJfc2N3d3pIX19adEszVFBDb3NoN0xvRWMzZk5LZjFGTkZGR3diTlQxYjlmbmp3X3JLajFFeFJPc29raF9aMDczZEJYWS1DMGlTaXFTWGJMbl9oTkY5aFpWRFDSAdoBQVVfeXFMTWRjanJFLTVyYXhkRFJlVUpGejJLckNSSjZGc3YyVGg4ZElRYm5QN2l4YW5NQ29hYUtFel9EbFk0TTNNRkpVSEZEZTJ1ejA3MmNPNmRNNS04LV93ZWpSNFl4UC1peXdzd1A2dXR4TzllMFAyM3Bfb3ExaXB6SFU4Ml9oZHFpUXpGTTRWX3FBQmhscTc0OG5oT0Yza05Hcm94Zl9fcVVReGtycktXS25uamRPVWtvQy1BcnJTSVBvRjN0X280d1RLQVZLejN3Sk5qdk1KRVg2aTFRZWc?oc=5"
+    },
+    {
+     "nombre": "Minuto30",
+     "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9yYnI0RGJnN1hCbjFuN2dfbjlZT0l1NThSUzRKNzh0MFlCc3ZMcXNFOWdEMXhuUnZWbTFiNGY5dENrVUJKdXR1NC0tYXBKbTF0SFlFOUYxUGJnSW1ocGxkWEpoNHVqMXd3VDdjdg?oc=5"
+    }
+   ],
+   "notas": 3,
+   "lat": 4.8534,
+   "lon": -76.6182,
+   "verificado": false,
+   "ubicacionProbable": false
+  }
+ ]
+};
+
+(function () {
+  const MAPA = {"W":500,"H":684,"K":40,"LON0":-79.2,"LAT1":12.7};
+  // Punto de referencia del mapa y del radar: Escuela Militar de Aviación "Marco
+  // Fidel Suárez" (EMAVI), Cali; punto de referencia del aeródromo SKGB.
+  const REF = { lat: 3.4590, lon: -76.4966, sigla: "EMAVI", nombre: "EMAVI (Cali)" };
+  const SWEEP_S = 6; // segundos por vuelta, igual en el mapa y en el radar
+  const VENTANA_DIAS = 30;
+  const CLAVE_LOCAL = "gruse75.ataques";
+  // Color + figura por institución (validados para fondo oscuro; la figura es la
+  // segunda codificación para quien no distingue los colores).
+  const INST = {
+    ejercito: { label: "Ejército", color: "#d9732f", shape: "circle" },
+    policia: { label: "Policía", color: "#27a07a", shape: "square" },
+    armada: { label: "Armada", color: "#4f7fe8", shape: "diamond" },
+    aerea: { label: "Aeroespacial / aeronáutica", color: "#c56fb4", shape: "triangle" },
+    sin: { label: "Sin precisar", color: "#8a94a6", shape: "cross" }
+  };
+  const MESES = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const svgNS = "http://www.w3.org/2000/svg";
+
+  const proj = (lat, lon) => [(lon - MAPA.LON0) * MAPA.K, (MAPA.LAT1 - lat) * MAPA.K];
+  const desproj = (x, y) => ({ lon: x / MAPA.K + MAPA.LON0, lat: MAPA.LAT1 - y / MAPA.K });
+  // Azimut (0° = norte, sentido horario) y distancia aproximada desde la EMAVI.
+  const polar = (lat, lon) => {
+    const dx = (lon - REF.lon) * Math.cos(REF.lat * Math.PI / 180) * 111.32;
+    const dy = (lat - REF.lat) * 110.57;
+    return { az: (Math.atan2(dx, dy) * 180 / Math.PI + 360) % 360, km: Math.hypot(dx, dy) };
+  };
+  const fechaTxt = (a) => {
+    const [y, m, d] = a.fecha.split("-");
+    return `${a.fechaTipo === "aprox" ? "≈ " : ""}${d} ${MESES[Number(m) - 1]} ${y}`;
+  };
+  const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+  const balanceTxt = (a) => {
+    const partes = [];
+    if (a.muertos) partes.push(plural(a.muertos, "uniformado muerto", "uniformados muertos"));
+    if (a.heridos) partes.push(`${a.heridosMin ? "≥ " : ""}${plural(a.heridos, "uniformado herido", "uniformados heridos")}`);
+    if (a.civilesMuertos) partes.push(plural(a.civilesMuertos, "civil muerto", "civiles muertos"));
+    if (a.civilesHeridos) partes.push(plural(a.civilesHeridos, "civil herido", "civiles heridos"));
+    if (partes.length) return partes.join(" · ");
+    return a.verificado || a.muertos === 0 || a.heridos === 0 ? "Sin víctimas reportadas" : "Víctimas sin precisar en los titulares";
+  };
+  const shapeSvg = (shape, r, color) => {
+    if (shape === "square") return `<rect x="${-r * 0.88}" y="${-r * 0.88}" width="${r * 1.76}" height="${r * 1.76}" fill="${color}"/>`;
+    if (shape === "diamond") return `<path d="M0 ${-r * 1.2}L${r * 1.2} 0L0 ${r * 1.2}L${-r * 1.2} 0Z" fill="${color}"/>`;
+    if (shape === "triangle") return `<path d="M0 ${-r * 1.2}L${r * 1.1} ${r * 0.85}L${-r * 1.1} ${r * 0.85}Z" fill="${color}"/>`;
+    if (shape === "cross") { const w = r * 0.42; return `<path d="M${-w} ${-r}H${w}V${-w}H${r}V${w}H${w}V${r}H${-w}V${w}H${-r}V${-w}H${-w}Z" fill="${color}"/>`; }
+    return `<circle r="${r}" fill="${color}"/>`;
+  };
+  const glyph = (inst, size) => `<svg class="atk-glyph" viewBox="-7 -7 14 14" width="${size}" height="${size}" aria-hidden="true">${shapeSvg(INST[inst].shape, 4.6, INST[inst].color)}</svg>`;
+  const flashDelay = (az) => `${(az / 360 * SWEEP_S - SWEEP_S).toFixed(2)}s`;
+  const fechaHora = (iso) => new Date(iso).toLocaleString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  const sweepPath = (r) => {
+    const a0 = -55 * Math.PI / 180;
+    return `M0 0L${(r * Math.sin(a0)).toFixed(1)} ${(-r * Math.cos(a0)).toFixed(1)}A${r} ${r} 0 0 1 0 ${-r}Z`;
+  };
+
+  let datos = [];
+  let filtro = "todos";
+  let activo = null;
+
+  /* ----- Barrido sobre el mapa (fijo, centrado en la EMAVI) ----- */
+  const [bx, by] = proj(REF.lat, REF.lon);
+  const sweep = document.createElementNS(svgNS, "g");
+  sweep.setAttribute("transform", `translate(${bx.toFixed(1)} ${by.toFixed(1)})`);
+  sweep.innerHTML = `<g class="atk-sweep"><path d="${sweepPath(420)}" fill="url(#atkSweepGrad)"/><line x1="0" y1="0" x2="0" y2="-420" class="atk-sweep-edge"/></g>
+    <circle r="3" class="atk-origin"/><circle r="9" class="atk-origin-ring"/><text x="10" y="-8" class="atk-origin-label">${REF.sigla}</text>`;
+  $("atkSweepLayer").appendChild(sweep);
+
+  /* ----- Ficha emergente ----- */
+  const tip = $("atkTip");
+  const fuentesHtml = (a) => (a.fuentes || []).map((f) => `<a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">${esc(f.nombre)} ↗</a>`).join("");
+  const showTip = (a) => {
+    tip.innerHTML = `<div class="atk-tip-top">${glyph(a.inst, 12)}<span>${esc(INST[a.inst].label)}</span><span class="atk-tip-date">${fechaTxt(a)}</span></div>
+      <div class="atk-tip-place">${esc(a.municipio)}, ${esc(a.depto)}</div>
+      <div class="atk-tip-desc">${esc(a.objetivo)}</div>
+      <div class="atk-tip-bal">${balanceTxt(a)}</div>
+      <div class="atk-tip-src">${a.verificado ? "Verificado" : "Detección automática"} · ${esc(a.autoria)}</div>`;
+    tip.hidden = false;
+    tip.style.left = `${(a.x / MAPA.W) * 100}%`;
+    tip.style.top = `${(a.y / MAPA.H) * 100}%`;
+    tip.classList.toggle("flip-x", a.x > MAPA.W * 0.58);
+    tip.classList.toggle("flip-y", a.y > MAPA.H * 0.7);
+  };
+  const hideTip = () => { if (activo === null) tip.hidden = true; };
+  const porIndice = (i) => datos.find((a) => a.i === i);
+
+  const seleccionar = (i, desdeLista) => {
+    activo = activo === i ? null : i;
+    document.querySelectorAll(".atk-marker").forEach((m) => m.classList.toggle("active", Number(m.dataset.i) === activo));
+    document.querySelectorAll(".atk-item").forEach((it) => {
+      const on = Number(it.dataset.i) === activo;
+      it.classList.toggle("active", on);
+      it.setAttribute("aria-pressed", on ? "true" : "false");
+      if (on && !desdeLista) it.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+    document.querySelectorAll(".ppi-blip").forEach((b) => b.classList.toggle("active", Number(b.dataset.i) === activo));
+    if (activo === null) tip.hidden = true; else showTip(porIndice(activo));
+  };
+  const aplicarFiltro = () => {
+    document.querySelectorAll(".atk-marker, .atk-item, .ppi-blip").forEach((n) => n.classList.toggle("is-off", filtro !== "todos" && n.dataset.inst !== filtro));
+    if (activo !== null && filtro !== "todos" && porIndice(activo)?.inst !== filtro) seleccionar(activo, true);
+  };
+
+  /* ----- Eventos (una sola vez; trabajan sobre los datos vigentes) ----- */
+  const markers = $("atkMarkers"), lista = $("atkList"), filtros = $("atkFilters"), ppi = $("ppiScope");
+  markers.addEventListener("click", (e) => { const m = e.target.closest(".atk-marker"); if (m) seleccionar(Number(m.dataset.i), false); });
+  markers.addEventListener("keydown", (e) => { const m = e.target.closest(".atk-marker"); if (m && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); seleccionar(Number(m.dataset.i), false); } });
+  markers.addEventListener("pointerover", (e) => { const m = e.target.closest(".atk-marker"); if (m && activo === null) showTip(porIndice(Number(m.dataset.i))); });
+  markers.addEventListener("pointerout", (e) => { if (e.target.closest(".atk-marker")) hideTip(); });
+  markers.addEventListener("focusin", (e) => { const m = e.target.closest(".atk-marker"); if (m && activo === null) showTip(porIndice(Number(m.dataset.i))); });
+  markers.addEventListener("focusout", hideTip);
+  lista.addEventListener("click", (e) => { if (e.target.closest("a")) return; const it = e.target.closest(".atk-item"); if (it) seleccionar(Number(it.dataset.i), true); });
+  lista.addEventListener("keydown", (e) => { const it = e.target.closest(".atk-item"); if (it && e.target === it && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); seleccionar(Number(it.dataset.i), true); } });
+  filtros.addEventListener("click", (e) => {
+    const b = e.target.closest(".atk-chip");
+    if (!b) return;
+    filtro = b.dataset.f;
+    filtros.querySelectorAll(".atk-chip").forEach((c) => { c.classList.toggle("on", c === b); c.setAttribute("aria-pressed", c === b ? "true" : "false"); });
+    aplicarFiltro();
+  });
+  ppi.addEventListener("click", (e) => { const b = e.target.closest(".ppi-blip"); if (b) seleccionar(Number(b.dataset.i), false); });
+
+  /* ----- Dibujo completo a partir de un archivo de datos ----- */
+  function render(fuente, estado) {
+    const limite = new Date(Date.now() - VENTANA_DIAS * 864e5).toISOString().slice(0, 10);
+    datos = (fuente.ataques || []).filter((a) => a.fecha >= limite && INST[a.inst] && Number.isFinite(a.lat) && Number.isFinite(a.lon))
+      .sort((a, b) => b.fecha.localeCompare(a.fecha))
+      .map((a, i) => { const [x, y] = proj(a.lat, a.lon); return { ...a, i, x, y, ...polar(a.lat, a.lon) }; });
+    // Separa marcadores que caen en el mismo punto (mismo municipio).
+    datos.forEach((a, i) => {
+      const prev = datos.slice(0, i).filter((b) => Math.hypot(b.x - a.x, b.y - a.y) < 6).length;
+      if (prev) { a.x += 7 * prev; a.y -= 5 * prev; }
+    });
+    activo = null;
+    tip.hidden = true;
+    const nVer = datos.filter((a) => a.verificado).length;
+
+    /* Estado de la actualización */
+    const est = $("atkEstado");
+    est.className = `atk-estado ${estado}`;
+    est.innerHTML = estado === "en-linea"
+      ? `<span class="sq-dot sq-sm"></span>En línea · datos del ${esc(fechaHora(fuente.generado))}`
+      : estado === "cargando" ? `<span class="sq-dot sq-sm"></span>Actualizando…`
+      : `<span class="sq-dot sq-sm"></span>Sin conexión · datos del ${esc(fechaHora(fuente.generado))}`;
+
+    /* Cifras */
+    $("atkStats").innerHTML = (fuente.cifras || []).map((c) => `<div class="atk-stat"><div class="atk-stat-v" data-count="${esc(c.valor)}"${c.alerta ? ' style="color:var(--threat)"' : ""}>${esc(c.valor)}</div><div class="atk-stat-k">${esc(c.texto)}</div><div class="atk-stat-src"><a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${esc(c.fuente)}</a></div></div>`).join("") +
+      `<div class="atk-stat"><div class="atk-stat-v" style="color:var(--primary)" data-count="${datos.length}">${datos.length}</div><div class="atk-stat-k">Ataques en los últimos ${VENTANA_DIAS} días</div><div class="atk-stat-src">${nVer} verificados · ${datos.length - nVer} automáticos</div></div>`;
+    window.dispatchEvent(new CustomEvent("gruse:contenido", { detail: $("atkStats") }));
+
+    /* Marcadores */
+    markers.innerHTML = datos.map((a, k) => {
+      const c = INST[a.inst].color;
+      const r = a.muertos ? 6 : 5;
+      return `<g class="atk-marker${a.verificado ? "" : " auto"}" data-i="${a.i}" data-inst="${a.inst}" style="--k:${k}" transform="translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})" tabindex="0" role="button" aria-label="${esc(`${fechaTxt(a)}, ${a.municipio}, ${a.depto}: ${balanceTxt(a)}`)}">
+        <circle class="atk-ping" r="${r}" stroke="${c}" style="animation-delay:${flashDelay(a.az)}"/>
+        <circle class="atk-hit" r="14"/>
+        <g class="atk-shape" style="animation-delay:${flashDelay(a.az)}">${shapeSvg(INST[a.inst].shape, r, c)}</g>
+        ${a.muertos ? `<circle class="atk-fatal" r="${r + 3.5}" stroke="${c}"/>` : ""}
+      </g>`;
+    }).join("");
+
+    /* Lista */
+    lista.innerHTML = datos.length ? datos.map((a) => `
+      <div class="atk-item" data-i="${a.i}" data-inst="${a.inst}" tabindex="0" role="button" aria-pressed="false">
+        <div class="atk-item-top">${glyph(a.inst, 11)}<span class="atk-inst" style="color:${INST[a.inst].color}">${esc(INST[a.inst].label)}</span><span class="atk-badge ${a.verificado ? "ver" : "auto"}">${a.verificado ? "Verificado" : "Automático"}</span><span class="atk-date" title="${a.fechaTipo === "reporte" ? "Fecha de publicación del reporte" : a.fechaTipo === "aprox" ? "Fecha inferida del día de la semana citado" : "Fecha del ataque"}">${fechaTxt(a)}${a.fechaTipo === "reporte" ? " · rep." : ""}</span></div>
+        <div class="atk-place">${esc(a.municipio)}, ${esc(a.depto)}${a.ubicacionProbable ? ' <span class="atk-prob" title="El nombre existe en varios departamentos y el titular no lo precisa">ubicación probable</span>' : ""}</div>
+        <div class="atk-desc">${esc(a.objetivo)}</div>
+        <div class="atk-bal${a.muertos ? " fatal" : ""}">${balanceTxt(a)}</div>
+        <div class="atk-src"><span>${esc(a.autoria)}</span><span class="atk-links">${fuentesHtml(a)}</span></div>
+      </div>`).join("") : `<div class="atk-empty">No se reportaron ataques con drones contra la Fuerza Pública en los últimos ${VENTANA_DIAS} días.</div>`;
+
+    /* Filtros (se conserva el elegido si sigue existiendo) */
+    const conteo = (k) => datos.filter((a) => k === "todos" || a.inst === k).length;
+    if (filtro !== "todos" && !conteo(filtro)) filtro = "todos";
+    filtros.innerHTML = [["todos", "Todos"], ...Object.entries(INST).map(([k, v]) => [k, v.label])]
+      .filter(([k]) => k === "todos" || conteo(k) > 0)
+      .map(([k, label]) => `<button type="button" class="atk-chip${k === filtro ? " on" : ""}" data-f="${k}" aria-pressed="${k === filtro}">${k === "todos" ? "" : glyph(k, 10)}${esc(label)} (${conteo(k)})</button>`).join("");
+
+    /* Leyenda */
+    $("atkLegend").innerHTML = Object.entries(INST).filter(([k]) => conteo(k) > 0).map(([k, v]) => `<span>${glyph(k, 11)}${esc(v.label)}</span>`).join("") +
+      `<span><svg class="atk-glyph" viewBox="-7 -7 14 14" width="11" height="11" aria-hidden="true"><circle r="5" fill="none" stroke="#dee2f5" stroke-width="1.2"/></svg>Con uniformados muertos</span>`;
+
+    /* Radar PPI: azimut y distancia de cada ataque desde la EMAVI */
+    const C = 150, R = 132, MAX_KM = 900;
+    const contactos = datos.map((a) => {
+      const r = Math.min(a.km / MAX_KM, 1) * R;
+      const rad = a.az * Math.PI / 180;
+      return { ...a, px: C + r * Math.sin(rad), py: C - r * Math.cos(rad) };
+    });
+    ppi.innerHTML = `
+      <defs>
+        <linearGradient id="ppiSweepGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#38bdf8" stop-opacity="0"/><stop offset="1" stop-color="#38bdf8" stop-opacity="0.32"/></linearGradient>
+        <radialGradient id="ppiBg" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#0f1b2e"/><stop offset="1" stop-color="#090e1b"/></radialGradient>
+      </defs>
+      <circle cx="${C}" cy="${C}" r="${R + 6}" fill="url(#ppiBg)"/>
+      ${[300, 600, 900].map((km, k) => `<circle cx="${C}" cy="${C}" r="${(km / MAX_KM * R).toFixed(1)}" class="ppi-ring${k === 1 ? " dashed" : ""}"/><text x="${C + 4}" y="${(C - km / MAX_KM * R + 11).toFixed(1)}" class="ppi-label">${km} KM</text>`).join("")}
+      <line x1="${C}" y1="${C - R - 6}" x2="${C}" y2="${C + R + 6}" class="ppi-axis"/>
+      <line x1="${C - R - 6}" y1="${C}" x2="${C + R + 6}" y2="${C}" class="ppi-axis"/>
+      <line x1="${C - R * 0.7}" y1="${C - R * 0.7}" x2="${C + R * 0.7}" y2="${C + R * 0.7}" class="ppi-axis dotted"/>
+      <line x1="${C - R * 0.7}" y1="${C + R * 0.7}" x2="${C + R * 0.7}" y2="${C - R * 0.7}" class="ppi-axis dotted"/>
+      ${[["N", C, C - R - 10], ["E", C + R + 10, C + 3], ["S", C, C + R + 16], ["O", C - R - 10, C + 3]].map(([t, x, y]) => `<text x="${x}" y="${y}" class="ppi-card">${t}</text>`).join("")}
+      <g transform="translate(${C} ${C})"><g class="ppi-sweep"><path d="${sweepPath(R)}" fill="url(#ppiSweepGrad)"/><line x1="0" y1="0" x2="0" y2="${-R}" class="ppi-sweep-edge"/></g></g>
+      ${contactos.map((a) => `<g class="ppi-blip" data-i="${a.i}" data-inst="${a.inst}" transform="translate(${a.px.toFixed(1)} ${a.py.toFixed(1)})"><g class="ppi-blip-shape" style="animation-delay:${flashDelay(a.az)}">${shapeSvg(INST[a.inst].shape, 3.6, INST[a.inst].color)}</g><title>${esc(`${a.municipio} · ${Math.round(a.km)} km · ${Math.round(a.az)}°`)}</title></g>`).join("")}
+      <g class="ppi-cursor" hidden><circle r="5"/><text x="8" y="-6"></text></g>
+      <circle cx="${C}" cy="${C}" r="2.5" class="ppi-center"/>`;
+    const cerca = contactos.slice().sort((a, b) => a.km - b.km)[0];
+    $("ppiFoot").textContent = cerca ? `${plural(contactos.length, "ataque", "ataques")} · más cercano: ${cerca.municipio.split(" (")[0]} ${Math.round(cerca.km)} km` : "Sin ataques en la ventana";
+
+    aplicarFiltro();
+  }
+
+  /* ----- Carga: guardado local o copia de la página, luego la red ----- */
+  const leerLocal = () => { try { return JSON.parse(localStorage.getItem(CLAVE_LOCAL)); } catch { return null; } };
+  const masNuevo = (a, b) => (!b || (a && a.generado > b.generado) ? a : b);
+  let vigente = masNuevo(leerLocal(), ATAQUES_EMBEBIDOS);
+  render(vigente, navigator.onLine ? "cargando" : "sin-conexion");
+
+  async function actualizar() {
+    if (!navigator.onLine) { render(vigente, "sin-conexion"); return; }
+    for (const url of ATAQUES_FUENTES) {
+      try {
+        const r = await fetch(`${url}?t=${Date.now()}`, { cache: "no-store" });
+        if (!r.ok) continue;
+        const j = await r.json();
+        if (!Array.isArray(j.ataques)) continue;
+        vigente = masNuevo(j, vigente);
+        try { localStorage.setItem(CLAVE_LOCAL, JSON.stringify(vigente)); } catch { /* almacenamiento lleno o bloqueado */ }
+        render(vigente, "en-linea");
+        return;
+      } catch { /* se intenta la siguiente fuente */ }
+    }
+    render(vigente, "sin-conexion");
+  }
+  actualizar();
+  window.addEventListener("online", actualizar);
+  window.addEventListener("offline", () => render(vigente, "sin-conexion"));
+  setInterval(actualizar, 30 * 60 * 1000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") actualizar(); });
+
+  /* ----- Cursor sobre el mapa: coordenadas, distancia y azimut desde la EMAVI ----- */
+  const mapSvg = $("atkMap"), cursorTxt = $("atkCursor"), cruz = $("atkCross");
+  mapSvg.addEventListener("pointermove", (e) => {
+    const ctm = mapSvg.getScreenCTM();
+    if (!ctm) return;
+    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+    const { lat, lon } = desproj(pt.x, pt.y);
+    const p = polar(lat, lon);
+    cursorTxt.textContent = `${Math.abs(lat).toFixed(2)}°${lat >= 0 ? "N" : "S"} ${Math.abs(lon).toFixed(2)}°O · ${Math.round(p.km)} km de ${REF.sigla} · Az ${String(Math.round(p.az)).padStart(3, "0")}°`;
+    cursorTxt.classList.add("on");
+    cruz.removeAttribute("hidden");
+    cruz.querySelector(".h").setAttribute("y1", pt.y); cruz.querySelector(".h").setAttribute("y2", pt.y);
+    cruz.querySelector(".v").setAttribute("x1", pt.x); cruz.querySelector(".v").setAttribute("x2", pt.x);
+  });
+  mapSvg.addEventListener("pointerleave", () => { cursorTxt.classList.remove("on"); cruz.setAttribute("hidden", ""); });
+
+  /* ----- Cursor sobre el radar: azimut y distancia ----- */
+  ppi.addEventListener("pointermove", (e) => {
+    const ctm = ppi.getScreenCTM();
+    if (!ctm) return;
+    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+    const dx = pt.x - 150, dy = 150 - pt.y, r = Math.hypot(dx, dy);
+    const g = ppi.querySelector(".ppi-cursor");
+    if (!g) return;
+    if (r > 138) { g.setAttribute("hidden", ""); return; }
+    g.removeAttribute("hidden");
+    g.setAttribute("transform", `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})`);
+    g.querySelector("text").textContent = `${String(Math.round((Math.atan2(dx, dy) * 180 / Math.PI + 360) % 360)).padStart(3, "0")}° · ${Math.round(r / 132 * 900)} km`;
+  });
+  ppi.addEventListener("pointerleave", () => ppi.querySelector(".ppi-cursor")?.setAttribute("hidden", ""));
+
+  /* El radar va en el panel derecho en pantallas anchas y dentro de esta sección en las demás. */
+  const ppiPanel = $("ppiPanel"), ppiSlot = $("ppiSlot"), aside = document.querySelector(".side-panel");
+  const mqAncho = window.matchMedia("(min-width: 1280px)");
+  const ubicarRadar = () => (mqAncho.matches ? aside : ppiSlot).appendChild(ppiPanel);
+  mqAncho.addEventListener("change", ubicarRadar);
+  ubicarRadar();
+})();
+</script>
+<script>
+/* ---------- Interacción con el mouse y animación de las secciones ----------
+   Solo presentación: no toca el análisis ni los datos. Las animaciones están
+   activadas por defecto (también si Windows tiene apagados sus efectos); el botón
+   del encabezado las apaga y la elección se recuerda en este equipo. La
+   inclinación 3D y el foco solo se activan con mouse. */
+(function () {
+  const CLAVE = "gruse75.animacion";
+  const mouseFino = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const raiz = document.documentElement;
+  const leer = () => { try { return localStorage.getItem(CLAVE) !== "off"; } catch { return true; } };
+  let animar = leer();
+  raiz.classList.toggle("motion-off", !animar);
+  const botonMov = document.getElementById("btnMotion");
+  const pintarBoton = () => {
+    botonMov.setAttribute("aria-pressed", String(animar));
+    botonMov.setAttribute("aria-label", animar ? "Animaciones activadas" : "Animaciones apagadas");
+    botonMov.title = animar ? "Animaciones activadas (clic para apagarlas)" : "Animaciones apagadas (clic para activarlas)";
+    botonMov.querySelector(".material-symbols-outlined").textContent = animar ? "animation" : "motion_photos_off";
+  };
+  pintarBoton();
+  botonMov.addEventListener("click", () => {
+    animar = !animar;
+    try { localStorage.setItem(CLAVE, animar ? "on" : "off"); } catch { /* sin almacenamiento */ }
+    raiz.classList.toggle("motion-off", !animar);
+    if (!animar) { raiz.classList.remove("js-reveal"); limpiar(); }
+    pintarBoton();
+  });
+
+  /* Menú lateral: marca la sección que se está viendo al desplazarse. */
+  const navs = [...document.querySelectorAll(".nav-item")];
+  const secciones = navs.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  if ("IntersectionObserver" in window) {
+    const espia = new IntersectionObserver((entradas) => entradas.forEach((e) => {
+      if (e.isIntersecting) navs.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === `#${e.target.id}`));
+    }), { rootMargin: "-38% 0px -57% 0px" });
+    secciones.forEach((s) => espia.observe(s));
+  }
+
+  /* Cifras que cuentan hasta su valor cuando aparecen. */
+  const contar = (el) => {
+    if (!el || !animar) return;
+    const fin = Number(String(el.dataset.count).replace(/[^\d]/g, ""));
+    if (!Number.isFinite(fin) || fin <= 0) return;
+    const t0 = performance.now(), dur = 950, final = el.textContent;
+    const paso = (t) => {
+      const k = Math.min((t - t0) / dur, 1);
+      el.textContent = k < 1 ? Math.round(fin * (1 - Math.pow(1 - k, 3))).toLocaleString("es-CO") : final;
+      if (k < 1) requestAnimationFrame(paso);
+    };
+    requestAnimationFrame(paso);
+  };
+
+  /* Entrada de secciones y tarjetas al desplazarse. */
+  if (animar && "IntersectionObserver" in window) {
+    raiz.classList.add("js-reveal");
+    const asentar = (el) => setTimeout(() => el.classList.add("settled"), 900);
+    const io = new IntersectionObserver((entradas) => entradas.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in");
+      asentar(e.target);
+      if (e.target.matches(".reveal-item")) contar(e.target.querySelector("[data-count]"));
+      io.unobserve(e.target);
+    }), { rootMargin: "0px 0px -6% 0px", threshold: 0.04 });
+    const preparar = (lista) => lista.forEach((el, i) => { el.classList.add("reveal-item"); el.style.setProperty("--i", i % 4); });
+    preparar(document.querySelectorAll(".metric-card"));
+    preparar(document.querySelectorAll(".atk-stat"));
+    document.querySelectorAll(".section, .reveal-item").forEach((el) => io.observe(el));
+    // Las cifras del mapa se vuelven a dibujar al llegar datos nuevos.
+    window.addEventListener("gruse:contenido", (e) => {
+      const nuevas = e.detail.querySelectorAll(".atk-stat");
+      preparar(nuevas);
+      nuevas.forEach((el) => { if (e.detail.closest(".section.in")) { el.classList.add("in", "settled"); } else io.observe(el); });
+    });
+  }
+
+  /* Brillo que sigue al cursor, foco sobre paneles, inclinación 3D de tarjetas y
+     paralaje del fondo del mapa. Un solo manejador, sincronizado con el refresco. */
+  let ultimo = null, cuadro = 0, focoEl = null, tiltEl = null, mapaEl = null;
+  function limpiar() {
+    focoEl?.classList.remove("lit"); focoEl = null;
+    if (tiltEl) tiltEl.style.transform = ""; tiltEl = null;
+    if (mapaEl) mapaEl.style.backgroundPosition = ""; mapaEl = null;
+  }
+  function tick() {
+    cuadro = 0;
+    const e = ultimo;
+    if (!e || !animar || !mouseFino) return;
+    raiz.style.setProperty("--gx", `${e.clientX}px`);
+    raiz.style.setProperty("--gy", `${e.clientY}px`);
+    const objetivo = e.target instanceof Element ? e.target : null;
+
+    const foco = objetivo?.closest(".metric-card, .atk-stat, .panel");
+    if (foco !== focoEl) { focoEl?.classList.remove("lit"); foco?.classList.add("lit"); focoEl = foco; }
+    if (foco) {
+      const r = foco.getBoundingClientRect();
+      foco.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      foco.style.setProperty("--my", `${e.clientY - r.top}px`);
+    }
+
+    const t = objetivo?.closest(".metric-card, .atk-stat");
+    if (t !== tiltEl) { if (tiltEl) tiltEl.style.transform = ""; tiltEl = t; }
+    if (t) {
+      const r = t.getBoundingClientRect();
+      const dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+      t.style.transform = `perspective(700px) rotateX(${(-dy * 8).toFixed(2)}deg) rotateY(${(dx * 8).toFixed(2)}deg) translateY(-3px)`;
+    }
+
+    const m = objetivo?.closest(".atk-map-frame");
+    if (m !== mapaEl) { if (mapaEl) mapaEl.style.backgroundPosition = ""; mapaEl = m; }
+    if (m) {
+      const r = m.getBoundingClientRect();
+      const dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+      m.style.backgroundPosition = `${(-dx * 22).toFixed(1)}px ${(-dy * 22).toFixed(1)}px`;
+    }
+  }
+  if (mouseFino) document.addEventListener("pointermove", (e) => { ultimo = e; if (!cuadro) cuadro = requestAnimationFrame(tick); }, { passive: true });
+  document.documentElement.addEventListener("pointerleave", limpiar);
+  window.addEventListener("blur", limpiar);
 })();
 </script>
 </body>

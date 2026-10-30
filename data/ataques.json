@@ -1,0 +1,458 @@
+{
+ "generado": "2026-10-30T03:31:12.791Z",
+ "ventanaDias": 30,
+ "desde": "2026-09-29",
+ "hasta": "2026-10-29",
+ "metodo": "Búsqueda automática en Google News (prensa colombiana) cada 3 horas + casos verificados a mano",
+ "cifras": [
+  {
+   "valor": "176",
+   "texto": "Ataques con drones explosivos · 1 ene – 1 oct 2026",
+   "fuente": "Comando General FF.MM., vía Blu Radio",
+   "url": "https://www.bluradio.com/nacion/van-176-ataques-con-drones-explosivos-en-2026-el-ano-con-mas-casos-contra-la-fuerza-publica-rg10"
+  },
+  {
+   "valor": "9",
+   "texto": "Uniformados muertos · 1 ene – 1 oct 2026",
+   "fuente": "FF.MM., vía Infobae",
+   "url": "https://www.infobae.com/colombia/2026/10/10/ataques-con-drones-explosivos-marcan-record-en-colombia-van-176-en-2026-y-dejan-nueve-uniformados-muertos/",
+   "alerta": true
+  },
+  {
+   "valor": "318",
+   "texto": "Ataques registrados · 1 ene – 1 oct 2026 (uno cada 20 h)",
+   "fuente": "Fundación Ideas para la Paz",
+   "url": "https://ideaspaz.org/publicaciones/noticias/2026-10/cada-20-horas-se-registra-un-ataque-con-drones-en-colombia-como-responder-a-esta-amenaza"
+  }
+ ],
+ "ataques": [
+  {
+   "fecha": "2026-10-26",
+   "fechaTipo": "reporte",
+   "municipio": "El Cairo",
+   "depto": "Valle del Cauca",
+   "inst": "policia",
+   "objetivo": "Atacan con drones subestación de Policía en zona rural de El Cairo, Valle del Cauca",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "La FM",
+     "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxORXRra255ZGtjd3lzZkdTaWlBQXlBamhXblZiZVB0b2Nha25hRkpSZnhlQjBhTElSZjMtd3lqU2pqellGVkRfX3hlLVY3ai03c3NCZVJCV2JyMVlwVFMzcGpKRUZPaTZOU2F5S1Rlb0NQY2RZOUQ3THV0ZFFEWWJXdF9yc1RhaC1wYlVlNTZKNzFoRTV6emFRN1d4UHZRMTZYYnVzbkZRa0ZDTEIx0gGsAUFVX3lxTE5WQmZnOUhScmIyclJiaVJIeWVuWkJUNmU5cVdpd3M2WFREVzJUa1RzRDNxNXgyMWhlM0ZIdWoxUF9iRG5ucUY0Z3hnVkl5UGZwTjlocW82dENHNERzbmpscXotendBR2QwWnY3eGFURjBvbUFYaUVIaGxjUklzMFZkcmhoeUpraDB1MkFvQm1ocWV6akk5Si1MX2JVQ2xyVFUyVE9qUkQtNDkwY1Y?oc=5"
+    },
+    {
+     "nombre": "Caracol Radio",
+     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOUzQ2N2E4dzBENGlUX1oxSjItWUZjZXdqc0VPUE1UV1ZPeGRJaEZEdmFTRGtMaDFMV1N2dS1teHhMVHJlYk5sbDkxNGpnMFMxTXNITGJXSWp0TTZjQ3loNXA3bUV5WVEzT0FkdHZWTzU5RW9VWkJRYXNDQ1B1QkJyU0JydkktWmRWaWY0VnYxZk5xRFJSeFZmSW9fSksxQ0VpWk9jdkhiT044V3RfQ1hPaGtob2lPZ2lGdXVPUi0wc09YWWFN0gHYAUFVX3lxTE1DMDlZMDlnX2szT0tTZlBsM3RnWUw5SE1iZjhSeWZtSW1PWjRsMDRINjltaFdtRlhnZE1vQ3EyNlUzV0s0bkFPQnlQeFdzcGNSaUJxSURCUksybnl0aHJROXRUMFN4aU1hS2VqV0NvZ3FBdXBNMnZCdk5YQy1fYWlPcUswU3h5RDhsSGUzS25IaHdpWkZyaGhCMnMzcmZHVTlVUkZMN1AyY2dDOGtOeTdqV2x0R1FPTFhHTjNUNWFnYXoyYThzSmZIY2J3UWVPcThCZkhmZ0hGRw?oc=5"
+    }
+   ],
+   "notas": 2,
+   "lat": 4.7562,
+   "lon": -76.2148,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-23",
+   "fechaTipo": "exacta",
+   "municipio": "Guapi",
+   "depto": "Cauca",
+   "inst": "armada",
+   "objetivo": "Embarcación de la Armada en puesto de control fluvial, río Guapi",
+   "muertos": 1,
+   "heridos": 4,
+   "autoria": "En investigación (versiones distintas)",
+   "lat": 2.5708,
+   "lon": -77.8826,
+   "fuentes": [
+    {
+     "nombre": "El Tiempo",
+     "url": "https://www.eltiempo.com/justicia/conflicto-y-narcotrafico/ataque-con-explosivos-lanzados-desde-un-dron-contra-una-embarcacion-de-la-armada-deja-un-militar-muerto-y-cuatro-heridos-en-cauca-3595875"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-22",
+   "fechaTipo": "reporte",
+   "municipio": "Segovia",
+   "depto": "Antioquia",
+   "inst": "ejercito",
+   "objetivo": "Ejército busca a soldado desaparecido tras ataque con drones en Segovia, Antioquia",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "La FM",
+     "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxQUkItRllVQlV5N2RzNDdpQ2hrWDN0eTlVd2dYX1l3YUotbnBrSmwtYkV0NTIzSVYwUVZMeW1KeFlnZE1XTUVUQkhRdFNXZ2YxbFJFT2pFbWhpaGIyYlpjNjhkaXlJZTRFOTNrejI5RHNubVlibzhaZENGbVh2TUZsX3dvZldRMW40NWVtTHdRZ1RyUzZlOW5KZnNJcjNpWGtmeW9ObzFYdnVnNlllNzdsVGZ3TWhkQTI2SmVmdE1zR1c3MTBZRzU40gHHAUFVX3lxTE5GdlBWNDltdDZOQy1iYTN2N0s0ME5pMVAzeU9jcG94VWlUZ0JtTkdYdFNBaFBuUzZGMVNJdGZ5ZWh2enVTQUtqdTJ4eWNoZFlPMkdMYzNtOXpzVmw0ZEc3aEZrMXZJZU9tOHdMT0JFWnVvbnlGVUJZWWktbFBsU0RNeFk3YnhtM0lQZ2JtclQ4c0xEcG53allNdktscU8yMHhtcHQ2eXdXSVJJMWFsX0x5ZXo3d085X0QtOTZINzBFVHA0UTlidTA?oc=5"
+    },
+    {
+     "nombre": "Agencia de Periodismo Investigativo",
+     "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOaFhjWUNwS0RFRmpwVGtDcnJ0VWYtcldrUEl6bDlKREUyM2JfVTFzSDZLTzM0ZWd4cWg2VXZyeXNsQlVPX1dZSXlLWjdjTFc1RURFbm9ud1FnX29qbHU2dnJNc3ZBMjVad3dkV3daT3VqV1gtYndpWjFybEZYRkFaUVg1dDNOWXZtNGxBQTQyNEtnUTV0MVpnckptVTVCalhoZmw1S1BWT1RvWTJKMnV3UWQzMnliZ2liNHoycmNsOWFwUQ?oc=5"
+    },
+    {
+     "nombre": "El Colombiano",
+     "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNb2Z5OXNTUXVaUHdiYWx6aVhROXJCTEdleHVhVVNzdUJiMDVhWDhtQUlJYXJXS0RnVE9yamR0OVRXR0pGRHljUUphZWE5QlBiaUJvUjFtRG9TVkkzQ1g4TDNwSGY1VDNzcVhUUUExREZuT21wRFRlejZtZkg0YXlSRjBlZ0JuUEtQZjducTN1VUJ6cW1HMEY4MEhXdEx4OFhNVUJDNkxiVTd3MDl3NnBNQ2M3a9IBuAFBVV95cUxNbFpRYmdGUXNjZHcyUTV6cEo2Z29CZ0dPaFprNTg3ZnFHdllPTGFsVU15a3lZTTNTRkxWY1FId1JwX1o4Q3ltcWNIcU9hQTFORXNiVnFaOG1rdktFTk5ZOHdLbHA4RjItcmVGbkhnVC1sck1xeW9EcjNyYjBWMTA3TFN3V082RkRtd0lCLVRJaUt6XzJNSHp4di13bEJWbmo0eEJRdk9xQ0Nsb01pcHBoVGdFQW93UEg1?oc=5"
+    }
+   ],
+   "notas": 3,
+   "lat": 7.2669,
+   "lon": -74.6216,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-21",
+   "fechaTipo": "exacta",
+   "municipio": "Pelaya",
+   "depto": "Cesar",
+   "inst": "policia",
+   "objetivo": "Estación de Policía, cuatro cargas explosivas",
+   "muertos": 0,
+   "heridos": 6,
+   "autoria": "No identificada",
+   "lat": 8.6857,
+   "lon": -73.669,
+   "fuentes": [
+    {
+     "nombre": "El Tiempo",
+     "url": "https://www.eltiempo.com/colombia/otras-ciudades/ataque-con-drones-en-el-sur-del-cesar-dejo-seis-policias-heridos-dos-siguen-graves-las-autoridades-ofrecen-150-millones-3595154"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-20",
+   "fechaTipo": "reporte",
+   "municipio": "El Carmen",
+   "depto": "Norte de Santander",
+   "inst": "policia",
+   "objetivo": "Estación de Policía atacada por un enjambre de drones durante unos 30 minutos; daños materiales",
+   "muertos": 0,
+   "heridos": 0,
+   "autoria": "No indicada",
+   "fuentes": [
+    {
+     "nombre": "Vanguardia",
+     "url": "https://www.vanguardia.com/colombia/2026/10/20/enjambre-de-drones-ataco-la-estacion-de-policia-de-el-carmen-y-causo-danos-materiales/"
+    }
+   ],
+   "lat": 8.5108,
+   "lon": -73.4468,
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-16",
+   "fechaTipo": "exacta",
+   "municipio": "Teruel",
+   "depto": "Huila",
+   "inst": "policia",
+   "objetivo": "Estación de Policía y Alcaldía, cuatro explosivos",
+   "muertos": 0,
+   "heridos": 1,
+   "autoria": "Disidencias de las FARC (según autoridades)",
+   "lat": 2.7416,
+   "lon": -75.5683,
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://www.infobae.com/colombia/2026/10/16/un-ataque-con-drones-a-la-estacion-de-policia-de-teruel-huila-dejo-un-uniformado-herido/"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-15",
+   "fechaTipo": "exacta",
+   "municipio": "Palermo",
+   "depto": "Huila",
+   "inst": "policia",
+   "objetivo": "Estación de Policía",
+   "muertos": 0,
+   "heridos": 2,
+   "autoria": "No identificada",
+   "lat": 2.8897,
+   "lon": -75.4347,
+   "fuentes": [
+    {
+     "nombre": "Blu Radio",
+     "url": "https://www.bluradio.com/nacion/ataque-con-explosivos-lanzados-desde-drones-deja-dos-policias-heridos-en-palermo-huila-pr30"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-14",
+   "fechaTipo": "reporte",
+   "municipio": "San José del Palmar",
+   "depto": "Chocó",
+   "inst": "ejercito",
+   "objetivo": "Batallón de Ingenieros Militares n.º 15",
+   "muertos": 0,
+   "heridos": 9,
+   "autoria": "ELN (según el Ejército)",
+   "lat": 4.895,
+   "lon": -76.235,
+   "fuentes": [
+    {
+     "nombre": "Prensa Latina",
+     "url": "https://www.prensa-latina.cu/2026/10/14/colombia-ataque-contra-ejercito-nacional-dejo-nueve-soldados-heridos/"
+    }
+   ],
+   "verificado": true
+  },
+  {
+   "fecha": "2026-10-13",
+   "fechaTipo": "reporte",
+   "municipio": "Dagua",
+   "depto": "Valle del Cauca",
+   "inst": "policia",
+   "objetivo": "Cuatro civiles heridos en ataque con drones contra subestación de Policía de El Queremal, en Dagua",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": 4,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Blu Radio",
+     "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxOcVpnakU4QV9VWUhIZW1obmlBT0pxU200T2lnX3lXU1RIMVRsQVowZWhrYjNvaFBraGs4Z1A4RlNqRGV6UlNldGtBRHYzMGpvcGVFVGhJdUZQSkt0OVEwcTZ4MzBhYWVteFZodGV3RWhSRzRTZTI1VXp4VVBlVk9jdmY5ZlJSdW1xUFlySHpBRzJBbmlyWGluZ0VaRk9LcUxWc25VTGdTX2xFRDhwcmFxMUhCbDJaaWdBU085TkJzZW5keG5sWUFGczBnLUhZVlhRRVVxU1VuQzhEX1drWXfSAesBQVVfeXFMTmlWXzJGSFQtYkRWVVFhR2Z6d2k1ZEh1ajVPcE5qZERxdnctRFg1RTZyeVZtempEMUFMeWF6TGJOd09oZjJodkduSlpEVVNCX2VSNjRqa25kcTZZUFNYWHRFWkwxTWNsa2t4OWF4VWFORnlPbTg0WWpxQWk3QldhWXJfcTNaNmdWWjY3QWlfSUZMVlBEX2V3bkl1OGYxUGtWZmtLS0NPMHlmRk1jd2RMbWdINS1XWGRmWndvNTFhX2lSOWdvM2l2blRGTGtnZHM3R29IV1ZwbGMyV3BuSDRHRTNtSkJnRzNVMnpzVQ?oc=5"
+    }
+   ],
+   "notas": 1,
+   "lat": 3.6498,
+   "lon": -76.7204,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-11",
+   "fechaTipo": "reporte",
+   "municipio": "Toribío",
+   "depto": "Cauca",
+   "inst": "ejercito",
+   "objetivo": "Base militar de Toribío atacada con explosivos y drones",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Estrella Digital Colombia",
+     "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5OcG1lWm53bEs5RUZVdlV5QjA5cUpRM0RfWVJEOEd5UmR0VG15MV9hQ0JUX3hIRXlHdEZUdUYtdi0yRGxSNFJTU25Ba0l0enJrWnpYbk9XNnAtbTBNbkdPYThoZi11SEhuLWQ2Q2VKcllCbHBqQVRkQ3g5VUNMYm8?oc=5"
+    }
+   ],
+   "notas": 1,
+   "lat": 2.9758,
+   "lon": -76.2033,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-11",
+   "fechaTipo": "reporte",
+   "municipio": "La Vega",
+   "depto": "Cauca",
+   "inst": "ejercito",
+   "objetivo": "Asesinan a un soldado en un ataque con dron en la vereda Altamira, en La Vega, Cauca",
+   "muertos": 1,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "NTN24",
+     "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOV3UtaFNmYWJuMnI5cnBCbGEyZzQwa0pNZlRDZzlJdDZ3cTMyaVVVendJQ1RlU2MwMkhSWEFzYjdsNG1PelhhSy0wNERSYng1aXNWZU5qWWp5VGhTcnAyOXhjMWlhdlRBWlpJM0xuZldsZ1JtcmZJd1hOLWhMRnh2OG8xaWRCZUVYT3hLMEVHQ1dySDBzV3l4M0pmZDg2cmF2SlhUcXRuYlYtYnpwUUFnX1RtV2RSWDFGOS1tUW1od2N3UDZyM0J0ZFJ1NNIBywFBVV95cUxPZUhNVm9iU1RIbHdVVEJwYXFYQnhkMTM3OXpMS1lGNVc0UExtSmRrMWx6ZzloTWFBcnFFUzBDbHVDMlNqOWRYSGlwcV9UOVY4YTh5b0QtQndMWFZuMW0zN1JROGtKN3RjYkc0T3UwQlRKdDBLb1ZtOUNib0RvbUpSdjZVQjlXOTJBZm5TWXQ5U1g0NlpaSmo1V0pLSUIzU0piVFhpRVpWQ3NwLURYLWRqMmdFN3lrT1JQVDVDcDJFc0JLVEZLSWdBY2ZfRQ?oc=5"
+    },
+    {
+     "nombre": "Revista Semana",
+     "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNVjVGRVBERVFnbTJrNi1uckZaUWNGc29lMFVRSUdFS3I4bG1kZTRxQ293b0dtUFFSbklIeW9wMkhxUWZDMnBGZ19KMU9ZQ0NqVXVrRzJLcDVIZW5Pd1hrWk15UmxvWWRwdXFROEFuaUFNVVp1ZXQ1Z280RHF6TC1uWWpHUHpHZjdRY1oxM2p0WkhyWnh3WUgySXFPOW82aEhuUlgtUmdXLTJaLVJVQ1JfTWZLazd6NFpGQ214ck9hV2FnWW50RDM0cVNLckNCUVc4aFE?oc=5"
+    }
+   ],
+   "notas": 2,
+   "lat": 2.0539,
+   "lon": -76.7588,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-05",
+   "fechaTipo": "reporte",
+   "municipio": "Aguachica",
+   "depto": "Cesar",
+   "inst": "policia",
+   "objetivo": "Nuevo ataque con drones contra estación de Policía de Aguachica deja un interno herido",
+   "muertos": null,
+   "heridos": 1,
+   "civilesHeridos": 1,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Caracol Radio",
+     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPOGdudW03WmV2dHJfVGpyWktUSmQ4SGJYVGZfa1dmWFlqUGFNTVNlUnZOaEVOX210UFMzYlpMcURWYlE1VXQ3RHRxVUYtakh5WTd5Rm9sMDg5QVJ1c0c2MlozOHo1aTBpTzNEenpwdmpXSXBya1hQak9YZGVnSzJJcURscUtTZ0lIUlF3ZlZHcWVUa1lLWXJmLVVhTnZPYzFvNnlkYXlkaEdtVEhSYmQ5REpOMW1QSUE3TFR0bElR0gHSAUFVX3lxTE5xLVotNFlPQ0E2d3lMZUxGOXBnOUpzSVluU25GOW5VTDNla0NhYkgtc3hSZ185VXJQNTNuSHo0cmUxZ1k0RFlzTEFkZUFWWW91aXNjby05VzllWlhXN295dEdIeU5RWVVuVUxMS1lLdGJmWTdXRG1HLVRBTzBGU3BvYVZ3WnFVMnRkelR5aXR2VFhzTTVxN3lSaUUtTUZ6S1NWdmdadjlhN0F3cUtRQTBHcWI1eU0wZU42MG1qWTBvTTRCRkxMLWtqS1NMNFIzZm1xQQ?oc=5"
+    },
+    {
+     "nombre": "La Silla Vacía",
+     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQNU9PUHJyRXFZaG5sVVNKX1RJNVY5b1ZoelVhdTVMSEVrcGlNWGRzRS1uQWdmNEZTUDR0VlFPZGkxT284VUN2ZXl4TjlrcTBNN3M0aU9Eekp2dzFkUmpXWGkxdi1UaVpiaDl0ZVBadjBDOTJuZ3dzU0tKcFUwdF8yOEFlMlRPSzI3R3g0OUtLMkN1NWgzZVVEa3hyYzlhX0R4T2VNRVdncDlRaUk?oc=5"
+    },
+    {
+     "nombre": "ELHERALDO.CO",
+     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQQVdpbWJYd05ydmtWTnVPbnZoWDRsMnZzdG9PNEFiYzJnLUsyeUFLRE9qNVBCWUR3bjdoWktBbHkxUkJJX3ZQYk9UeXlRUXpHbmFlTXY4aUlQUlJZQzQyUzJnaUJma0F1c2R0ZDBuZFV2cjQxTjFUa1h4bTVHcWdicThWN3c2bDFiYUtmaFRyd2pyb0tZX0Q0QXgxYmplMDRuQmtpWlo3VGhicHBsWXZZQ0dNa1ZONDFWa2JpT21OeFVnb2lUSUE?oc=5"
+    }
+   ],
+   "notas": 13,
+   "lat": 8.2487,
+   "lon": -73.6227,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-05",
+   "fechaTipo": "reporte",
+   "municipio": "Aipe",
+   "depto": "Huila",
+   "inst": "policia",
+   "objetivo": "Ataque con drones en Huila: lanzaron dos granadas contra la estación de Policía de Aipe",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Blu Radio",
+     "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxNRFczc1h3WnRNRGxPcUpzclBDMjZvT1dXdXJOazhaZ09CVHRPWUNWaFA1dFlBZ1Z3cHNsaUMwdkFKNUxhNGN6VE9HaWl0NXNUdEM3aEdjQ0tJMC1xSnpjb3FucGlReUFuVlVGZExkaG54UWhobXB1VkZPT1Y2cEVqYWJPNWZMUHFraVZwc3VlVER6cHVNdjk3LUl6WE9yTDNfZEdLdUpqdDV5YUFCTHRVMl8zMlcwek9jWVR3Ui1KYS3SAc4BQVVfeXFMTnYzdWJnNkJHdFNRX1RmZHZqZFBGSFdJekhUcXZMRlNhX2RVQ1F5N0drTmdKbGkzYnQtcnMzWG9teHNhOEpfYmN5OXpwaW5KSUJYZC1pMFZFSjg3Um13RmNaYkk3d2ZoU2pWNlVfWE9xazJUemF2NWFDWkNPOUxtOG9XVWlNMnA1QTgxWFRTV193ZWZrS2tGbUtqVmFyRjI3LWxmTkwtS09fX1ZWN0k4VzJfak1Lcnh5Y2thTXhQZWVzMHZDTVlFLXpyZjVGTWc?oc=5"
+    }
+   ],
+   "notas": 1,
+   "lat": 3.2864,
+   "lon": -75.5303,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-04",
+   "fechaTipo": "reporte",
+   "municipio": "El Peñol",
+   "depto": "Nariño",
+   "inst": "policia",
+   "objetivo": "Ataque con drones y explosivos contra estación de Policía de El Peñol, Nariño",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "No indicada en los titulares",
+   "fuentes": [
+    {
+     "nombre": "Agencia de Periodismo Investigativo",
+     "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxONFFFRWFDYWMtaGZpaGYycHZYdnlQd1dEN0xheW1FVVAwWXJPSFp6OWtUUFo1RHduQjdNU1ZIc1VIbGtuc1RnYWlFWXlnX1ZaZGJkUEtOc1hRQWNzVW9Ud19ScDUyNERRN3hodE9MNFcxWFZCWElXaWluWlJOMVFQbDlWMVJiamJ3RmFjNmNMd2dfRjd5N0lCTkVjSVJDRkdOWnhCN181Q2w3RnV3UkVmLTFoT0Y4bWI5Mmc?oc=5"
+    }
+   ],
+   "notas": 1,
+   "lat": 1.5122,
+   "lon": -77.4306,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-02",
+   "fechaTipo": "reporte",
+   "municipio": "Neiva",
+   "depto": "Huila",
+   "inst": "ejercito",
+   "objetivo": "Un soldado murió y otro resultó herido en Neiva, Huila, tras un ataque con drones explosivos de las disidencias de 'Iván Mordisco'",
+   "muertos": 1,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "Disidencias de las FARC (según la prensa)",
+   "fuentes": [
+    {
+     "nombre": "Infobae",
+     "url": "https://news.google.com/rss/articles/CBMigAJBVV95cUxPUmFLMm5LbFNEUXF3RXVMVGQ0UkpubGctZ0J2dGpFQlNMYkIyS2pXUkM5X1Y4Q19McFFiVGN2T2dRcFZIMU1VQU1MVjhYUDRKY3VsSl8tRnRXYU1pMjE2eUYySmNEcHZjb3NHS01FZTR5X1RpMEFMbzRUVF9EY0NjeDNYMWw1RlRZZnRxM2E0b3VFdkVUZDBjQ0taOTU3RGhuN3RmeW45V2hFSldDNWxjRGc0dU10SlBzTElVeThmVHItYUJPaF9iWlFKSGFzSGZoVnV6LWx0MXBLd25aWmI4NzlBTm9ReVhiaU5lVXhsbVUwWk9TN1Rzd1lTQzBWOE5C0gGbAkFVX3lxTE90cThoR1d5ckZEYTRvMFNJZjRDdU93OVVhSTRMT2JGS1JzVDhOTmVlc0kxMVVzRUpOYlNlSTlSbng1QldLYjhKUVlKZ2N6QlJfakRmS1RPc0dqY05fNTc0VzJuaHJIUzlwdnZ5NWJKX1REcE9fVHFWRVM0Ti1hbld4UTV5aWlUT0dtaDN5U2ZsSFZPUThxZXBsQzlxQ2FsbFJ2RHAzOVBhWmF0a0ZTS3NpZlF2N1lGMlVYbWVQTVowZjhrOVlyNzBrSktPUkh3NTlTZDViSUdGV0ZncndXczBNSWctMmdJMjBjdG9WQi1KLUlzMW1wbWVKcS1Pd0thdTBMNVVKWFNiNW1rRVlXdzRIZlNEWkNGUDdMSU0?oc=5"
+    },
+    {
+     "nombre": "La FM",
+     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNNjJBX1dWODE0ZkFjRWpuRVhsT2tGS0RRNEt2eWZuNDVDZldxbFZmYTBRMVQ5dTZPQVhfSE9FRHRNdzBCT21uRW9MSHpTRWhvdWk3QmFKY1ZzZnR0Y3VQbndISW5qYnRYcWtraEJWZTF6b3RjNm0zeUVxZ25uRTVlcUktRi0tdm82NWtRWE9CUHJHM3VZZUJMYk93WlZoaHpOM25PWS1iYklyM0lPM3BFT2RVYlBKR1hKYXdvRVV30gG-AUFVX3lxTE9sU1h4RVJNTWxGTFJCWGltTUpveW50STc2Ny1jOE9CTFVIeU5NSFZLOTJxM2ZrYWJYWFZza0twcnJkQmNHaTdGVXo3MjRFampZOVM3MWJXZGRETmdjU1R4bllVN19FWU5GY1BCRnlidjNMczFOM21rQWIyLTBzOERQVGJLdzdRR1BYYVJIWTM0TFNmYnJmVklGMWM2OWJVeEd2ZWFKX28tU0ctMHRJdjFpbi1BbzRTZzZCbzBXVlE?oc=5"
+    },
+    {
+     "nombre": "El Colombiano",
+     "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQaVUyUmg5dEVxMG9hd01rdG8tcERlYjBNUmlzM0hSMXl5Y1JKMDF4dXRfbTJWc1JMWklMNjk2Y2lpWmViRm92eEVVb3NCQkNYUm53UXliV1djaHFEbGZVN0hBT0h6UEwtR2dEUzhQckhRSnBnWVZvTkZsVi1CMDRYX2kyV2x6SEJBZlB1TGJPdFRsZFpMODRiMHBkZ0RDdUZSN3ZoVFhvNGRhTUNYSmd6MjJ30gG3AUFVX3lxTE91N3VUTHJWc3JyQmN0Z2hiekItdFA1MUh3d0FkbkZoSHBsRWRvR2d1SzgwckFYUTV1OUlrdDJJQUdCeGJxcjBmVjFoYmhhdUF1Nlk5azd3VHZBeWR1TjBzOHl1SHdoVEp0QTM1N2Z2bzF5OGdNbWkxMTNfNTFOaXZFVUQ3dktMT0dNaklRaXNWcjJWTUtOOVppcV9vU1hjSmdFcktUUFpyQ2tEbnplbEU2OERqWTZGSQ?oc=5"
+    }
+   ],
+   "notas": 6,
+   "lat": 2.9933,
+   "lon": -75.2724,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-10-01",
+   "fechaTipo": "reporte",
+   "municipio": "Santa Rita",
+   "depto": "Chocó",
+   "inst": "policia",
+   "objetivo": "Atacaron con drones contra estación de Policía en Santa Rita de Iró, Chocó",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "ELN (según la prensa)",
+   "fuentes": [
+    {
+     "nombre": "Blu Radio",
+     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQY3RLbWhSM3p5b0QtVUVvcUxjQ2ZqTkhIYnVWaVd2RnJOZjFndGF2aDF6dUkzOXRCdlhpd1RnRVlnLUF4N3g0NGVVbzAyQkN1eFFmTXZZZWRtelQzSDlSX3NjX2JUajVTRU5SdGwxMG1VQnBjSWdlNDFfTVEyOFhZeWlRRGFkaGxKVjI2elk4Ml9wRGFERXd5MUpyaDdPc0ZONHlacmVxTDdfMExzSVVILVVKZklvVUtuZEloUUZB0gHLAUFVX3lxTE9IMzJ1Y0UxWk9hc1Y5cE1xTkhYTlFjNk12V3hUSFdfWWI3bTN2SUs5RmJXeTFwamREbXYxR2xPeHZ2TjVGbmdGa1plOXNlenJ5Y0hiRUh5cXh6ZG1qYWVfLUF1RTA4bENWWUlwNnZyTHcyX2lWUEtneGpMNFY5RmpoNjNQVDZzRE13djg3dnlnX1N2T3hWWEpqRmpseU5pSHhDbzdmRzJ6aEhDUGRUa2pnMy1CN0pFb0ZXQ3BkWEtJVWtQN3RXbk9hWGQ4?oc=5"
+    },
+    {
+     "nombre": "La FM",
+     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxQenYzbFpsSGZOUWlja0VTbE1yaG95cWdLaVBTdmQ3RnRQa1RReWp6TEQ2ZmVFUDVtUDdDLVlKQVZDS1dIZURyem1qV0VuaHMzcEpVbm90aTJ3alNvZENtanhPSFNVbkkxbUlhYzhVby1FeVduaFhrTlBhVzhWNkdXTmJUSkZiTTJPb0RnUGtDSk5zamxlMzN1U3M1Z252VzNmUUHSAaIBQVVfeXFMTXRrSlNaaDVIbVhuR3lxZzBXdnljeGhoUHdQcVJWUi15SzRtbjNoNlpybTBVYTFCOEhMRHFWQWdMaEViMC1oVGtSQ3hmWkhDMzgtT1FodFRoM1pKZUNyckFNWnRZN29acXhuNkgzS1J4SmJhTFVxQ0tuZFZITmxTeHp2Nm55WXBCWkp2SWpCRC1sZUZrdGFVNkg5QmlMVU1YTGVB?oc=5"
+    }
+   ],
+   "notas": 2,
+   "lat": 5.1726,
+   "lon": -76.4845,
+   "verificado": false,
+   "ubicacionProbable": false
+  },
+  {
+   "fecha": "2026-09-30",
+   "fechaTipo": "reporte",
+   "municipio": "Nóvita",
+   "depto": "Chocó",
+   "inst": "policia",
+   "objetivo": "Atención: reportan ataque contra la estación de Policía de Nóvita, en el Chocó; seis granadas habrían sido lanzadas desde drones por el Eln",
+   "muertos": null,
+   "heridos": null,
+   "civilesHeridos": null,
+   "civilesMuertos": null,
+   "autoria": "ELN (según la prensa)",
+   "fuentes": [
+    {
+     "nombre": "El Tiempo",
+     "url": "https://news.google.com/rss/articles/CBMilgJBVV95cUxOZ2ZFREtob0JiT0hUM1BhRU10OE9JVklkY0ZMMFQ4ZmxfUXdicGx5bDI2YTBMTnJfZlFBM1BJTjllb2dHaEU3ZWxncWM1clZLc19fVjJmeGpDbjFULTRNOFVqcnhyenhZZlhHTngtQl9BNXJhY1J1dDNmUl9LeU5ydEtsY3BVQkVBcXA4N2FBLVlucUF5SmtLYzB3RnEwUG1CQnVzYnZVbkNuT25IUk01Tmc4R0F4VFZBbUFlbDBlLUtDUFVON0lfOGdtZG5CTGVPaUMzYnFDZ1VtaXZnMXJhcWFNRjJCMEtZYjVaTEgzTHg4X3dNZzVKRWVMUTVsc2xkRHloSjV6RlRYS2I4cWxrVzFDbGtRQdIBmwJBVV95cUxPNTh4VVU3V0xUNkRuOVhYYkJ4cW1HYWlRbERSMDVDdmFacE9qa3luZG90Q3I1WV9WbS1qc2ZWb20zak5wYmZ2NkhiZXB6eEZpeThHM1ZLZUExaTI3NFA4NVVjdTg3NHRFanY3bVJmUWN5REZsXzIzbFZiUDUwdzJNb0d2eTNZbGZiLXp3dzUxaFZFc21rSFpfcFduZmRNeDN5RDY5QkNCZEp6aU1ZMGRkUE1VVFh2c2NWTVkycmtyNXQxNlJvU2NmalpjcFptVHV5YjhoSzdpazkyR1Z5U0ZONXRkOTZrZlkzcXFyUUpwY05QRWNrcEEtTTczV2VHbnNaVmE1bTN2TmNvOUF2R2pDQ2Y1ZkZEbUxHWHZN?oc=5"
+    },
+    {
+     "nombre": "Blu Radio",
+     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOTkpRMExTdTRqUGtlQTUzelgxY0Z0LTBrN2hTUl9SUXFJbkswWXdjUy1BYVNMZEZyYWNUc2ZfaE5EUGFGdVhManliZ1Ryall5WHF6UmtOVC1KSFQyNnhJZldYTkc4SFJDREN4MVk2b0ttYUJfc2N3d3pIX19adEszVFBDb3NoN0xvRWMzZk5LZjFGTkZGR3diTlQxYjlmbmp3X3JLajFFeFJPc29raF9aMDczZEJYWS1DMGlTaXFTWGJMbl9oTkY5aFpWRFDSAdoBQVVfeXFMTWRjanJFLTVyYXhkRFJlVUpGejJLckNSSjZGc3YyVGg4ZElRYm5QN2l4YW5NQ29hYUtFel9EbFk0TTNNRkpVSEZEZTJ1ejA3MmNPNmRNNS04LV93ZWpSNFl4UC1peXdzd1A2dXR4TzllMFAyM3Bfb3ExaXB6SFU4Ml9oZHFpUXpGTTRWX3FBQmhscTc0OG5oT0Yza05Hcm94Zl9fcVVReGtycktXS25uamRPVWtvQy1BcnJTSVBvRjN0X280d1RLQVZLejN3Sk5qdk1KRVg2aTFRZWc?oc=5"
+    },
+    {
+     "nombre": "Minuto30",
+     "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9yYnI0RGJnN1hCbjFuN2dfbjlZT0l1NThSUzRKNzh0MFlCc3ZMcXNFOWdEMXhuUnZWbTFiNGY5dENrVUJKdXR1NC0tYXBKbTF0SFlFOUYxUGJnSW1ocGxkWEpoNHVqMXd3VDdjdg?oc=5"
+    }
+   ],
+   "notas": 3,
+   "lat": 4.8534,
+   "lon": -76.6182,
+   "verificado": false,
+   "ubicacionProbable": false
+  }
+ ]
+}
